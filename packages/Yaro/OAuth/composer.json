@@ -1,0 +1,23 @@
+{
+    "name": "yaro/oauth",
+    "description": "Ajax based oauth for Laravel 5",
+    "keywords": ["laravel", "auth", "social", "oauth"],
+    "authors": [
+        {
+            "name": "Yaro",
+            "email": "12fcv4@gmail.com",
+            "homepage": "http://cherry-pie.co"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yaro\\OAuth\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "minimum-stability": "stable"
+}

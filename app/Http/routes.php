@@ -1,0 +1,70 @@
+<?php
+
+Route::pattern('id', '[0-9]+');
+Route::pattern('slug', '[A-Za-z0-9-_]+');
+Route::pattern('base64', '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
+
+
+include_once 'routes_backend.php';
+if (file_exists(__DIR__ .'/routes_dev.php')) {
+    include __DIR__ .'/routes_dev.php';
+}
+
+
+
+Route::get('/zz', function() {
+    
+    $rollingCurl = new \RollingCurl\RollingCurl();
+    $rollingCurl->get('http://highscalability.com/blog/2012/2/6/the-design-of-99designs-a-clean-tens-of-millions-pageviews-a.html');
+    $rollingCurl->setSimultaneousLimit(2);
+    $rollingCurl->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use($context) {
+        $context->prepare($request, $rollingCurl);
+        $context->check();
+        $context->exec();
+        $context->after();
+    });
+    $rollingCurl->execute();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // Get your access id and secret key here: https://moz.com/products/api/keys
+    $accessID = "mozscape-1123e7610c";
+    $secretKey = "2cd1e4029073067a5a779524f21970b7";
+    // Set your expires times for several minutes into the future.
+    // An expires time excessively far in the future will not be honored by the Mozscape API.
+    $expires = time() + 300;
+    // Put each parameter on a new line.
+    $stringToSign = $accessID."\n".$expires;
+    // Get the "raw" or binary output of the hmac hash.
+    $binarySignature = hash_hmac('sha1', $stringToSign, $secretKey, true);
+    // Base64-encode it and then url-encode that.
+    $urlSafeSignature = urlencode(base64_encode($binarySignature));
+    // Specify the URL that you want link metrics for.
+    $objectURL = "www.seomoz.org";
+    // Add up all the bit flags you want returned.
+    // Learn more here: https://moz.com/help/guides/moz-api/mozscape/api-reference/url-metrics
+    $cols = "103079215108";
+    // Put it all together and you get your request URL.
+    // This example uses the Mozscape URL Metrics API.
+    $requestUrl = "http://lsapi.seomoz.com/linkscape/url-metrics/".urlencode($objectURL)."?Cols=".$cols."&AccessID=".$accessID."&Expires=".$expires."&Signature=".$urlSafeSignature;
+    // Use Curl to send off your request.
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true
+        );
+    $ch = curl_init($requestUrl);
+    curl_setopt_array($ch, $options);
+    $content = curl_exec($ch);
+    curl_close($ch);
+    print_r($content);
+});
+
