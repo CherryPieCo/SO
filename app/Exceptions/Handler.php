@@ -28,10 +28,12 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
+        $res = parent::report($e); 
+        
         LogEnvelope::send($e);
         \Jarboe\Component\Logs\Util::add($e);
         
-        return parent::report($e); 
+        return $res;
     }
 
     /**

@@ -1,4 +1,6 @@
 /vendor
 /node_modules
 Homestead.yaml
+public/access.log
+public/error.log
 .env

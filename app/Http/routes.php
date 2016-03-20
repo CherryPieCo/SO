@@ -3,16 +3,30 @@
 Route::pattern('id', '[0-9]+');
 Route::pattern('slug', '[A-Za-z0-9-_]+');
 Route::pattern('base64', '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
+Route::pattern('anything', '.+');
 
 
 include_once 'routes_backend.php';
+include_once 'routes_api.php';
 if (file_exists(__DIR__ .'/routes_dev.php')) {
     include __DIR__ .'/routes_dev.php';
 }
 
-
+Route::get('/', function() {
+    return '<3';
+});
 
 Route::get('/zz', function() {
+    $client = new \MongoClient('mongodb://root:pass@localhost:27017/test');
+    $db = $client->test;
+    $collection = $db->movie;
+    $cursor = $collection->find();
+    foreach ($cursor as $d) {
+        print_r($d);
+        echo '<hr>';
+    }
+    die;
+    print_r(DB::collection('movie')->get());die;
     
     $rollingCurl = new \RollingCurl\RollingCurl();
     $rollingCurl->get('http://highscalability.com/blog/2012/2/6/the-design-of-99designs-a-clean-tens-of-millions-pageviews-a.html');

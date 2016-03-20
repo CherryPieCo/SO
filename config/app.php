@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomString'),
+    'key' => env('APP_KEY', 'DFtT70KFbNwLEVrxPkRIcYXWUBWqVdLv'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -142,7 +142,7 @@ return [
 
         
         Barryvdh\Debugbar\ServiceProvider::class,
-        SocialiteProviders\Manager\ServiceProvider::class, 
+        //SocialiteProviders\Manager\ServiceProvider::class, 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         
         
@@ -151,7 +151,7 @@ return [
         * Package Service Providers
         */ 
         Yaro\Jarboe\ServiceProvider::class,
-        Yaro\SocShare\ServiceProvider::class,
+        //Yaro\SocShare\ServiceProvider::class,
         //Yaro\OAuth\ServiceProvider::class,
         
         /*
