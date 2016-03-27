@@ -73,7 +73,13 @@
 
 <hr>
 
-
+<div class="well">
+    <div class="row">
+        <code><pre id="dr"></pre></code>
+    </div>
+</div>       
+        
+<!--
 <div class="well">
     <div class="row">
         <div class="table-responsive">
@@ -103,7 +109,7 @@
         </div>
     </div>
 </div>
-
+-->
 
 </div>
 
@@ -127,7 +133,22 @@ var App =
             data: $('#urls-form').serializeArray(),
             dataType: 'json',
             success: function(response) {
-                console.log(response);
+                console.log(response); // id_pack
+                
+                var pollTimer = window.setInterval(function() {
+                    jQuery.ajax({
+                        type: "POST",
+                        url: '/admin/pack/info',
+                        data: { id: response.id_pack },
+                        dataType: 'json',
+                        success: function(resp) {
+                            $('#dr').html(resp.info);
+                            if (resp.is_complete) {
+                                window.clearInterval(pollTimer);
+                            }
+                        }
+                    });
+                }, 1500);
             }
         });
     }

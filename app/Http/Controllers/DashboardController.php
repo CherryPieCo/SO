@@ -17,6 +17,16 @@ class DashboardController extends Controller
         return view('dashboard.dashboard', compact('urls'));
     } // end show
     
+    public function getPackInfo()
+    {
+        $pack = Pack::find(Input::get('id'));
+        
+        return response()->json([
+            'is_complete'  => $pack->isComplete(),
+            'info'         => print_r($pack->getAttributes(), true),
+        ]);
+    } // end getPackInfo
+    
     public function process()
     {
         $parsers = [];
@@ -43,6 +53,7 @@ class DashboardController extends Controller
             $data[$hash] = [
                 'url' => $url,
                 'parsers' => $parsers,
+                'status'  => 'pending',
                 'message' => '',
             ];
         }

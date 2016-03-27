@@ -21,6 +21,11 @@ class Pack extends Eloquent
         return $this->data;
     } // end getData
     
+    public function isComplete()
+    {
+        return $this->status == 'complete';
+    } // end isComplete
+    
 }
 
 

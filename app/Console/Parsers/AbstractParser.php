@@ -69,6 +69,7 @@ class AbstractParser extends Command
             $isComplete = true;
             foreach ($data as $hash => &$info) {
                 if ($currentHash == $hash) {
+                    $isUrlComplete = true;
                     foreach ($info['parsers'] as $type => &$parser) {
                         if ($parserType == $type) {
                             $parser['status'] = 'complete';
@@ -76,9 +77,13 @@ class AbstractParser extends Command
                             $parser['finished_at'] = time();
                         }
 
-                        $isComplete = $isComplete && $parser['status'] == 'complete';
+                        $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
+                    }
+                    if ($isUrlComplete) {
+                        $info['status'] = 'complete';
                     }
                 }
+                $isComplete = $isComplete && $info['status'] == 'complete';
             }
             
             if ($isComplete) {

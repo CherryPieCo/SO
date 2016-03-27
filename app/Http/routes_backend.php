@@ -11,6 +11,7 @@ Route::group(array(
 
     Route::get('/', 'DashboardController@show');
     Route::post('/', 'DashboardController@process');
+    Route::post('/pack/info', 'DashboardController@getPackInfo');
     
     Route::any('packs', 'TableAdminController@showPacks');
     
