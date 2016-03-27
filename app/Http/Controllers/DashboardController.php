@@ -12,7 +12,7 @@ class DashboardController extends Controller
     
     public function show()
     {
-        $urls = Url::paginate(12);
+        $urls = [];//Url::paginate(12);
         
         return view('dashboard.dashboard', compact('urls'));
     } // end show
@@ -21,10 +21,12 @@ class DashboardController extends Controller
     {
         $parsers = [];
         foreach (Input::get('parsers', []) as $parser => $info) {
-            $parsers[] = [
-                'type'  => $parser,
-                'options' => isset($info['options']) ? array_keys($info['options']) : [],
+            $parsers[$parser] = [
                 'status' => 'pending',
+                'options' => isset($info['options']) ? array_keys($info['options']) : [],
+                'message' => '',
+                'created_at' => time(),
+                'finished_at' => 0,
             ];
         }
         
@@ -33,6 +35,10 @@ class DashboardController extends Controller
         $urls = array_filter(array_unique($urls));
         foreach ($urls as $url) {
             $url = trim($url);
+            if (!parse_url($url, PHP_URL_SCHEME)) {
+                $url = 'http://'. $url;
+            }
+             
             $hash = md5($url);
             $data[$hash] = [
                 'url' => $url,
@@ -46,19 +52,19 @@ class DashboardController extends Controller
                 'status' => false,
             ]);
         }
-        
+        //dr($data);
         $id = Pack::insertGetId([
-            'data'       => json_encode($data),
+            'data'       => $data,
             'status'     => 'pending',
-            'created_at' => date('Y-m-d H:i:s'),
+            'created_at' => time(),
         ]);
         
         $pattern = 'php '. base_path() .'/artisan packs:start %s > /dev/null 2>/dev/null &';
-        shell_exec(sprintf($pattern, $id));
+        shell_exec(sprintf($pattern, $id->__toString()));
         
         return response()->json([
             'status'  => true,
-            'id_pack' => $id,
+            'id_pack' => $id->__toString(),
         ]);
         
         

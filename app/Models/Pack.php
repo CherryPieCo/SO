@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Pack extends Model
+
+class Pack extends Eloquent
 {
     
-    protected $table = 'packs';
+    //protected $table = 'packs';
+    protected $collection = 'packs';
+    protected $connection = 'mongodb';
+    
     public $timestamps = false;
+    
     
     public function getData()
     {
-        return json_decode($this->data, true);
+        return $this->data;
     } // end getData
     
 }

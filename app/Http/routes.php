@@ -15,18 +15,29 @@ if (file_exists(__DIR__ .'/routes_dev.php')) {
 Route::get('/', function() {
     return '<3';
 });
+Route::get('/info', function() {
+    phpinfo();die;
+});
 
 Route::get('/zz', function() {
-    $client = new \MongoClient('mongodb://root:pass@localhost:27017/test');
-    $db = $client->test;
-    $collection = $db->movie;
-    $cursor = $collection->find();
-    foreach ($cursor as $d) {
-        print_r($d);
-        echo '<hr>';
-    }
-    die;
-    print_r(DB::collection('movie')->get());die;
+    //phpinfo();die;
+    // $client = new \MongoClient('mongodb://root:pass@localhost:27017/test');
+    // $db = $client->test;
+    // $collection = $db->movie;
+    // $cursor = $collection->find();
+    // foreach ($cursor as $d) {
+        // print_r($d);
+        // echo '<hr>';
+    // }
+    // die;
+    // \DB::connection('mongodb')->collection('movie')->insert([
+        // 'title' => 'Title #2',
+        // 'year' => 2022,
+        // 'actors' => [],
+        // 'is_active' => false,
+    // ]);
+    //$col = \DB::connection('mongodb')->collection('movie')->get();
+    dr(App\Models\Pack::where('data.a69c632ffd07101c5096d467b4032ded.url', '!=', 'dd')->first());
     
     $rollingCurl = new \RollingCurl\RollingCurl();
     $rollingCurl->get('http://highscalability.com/blog/2012/2/6/the-design-of-99designs-a-clean-tens-of-millions-pageviews-a.html');

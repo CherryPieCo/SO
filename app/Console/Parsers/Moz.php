@@ -82,7 +82,7 @@ class Moz extends AbstractParser
         
         //
         $values = [
-            'id_url' => $this->id
+            //'id_url' => $this->id
         ];
         foreach ($metrics as $attribute => $value) {
             if (!in_array($attribute, $this->allowedAttributes)) {
@@ -91,8 +91,16 @@ class Moz extends AbstractParser
             $values[$attribute] = $value;
         }
         
-        MozMetrics::where('id_url', $this->id)->delete();
-        MozMetrics::insert($values);
+        //MozMetrics::where('id_url', $this->id)->delete();
+        //MozMetrics::insert($values);
+        $this->data = $values;
+        
+        
+        $parsers = $this->site->parsers;
+        $values['updated_at'] = time();
+        $parsers['moz'] = $values;
+        $this->site->parsers = $parsers;
+        $this->site->save();
     } // end exec
     
     public function getMozResponse($url)

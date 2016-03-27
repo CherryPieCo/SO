@@ -17,6 +17,7 @@ class AbstractParser extends Command
     protected $url = '';
     protected $request;
     protected $curl;
+    protected $data = null;
     
     public function handle()
     {
@@ -27,7 +28,8 @@ class AbstractParser extends Command
             Url::insert([
                 'url' => $this->url, 
                 'hash' => md5($this->url),
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => time(),
+                'parsers' => [],
             ]);
             $this->site = Url::where('url', $this->url)->first();
         }
@@ -60,31 +62,43 @@ class AbstractParser extends Command
         
         $currentHash = md5($this->url);
         $parserType = $this->type;
-        DB::transaction(function() use($idPack, $currentHash, $parserType) {
+        $response = $this->getData();
+        //DB::transaction(function() use($idPack, $currentHash, $parserType, $response) {
             $pack = Pack::find($idPack);
             $data = $pack->getData();
-            
+            $isComplete = true;
             foreach ($data as $hash => &$info) {
                 if ($currentHash == $hash) {
-                    foreach ($info['parsers'] as &$parser) {
-                        if ($parserType == $parser['type']) {
+                    foreach ($info['parsers'] as $type => &$parser) {
+                        if ($parserType == $type) {
                             $parser['status'] = 'complete';
-                            break;
+                            $parser['data'] = $response;
+                            $parser['finished_at'] = time();
                         }
+
+                        $isComplete = $isComplete && $parser['status'] == 'complete';
                     }
-                    break;
                 }
             }
             
-            $pack->data = json_encode($data);
+            if ($isComplete) {
+                $pack->status = 'complete';
+                $pack->finished_at = time();
+            }
+            $pack->data = $data;
             $pack->save();
-        });
+        //});
     } // end after
     
     protected function exec() 
     {
         throw new \Exception('Method [exec] not implemented.');
     } // end exec
+    
+    protected function getData()
+    { 
+        return $this->data;
+    } // end getData
     
     protected function check()
     {

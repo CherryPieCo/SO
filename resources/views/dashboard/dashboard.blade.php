@@ -32,27 +32,27 @@
                             </div>
                             <div class="col col-2">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[moz][options][page_authority]">
+                                    <input type="checkbox" name="parsers[moz][options][page_authority]" checked="checked">
                                     <i></i>MOZ (page authority)</label>
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[moz][options][domain_authority]">
+                                    <input type="checkbox" name="parsers[moz][options][domain_authority]" checked="checked">
                                     <i></i>MOZ (domain authority)</label>
                             </div>
                             <div class="col col-2">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[pages][options][advertising]">
+                                    <input type="checkbox" name="parsers[pages][options][advertising]" checked="checked">
                                     <i></i>Pages (advertising)</label>
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[pages][options][useful]">
+                                    <input type="checkbox" name="parsers[pages][options][useful]" checked="checked">
                                     <i></i>Pages (useful)</label>
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[pages][options][donate]">
+                                    <input type="checkbox" name="parsers[pages][options][donate]" checked="checked">
                                     <i></i>Pages (donate)</label>
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[pages][options][blog]">
+                                    <input type="checkbox" name="parsers[pages][options][blog]" checked="checked">
                                     <i></i>Pages (blog)</label>
                                 <label class="checkbox">
-                                    <input type="checkbox" name="parsers[pages][options][guest]">
+                                    <input type="checkbox" name="parsers[pages][options][guest]" checked="checked">
                                     <i></i>Pages (guest)</label>
                             </div>
                         </div>

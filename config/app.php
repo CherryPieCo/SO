@@ -142,6 +142,7 @@ return [
 
         
         Barryvdh\Debugbar\ServiceProvider::class,
+        Jenssegers\Mongodb\MongodbServiceProvider::class,
         //SocialiteProviders\Manager\ServiceProvider::class, 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         

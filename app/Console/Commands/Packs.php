@@ -44,14 +44,15 @@ class Packs extends Command
             Url::insert([
                 'url' => $url,
                 'hash' => md5($url),
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => time(),
+                'parsers' => [],
             ]);
             
-            foreach ($info['parsers'] as $parser) {
+            foreach ($info['parsers'] as $type => $parser) {
                 $options = implode('-', $parser['options']);
                 $pattern = 'php '. base_path() .'/artisan scrape:%s %s %s %s > /dev/null 2>/dev/null &';
-                shell_exec(sprintf($pattern, $parser['type'], $url, $options, '--pack='. $this->argument('id')));
-                \Log::info(sprintf($pattern, $parser['type'], $url, $options, '--pack='. $this->argument('id')));
+                shell_exec(sprintf($pattern, $type, $url, $options, '--pack='. $this->argument('id')));
+                //\Log::info(sprintf($pattern, $type, $url, $options, '--pack='. $this->argument('id')));
             }
         }
         

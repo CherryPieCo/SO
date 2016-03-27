@@ -27,7 +27,7 @@ class Pages extends AbstractParser
     private function onType($type)
     {
         $phrases = PageLink::type($type)->get();
-        $id_type = PageLink::getTypeID($type);
+        //$id_type = PageLink::getTypeID($type);
         $found = array();
         $parse_url = parse_url($this->url);
 
@@ -39,7 +39,7 @@ class Pages extends AbstractParser
                 $res_by_phrase = $this->findByPhrase($regexp, 2);
                 if ($res_by_phrase) {
                     $url = $this->getFullUrlByPart($res_by_phrase, $parse_url);
-                    $found[$id_type][] = mb_strtolower($url, "utf-8");
+                    $found[$type][] = mb_strtolower($url, "utf-8");
                 }
             }
 
@@ -50,7 +50,7 @@ class Pages extends AbstractParser
                 $res_by_phrase = $this->findByPhrase($regexp, 1);
                 if ($res_by_phrase) {                                    
                     $url = $this->getFullUrlByPart($res_by_phrase, $parse_url);                                    
-                    $found[$id_type][] = mb_strtolower($url, "utf-8");
+                    $found[$type][] = mb_strtolower($url, "utf-8");
                 }
             }
 
@@ -58,26 +58,20 @@ class Pages extends AbstractParser
                 $regexp = "{$phrase}";
                 $res_by_phrase = $this->findByPhrase($regexp, 0);
                 if ($res_by_phrase) {
-                    $found[$id_type][] = $res_by_phrase;
+                    $found[$type][] = $res_by_phrase;
                 } 
             }
         }
 
 
         $found = array_filter($found);
-
-        if ($found) {
-            $data = [];
-            foreach ($found as $idType => $value) {
-                $data[] = [
-                    'id_site' => $this->id,
-                    'id_type_phrase' => $idType,
-                    'value' => json_encode(array_values($value))
-                ];
-            }
-            SitePhrase::where('id_site', $this->id)->delete();
-            SitePhrase::insert($data);
-        }
+        $this->data = $found;
+        
+        $parsers = $this->site->parsers;
+        $found['updated_at'] = time();
+        $parsers['pages'] = $found;
+        $this->site->parsers = $parsers;
+        $this->site->save();
     } // end onType
     
     private function findByPhrase($regexp, $order) 
@@ -128,7 +122,7 @@ class Pages extends AbstractParser
         }
         
         return $url;
-    }
+    } // end 
     
 }
     

@@ -13,7 +13,7 @@ class Email extends AbstractParser
     {
         $this->idPack = $this->option('pack');
         
-        $response = [];
+        $response = ['email' => '', 'contacts' => []];
         $contactForm = "";
         $signSearch  = array(' @ ', ' at ', ' [at] ', ' (at) ', ' . ', ' dot ', ' [dot] ', ' (dot) ', '"', "'");
         $signReplace = array('@', '@', '@', '@', '.', '.', '.', '.', '', '');
@@ -83,13 +83,24 @@ class Email extends AbstractParser
             }
         }
 
-        if (isset($response['email'])) {
-            $this->site->email = $response['email'];
-        }
-        if (isset($response['contacts'])) {
-            $this->site->contacts = json_encode(array_values($response['contacts']));
-        }
+        $parsers = $this->site->parsers;
+        $parsers['email'] = [
+            'emails' => array_filter([
+                $response['email']
+            ]),
+            'contacts' => array_values($response['contacts']),
+            'updated_at' => time(),
+        ];
+        $this->site->parsers = $parsers;
         $this->site->save();
+        
+        
+        $this->data = [
+            'emails' => array_filter([
+                $response['email']
+            ]),
+            'contacts' => array_values($response['contacts']),
+        ];
     } // end exec
     
     private function getEmail($regexp, $order) 

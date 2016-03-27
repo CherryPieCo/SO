@@ -21,12 +21,13 @@ Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
             
             $site = App\Models\Url::where('url', $url)->first();
         }
-        
+        $parsers = $site->parsers;
         $data = [
             'url' => $site->url,
-            'email' => $site->email
+            'emails' => array_get($parsers, 'email.emails', []),
+            'contacts' => array_get($parsers, 'email.contacts', []),
+            'created_at' => $site->created_at,
         ];
-        
         return response()->json(compact('data'));
     });
     

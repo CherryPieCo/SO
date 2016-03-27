@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Url extends Model
+class Url extends Eloquent
 {
     
     protected $table = 'urls';
+    protected $collection = 'urls';
+    protected $connection = 'mongodb';
     public $timestamps = false;
     
     public function getContacts()
@@ -16,5 +19,4 @@ class Url extends Model
     } // end getContacts
     
 }
-
 
