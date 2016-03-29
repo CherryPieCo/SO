@@ -13,7 +13,7 @@ if (file_exists(__DIR__ .'/routes_dev.php')) {
 }
 
 Route::get('/', function() {
-    return '<3';
+    return '<html><head><title>wut</title></head><body><a href="http://web.cherry-pie.co/ass">404</a><a href="http://web.cherry-pie.co/">200</a></body></html>';
 });
 Route::get('/info', function() {
     phpinfo();die;

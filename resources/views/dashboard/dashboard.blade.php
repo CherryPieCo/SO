@@ -55,6 +55,11 @@
                                     <input type="checkbox" name="parsers[pages][options][guest]" checked="checked">
                                     <i></i>Pages (guest)</label>
                             </div>
+                            <div class="col col-2">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="parsers[not_found]" checked="checked">
+                                    <i></i>404 Not Found</label>
+                            </div>
                         </div>
                         
                         
