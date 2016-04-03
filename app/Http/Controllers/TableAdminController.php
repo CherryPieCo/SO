@@ -11,6 +11,7 @@ class TableAdminController extends \App\Http\Controllers\Controller
     public function settings()
     {
         $options = array(
+            'url'      => '/admin/settings',
             'def_name' => 'settings',
         );
         return Jarboe::table($options);

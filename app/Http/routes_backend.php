@@ -14,6 +14,7 @@ Route::group(array(
     Route::post('/pack/info', 'DashboardController@getPackInfo');
     
     Route::any('packs', 'TableAdminController@showPacks');
+    Route::any('settings', 'TableAdminController@settings');
     
 
 });

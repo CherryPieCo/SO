@@ -72,6 +72,14 @@ return array(
             }
         ),
         array(
+            'title' => 'Settings',
+            'icon'  => 'cog',
+            'link'  => '/settings',
+            'check' => function() {
+                return true;
+            }
+        ),
+        array(
             'title' => 'ПАчки',
             'icon'  => 'home',
             'link'  => '/packs',

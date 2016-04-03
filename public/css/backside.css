@@ -1,0 +1,192 @@
+body {
+  background-color: #F6F8F9;
+  color: #777;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 2.2em;
+  font-weight: 300;
+}
+
+h4 {
+  font-size: 1.4em;
+  font-weight: 300;
+}
+
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small, h1 .small, h2 .small, h3 .small, h4 .small, h5 .small, h6 .small, .h1 .small, .h2 .small, .h3 .small, .h4 .small, .h5 .small, .h6 .small {
+  color: #648393;
+  font-weight: 300;
+}
+
+.btn-primary {
+  color: white !important;
+}
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+  background-color: #e97f62 !important;
+  border-color: #e97f62 !important;
+}
+
+.navbar-custom {
+  border-radius: 0;
+  padding: 0 1em;
+  background-color: #263238;
+}
+.navbar-custom .navbar-brand {
+  padding-top: .2em;
+  padding-bottom: .2em;
+}
+.navbar-custom .navbar-brand img {
+  width: auto;
+  height: 100%;
+}
+.navbar-custom .navbar-nav {
+  margin-left: .75em;
+}
+.navbar-custom .navbar-nav li {
+  margin-left: .75em;
+}
+.navbar-custom .navbar-right .btn-primary {
+  padding-top: .4em;
+  padding-bottom: .4em;
+  margin-top: .4em;
+}
+.navbar-custom .navbar-right h4 {
+  padding-right: 1em;
+}
+
+.panel-custom {
+  color: #263238;
+  border-color: #e7ecef;
+}
+.panel-custom > .panel-heading {
+  background-color: #f0f3f5;
+  border-color: #e7ecef;
+  color: #263238;
+  padding: 1em 2.5em;
+}
+.panel-custom > .panel-heading h2 {
+  margin-top: .2em;
+}
+.panel-custom > .panel-body {
+  padding: 1em 2.5em;
+}
+.panel-custom > .panel-body .row .wrapper {
+  padding: 1.2em 0;
+}
+.panel-custom > .panel-body .row .wrapper .btn {
+  margin-top: 1.35em;
+}
+.panel-custom > .panel-body .row .wrapper p {
+  display: block;
+  margin-left: 1.8em;
+}
+.panel-custom > .panel-body .row:not(:last-child) .wrapper {
+  border-bottom: 1px solid #F6F8F9;
+}
+
+.table-custom tr td,
+.table-custom tr th {
+  border-top: none !important;
+  border-bottom: 1px solid #F6F8F9;
+}
+.table-custom tr td:first-child,
+.table-custom tr th:first-child {
+  padding-left: 1.5em;
+}
+.table-custom tr td:last-child,
+.table-custom tr th:last-child {
+  padding-right: 1.5em;
+}
+.table-custom tr td .btn:first-of-type,
+.table-custom tr th .btn:first-of-type {
+  margin-left: 1em;
+}
+.table-custom tr td span,
+.table-custom tr th span {
+  display: inline-block;
+  vertical-align: baseline;
+  width: 10em;
+}
+.table-custom .progress {
+  margin-bottom: 0;
+}
+@media (max-width: 970px) {
+  .table-custom {
+    font-size: .9em;
+  }
+}
+@media (max-width: 768px) {
+  .table-custom {
+    font-size: .8em;
+  }
+}
+
+.plan-selector h4,
+.plan-selector p {
+  display: block;
+  margin-bottom: 1em;
+}
+.plan-selector p {
+  margin-bottom: 1.5em;
+}
+.plan-selector label {
+  font-weight: 300;
+  padding: 0 1em;
+}
+.plan-selector label input {
+  margin-top: .4em;
+}
+.plan-selector label > span {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 1em;
+}
+@media (max-width: 768px) {
+  .plan-selector label > span {
+    margin-left: 0;
+  }
+}
+@media (max-width: 768px) {
+  .plan-selector label {
+    padding: 0;
+  }
+}
+.plan-selector h5 {
+  margin-top: .7em;
+  margin-bottom: .7em;
+}
+@media (max-width: 768px) {
+  .plan-selector h5 {
+    margin: 0;
+  }
+}
+.plan-selector img {
+  width: 85%;
+  height: auto;
+  margin-top: .3em;
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .plan-selector img {
+    margin-top: .6em;
+  }
+}
+@media (max-width: 768px) {
+  .plan-selector img {
+    width: 80px;
+    margin-top: .3em;
+  }
+}
+
+.table-controls {
+  padding: 0 1.5em;
+}
+.table-controls .form-group {
+  margin-top: 2px;
+}
+.table-controls label {
+  font-weight: 300;
+}
+.table-controls .pagination {
+  margin: 0;
+}

@@ -2,30 +2,60 @@
 
 var App = 
 {
-    
-    login: function()
+    init: function() 
     {
-        $('#bg_fade').css('visibility', 'visible');
-        var $popup = $('#magestore-popup');
-        $popup.css('left', ($(window).width() / 2) - ($popup.width() / 2));
-        $popup.show();
-    }, // end login
-    
-    oauth: function(provider)
-    {
-        var url = window.location.origin +'/_oauth/'+ provider;
-        var redirect = window.location.origin +'/_oauth/'+ provider+ '/redirect';
         
-        var win = window.open(url, "oauth", 'width=600, height=500, left='+ (screen.width - 600) / 2);
-        var pollTimer = window.setInterval(function() {
-            try {
-                if (win.document.URL.indexOf(redirect) != -1) {
-                    window.clearInterval(pollTimer);
-                    //win.close();
+    }, // end init
+    
+    modalEmails: function()
+    {
+        $('#bulk-type').val('emails');
+        $('#create-bulk-modal').modal('show');
+    }, // end 
+    
+    modalBrokenLinks: function()
+    {
+        $('#bulk-type').val('not_found');
+        $('#create-bulk-modal').modal('show');
+    }, // end 
+    
+    modalBacklink: function()
+    {
+        $('#bulk-type').val('backlinks');
+        $('#create-bulk-modal').modal('show');
+    }, // end 
+    
+    saveBulk: function()
+    {
+        var data = new FormData();
+        data.append('type', $('#bulk-type').val());
+        data.append('title', $('#bulk-title').val());
+        data.append('urls', $('#bulk-urls').val());
+        if ($('#bulk-file')[0].files[0]) {
+            data.append("file", $('#bulk-file')[0].files[0]);
+        }
+        
+        
+        jQuery.ajax({
+            data: data,
+            type: "POST",
+            url: '/me/create-bulk',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response.status) {
+                    $('#create-bulk-form')[0].reset();
+                    $('#create-bulk-modal').modal('hide');
+                } else {
+                    alert('fcuk');
                 }
-            } catch(e) {
             }
-        }, 200);
-    }, // end oauth
-      
+        });
+    }, // end saveBulk
+    
 };
+
+$(document).ready(function() {
+    App.init();
+});

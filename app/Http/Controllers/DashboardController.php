@@ -10,6 +10,22 @@ use App\Models\Pack;
 class DashboardController extends Controller
 {
     
+    public function showBulk()
+    {
+        
+        return view('so.bulk');
+    } // end showBulk
+    
+    public function showApi()
+    {
+        
+        return view('so.api');
+    } // end showApi
+    
+    
+    
+    
+    
     public function show()
     {
         $urls = [];//Url::paginate(12);

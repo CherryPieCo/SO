@@ -8,12 +8,8 @@ return array(
         ),
         'pagination' => array(
             'per_page' => 12,
-            //'uri' => '/admin/settings',
+           // 'uri' => '/admin/settings',
         ),
-    ),
-    
-    'cache' => array(
-        'keys' => ['settings'],
     ),
     
     'options' => array(
@@ -21,9 +17,12 @@ return array(
         'ident' => 'settings-container',
         'form_ident' => 'settings-form',
         'table_ident' => 'settings-table',
-        //'action_url' => '/admin/settings',
-        //'handler' => 'Yaro\Jarboe\Helpers\TableHandlers\Settings',
+        //'action_url' => '/admin/handle/settings',
         'not_found' => 'NOT FOUND',
+    ),
+    
+    'cache' => array(
+        'keys' => ['settings'],
     ),
     
     'fields' => array(
@@ -56,41 +55,27 @@ return array(
         ),
         'value' => array(
             'caption' => 'Value',
-            'type' => 'image',
-            'cropp' => true,
+            'type' => 'text',
+            'filter' => 'text',
+            'is_sorting' => true,
+            'validation' => array(
+                'server' => array(
+                    'rules' => 'required'
+                ),
+                'client' => array(
+                    'rules' => array(
+                        'required' => true
+                    ),
+                    'messages' => array(
+                        'required' => 'The field is required'
+                    )   
+                )
+            )
         ),
         'description' => array(
             'caption' => 'Description',
-            'type' => 'image',
-            'is_multiple'   => true,
-            'img_attributes' => array(
-                'ru' => array(
-                    'caption' => 'ru',
-                    'inputs' => array(
-                        'oh' => array(
-                            'caption' => 'Oh',
-                            'type' => 'text',
-                        ),
-                        'hai' => array(
-                            'caption' => 'Oh',
-                            'type' => 'text',
-                        ),
-                    ),
-                ),
-                'en' => array(
-                    'caption' => 'en',
-                    'inputs' => array(
-                        'oh' => array(
-                            'caption' => 'Oh',
-                            'type' => 'text',
-                        ),
-                        'hai' => array(
-                            'caption' => 'Oh',
-                            'type' => 'text',
-                        ),
-                    ),
-                ),
-            ),
+            'type' => 'text',
+            'filter' => 'text'
         ),
     ),
     

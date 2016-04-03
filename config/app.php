@@ -145,6 +145,7 @@ return [
         Jenssegers\Mongodb\MongodbServiceProvider::class,
         //SocialiteProviders\Manager\ServiceProvider::class, 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         
         
         App\Providers\PackageServiceProvider::class,
@@ -216,6 +217,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         
         'SocShare' => Yaro\SocShare\Facade::class,
         //'OAuth' => Yaro\OAuth\Facade::class,

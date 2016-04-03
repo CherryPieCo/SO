@@ -73,7 +73,7 @@ class NotFound extends AbstractParser
             $pHref = parse_url($href);
 
             if (!$pHref || !isset($pHref['host']) ||
-                strtolower($pHref['host']) !== strtolower($pUrl['host'])
+                strtolower($pHref['host']) === strtolower($pUrl['host'])
             ) {
                 continue;
             }

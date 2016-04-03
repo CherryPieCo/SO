@@ -12,14 +12,52 @@ if (file_exists(__DIR__ .'/routes_dev.php')) {
     include __DIR__ .'/routes_dev.php';
 }
 
+Route::filter('auth', function() {
+    if (!Sentinel::check()) {
+        if (Request::ajax()) {
+            return Response::make('Unauthorized', 401);
+        } else {
+            return Redirect::guest('login');
+        }
+    }
+});
+
+
+Route::group(array(
+    'prefix' => 'me', 
+    'before' => ['auth'],
+), function () {
+    
+    Route::get('/bulk', 'SoController@showBulk');
+    Route::get('/bulk/{slug}/xls/download', 'SoController@downloadBulkXls');
+    Route::get('/api', 'SoController@showApi');
+    
+    Route::post('/create-bulk', 'SoController@createBulk');
+
+});
+
+
+
 Route::get('/', function() {
-    return '<html><head><title>wut</title></head><body><a href="http://web.cherry-pie.co/ass">404</a><a href="http://web.cherry-pie.co/">200</a></body></html>';
+    return '<a href="/me/bulk">SO</a>';
 });
 Route::get('/info', function() {
     phpinfo();die;
 });
 
 Route::get('/zz', function() {
+    
+    Excel::create('Filename', function($excel) {
+        $excel->sheet('Sheetname', function($sheet) {
+            $sheet->fromArray(array(
+                array('data1', 'data2'),
+                array('data3', 'data4')
+            ));
+        });
+    })->export('xls');
+    
+    
+    dd(Settings::get('parser_invalidation_interval'));
     //phpinfo();die;
     // $client = new \MongoClient('mongodb://root:pass@localhost:27017/test');
     // $db = $client->test;

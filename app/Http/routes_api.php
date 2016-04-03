@@ -13,6 +13,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
         ];
         return response()->json(compact('data'));
     });
+    
     Route::get('email/{anything}', function($url) {
         $user = JWTAuth::parseToken()->toUser();
         
