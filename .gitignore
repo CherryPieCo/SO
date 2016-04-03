@@ -1,5 +1,6 @@
 /vendor
 /node_modules
+/storage/files/*
 Homestead.yaml
 public/access.log
 public/error.log
