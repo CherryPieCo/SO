@@ -17,7 +17,7 @@ Route::filter('auth', function() {
         if (Request::ajax()) {
             return Response::make('Unauthorized', 401);
         } else {
-            return Redirect::guest('login');
+            return Redirect::guest('/');
         }
     }
 });
@@ -33,14 +33,19 @@ Route::group([
     Route::get('/api', 'SoController@showApi');
     
     Route::post('/create-bulk', 'SoController@createBulk');
+    
+    Route::get('/logout', function() {
+        Sentinel::logout();
+    });
 
 });
 
 
+Route::get('/', 'HomeController@showIndex');
+Route::post('/create-account', 'HomeController@createAccount');
 
-Route::get('/', function() {
-    return view('index');
-});
+
+
 Route::get('/info', function() {
     phpinfo();die;
 });

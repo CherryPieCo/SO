@@ -31,15 +31,24 @@ $(function() {
         submitHandler: function(form) {
             $(form).ajaxSubmit({
                 type:"POST",
-                data: $(form).serialize(),
-                url:"inc/contact.php",
-                success: function() {
-                    $('#contact :input').attr('disabled', 'disabled');
-                    $('#contact').fadeTo( "slow", 0.15, function() {
-                        $(this).find(':input').attr('disabled', 'disabled');
-                        $(this).find('label').css('cursor','default');
-                        $('#success').fadeIn();
-                    });
+                data: $(form).serializeArray(),
+                url:"/create-account",
+                success: function(response) {
+                    
+                    console.log(response);
+                    if (response.status) {
+                        $('#contact :input').attr('disabled', 'disabled');
+                        $('#contact').fadeTo( "slow", 0.15, function() {
+                            $(this).find(':input').attr('disabled', 'disabled');
+                            $(this).find('label').css('cursor','default');
+                            $('#success').fadeIn();
+                        });
+                        
+                        window.location = '/me/bulk';
+                    } else {
+                        alert(response.error);
+                    }
+                    
                 },
                 error: function() {
                     $('#contact').fadeTo( "slow", 0.15, function() {

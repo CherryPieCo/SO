@@ -53,7 +53,7 @@ return [
 
     'users' => [
 
-        'model' => 'Jarboe\Component\Users\Model\User', //'Cartalyst\Sentinel\Users\EloquentUser',
+        'model' => 'App\User', //'Cartalyst\Sentinel\Users\EloquentUser',
 
     ],
 

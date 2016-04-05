@@ -70,8 +70,13 @@
                             <li><a href="/">Home</a></li> 
                             <li><a href="page.html">About</a></li> 
                             <li><a href="page.html">Blog</a></li> 
-                            <li><a href="page.html">Pricing</a></li>                            
-                            <li class="current"><a href="javascript:void(0);" id="loginToggler">Sign In</a></li> 
+                            <li><a href="page.html">Pricing</a></li>
+                            @if (Sentinel::check())
+                                <li class="current"><a href="/me/bulk">Dashboard</a></li> 
+                            @else
+                                <li class="current"><a href="javascript:void(0);" id="loginToggler">Sign In</a></li> 
+                            @endif                
+                            
                         </ul> 
                     </div> 
                     <!-- End Menu -->
@@ -130,17 +135,17 @@
                             </span>
                             </div>
 
-                            <form id="contact" name="contact" method="post" novalidate="novalidate">
+                            <form id="contact" method="post" novalidate="novalidate">
                                 <div class="form-row">   
-                            <input type="text" name="name" id="name" size="30" value="" required="" class="text login_input"  placeholder="Your name">
-                            </div>
+                                    <input type="text" name="name" id="name" value="" required="" class="text login_input"  placeholder="Your name">
+                                </div>
                                 <div class="form-row">                                       
-                            <input type="text" name="email" id="email" size="30" value="" required="" class="text login_input"  placeholder="Email Address">
-                            </div>
+                                    <input type="email" name="email" id="email" value="" required="" class="text login_input"  placeholder="Email Address">
+                                </div>
                                 <div class="form-row">                                      
-                            <input id="submit" type="submit" name="submit" value="Sign up now!" class="btn" style="padding: 1em 0; width: 100%;">
-                            <!-- <a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a> -->
-                            </div>
+                                    <input id="submit" type="submit" class="btn" style="padding: 1em 0; width: 100%;">
+                                    <!-- <a href="#">Privacy Policy</a> | <a href="#">Terms &amp; Conditions</a> -->
+                                </div>
                             </form>                                                 
                         </div>              
                 </div>
@@ -586,16 +591,16 @@
 
 </div>
 
-<!--[if lte IE 7]><script src="js/icons-lte-ie7.js"></script><![endif]-->
-<script src="js/jquery.min.js"></script>
-<script src="js/respond.min.js"></script>
-<script src="js/scripts.js"></script>  
-<script src="js/jquery.form.js"></script>
-<script src="js/jquery.validate.min.js"></script>
-<script src="js/contact.js"></script>
-<script src="js/Chart.min.js"></script>
-<script src="js/jquery.flexslider-min.js"></script>
-<script src="js/drawing-chart.js"></script>
+<!--[if lte IE 7]><script src="/js/icons-lte-ie7.js"></script><![endif]-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/respond.min.js"></script>
+<script src="/js/scripts.js"></script>  
+<script src="/js/jquery.form.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/contact.js"></script>
+<script src="/js/Chart.min.js"></script>
+<script src="/js/jquery.flexslider-min.js"></script>
+<script src="/js/drawing-chart.js"></script>
 
 <script>
     $(function() {
