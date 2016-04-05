@@ -23,10 +23,10 @@ Route::filter('auth', function() {
 });
 
 
-Route::group(array(
+Route::group([
     'prefix' => 'me', 
     'before' => ['auth'],
-), function () {
+], function () {
     
     Route::get('/bulk', 'SoController@showBulk');
     Route::get('/bulk/{slug}/xls/download', 'SoController@downloadBulkXls');
@@ -39,7 +39,7 @@ Route::group(array(
 
 
 Route::get('/', function() {
-    return '<a href="/me/bulk">SO</a>';
+    return view('index');
 });
 Route::get('/info', function() {
     phpinfo();die;

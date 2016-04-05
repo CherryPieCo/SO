@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Input;
 use Sentinel;
 use Excel;
+use JWTAuth;
 use App\Models\Url;
 use App\Models\Pack;
 
@@ -14,21 +15,21 @@ class SoController extends Controller
     
     public function showBulk()
     {
-        $bulks = Pack::byUser()->paginate(5);
+        $bulks = Pack::byUser()->paginate(1);
 
         return view('so.bulk', compact('bulks'));
     } // end showBulk
     
     public function showApi()
     {
+        $token = JWTAuth::fromUser(Sentinel::getUser());
         
-        return view('so.api');
+        return view('so.api', compact('token'));
     } // end showApi
     
     public function createBulk()
     {
         $data = [];
-        
         $parsers = Pack::getParsersByType(Input::get('type'));
         
         $urls = $this->getUrls();

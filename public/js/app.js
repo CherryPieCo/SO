@@ -44,6 +44,8 @@ var App =
             contentType: false,
             processData: false,
             success: function(response) {
+            	console.log(response);
+            	
                 if (response.status) {
                     $('#create-bulk-form')[0].reset();
                     $('#create-bulk-modal').modal('hide');

@@ -25,7 +25,7 @@
             <tbody>
               <tr>
                 <td>API key</td>
-                <td>5e69d3db1ce5eaef77d083ace99700a6</td>
+                <td>{{ $token }}</td>
               </tr>
             </tbody>                  
           </table>  
