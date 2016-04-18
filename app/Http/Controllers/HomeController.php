@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Input;
 use Sentinel;
-use Activation;
+use Mail;
 
 
 class HomeController extends Controller
@@ -18,7 +18,8 @@ class HomeController extends Controller
     public function createAccount()
     {
         // csrf
-        $names = explode(' ', Input::get('name'));
+        $fullName = Input::get('name');
+        $names = explode(' ', $fullName);
         $firstName = array_shift($names);
         $lastName = implode(' ', $names);
         
@@ -38,6 +39,11 @@ class HomeController extends Controller
             // Activation::complete($user, $activation->code);
             
             Sentinel::login($user);
+            
+            Mail::send('emails.new_account', compact('fullName', 'password'), function($message) use($fullName, $email) {
+                $message->to($email, $fullName);
+                $message->subject('Your account password');
+            });
         } else {
             $error = 'Email is currently in use';
         }

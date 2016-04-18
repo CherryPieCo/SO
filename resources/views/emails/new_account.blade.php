@@ -1,2 +1,2 @@
-Oh hai, {{ $user->getFullname() }}!<br>
+Oh hai, {{ $fullName }}!<br>
 Ur password: <span>{{ $password }}</span>

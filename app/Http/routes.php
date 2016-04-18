@@ -54,6 +54,14 @@ Route::get('/info', function() {
 });
 
 Route::get('/zz', function() {
+    $names = 'Yaro';
+    $password = 'passw00rd';
+    $email = '12fcv4@gmail.com';
+    Mail::send('emails.new_account', compact('names', 'password'), function($message) use($names, $email) {
+        $message->to($email, $names);
+        $message->subject('Your account password');
+    });
+    
     die;
     dr(DB::table('jobs')->select('queue', DB::raw('COUNT(*) as count'))->groupBy('queue')->get());
     
