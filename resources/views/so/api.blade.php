@@ -24,8 +24,8 @@
           <table class="table table-responsive table-hover table-custom">
             <tbody>
               <tr>
-                <td>API key</td>
-                <td>{{ $token }}</td>
+                <td style="white-space: nowrap;">API key</td>
+                <td><pre style="word-break: break-all"><code>{{ $token }}</code></pre></td>
               </tr>
             </tbody>                  
           </table>  
