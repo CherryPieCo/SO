@@ -10,7 +10,7 @@ Alternatively you can include the token via a query string:
 ``` http://api.mysite.com/me?token={your_token_here} ```
 
 ---
-##### /me
+##### /api/me
 info of token bearer
 ```json
 {
@@ -22,7 +22,7 @@ info of token bearer
 }
 ```
 
-##### /email/{encoded_url}
+##### /api/email/{encoded_url}
 ```json
 {
 	"data": {

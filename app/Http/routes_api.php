@@ -19,9 +19,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
         $url = urldecode($url);
         
         if (!parse_url($url, PHP_URL_SCHEME)) {
-            return response()->json([
-                'error' => 'Urls without scheme are not allowed.'
-            ], 422);
+            $url = 'http://'. $url;
         }
         
         // FIXME: reparse if time
