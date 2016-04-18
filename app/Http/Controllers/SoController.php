@@ -15,7 +15,7 @@ class SoController extends Controller
     
     public function showBulk()
     {
-        $bulks = Pack::byUser()->paginate(1);
+        $bulks = Pack::byUser()->orderBy('_id', 'desc')->paginate(10);
 
         return view('so.bulk', compact('bulks'));
     } // end showBulk
@@ -27,6 +27,12 @@ class SoController extends Controller
         return view('so.api', compact('token'));
     } // end showApi
     
+    public function removeBulk()
+    {
+        // TODO: remove from queue
+        Pack::byUser()->where('_id', Input::get('id'))->delete();
+    } // end removeBulk
+    
     public function createBulk()
     {
         $data = [];
@@ -35,6 +41,9 @@ class SoController extends Controller
         $urls = $this->getUrls();
         foreach ($urls as $url) {
             $url = trim($url);
+            if (!$url) {
+                continue;
+            }
             if (!parse_url($url, PHP_URL_SCHEME)) {
                 $url = 'http://'. $url;
             }
@@ -93,6 +102,14 @@ class SoController extends Controller
     public function downloadBulkXls($id)
     {
         $pack = Pack::byUser()->where('_id', $id)->first();
+        if (Input::has('dr')) {
+            dr($pack->getAttributes());
+        }
+        
+        if (!$pack->isComplete()) {
+            die('привет хуцкер');
+        }
+        
         $title = urlify($pack->title) .'_'. date('Y-m-d', $pack->created_at);
         
         Excel::create($title, function($excel) use($pack) {
@@ -121,11 +138,23 @@ class SoController extends Controller
                     });
                     break;
                 case Pack::BACKLINKS_TYPE:
-                    throw new \Exception("not implemented yet");
+                    $excel->sheet('Backlinks', function($sheet) use($pack) {
+                        $sheet->cells('A1:B1', function($cells) {
+                            $cells->setFontWeight('bold');
+                        });
+                        $sheet->fromArray($pack->getBacklinksForXls(), null, 'A1', false, false);
+                    });
             }
             
         })->export('xls');
     } // end downloadBulkXls
+    
+    
+    
+    
+    
+    
+    
     
     
     

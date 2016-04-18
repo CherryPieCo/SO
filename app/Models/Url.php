@@ -18,5 +18,17 @@ class Url extends Eloquent
         return json_decode($this->contacts) ?: [];
     } // end getContacts
     
+    public function getValidParserInfo($parser)
+    {
+        $info = array_get($this->parsers, $parser, false);
+        if (!$info || ($info['updated_at'] < strtotime('-2 month'))) {
+            return false;
+        }
+        
+        unset($info['updated_at']);
+        
+        return $info;
+    } // end getValidParserInfo
+    
 }
 

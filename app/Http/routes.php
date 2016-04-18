@@ -33,6 +33,7 @@ Route::group([
     Route::get('/api', 'SoController@showApi');
     
     Route::post('/create-bulk', 'SoController@createBulk');
+    Route::post('/remove-bulk', 'SoController@removeBulk');
     
     Route::get('/logout', function() {
         Sentinel::logout();
@@ -43,14 +44,19 @@ Route::group([
 
 Route::get('/', 'HomeController@showIndex');
 Route::post('/create-account', 'HomeController@createAccount');
+Route::post('/login', 'HomeController@login');
 
 
 
 Route::get('/info', function() {
-    phpinfo();die;
+    die;
+    phpinfo();
 });
 
 Route::get('/zz', function() {
+    die;
+    dr(DB::table('jobs')->select('queue', DB::raw('COUNT(*) as count'))->groupBy('queue')->get());
+    
     
     Excel::create('Filename', function($excel) {
         $excel->sheet('Sheetname', function($sheet) {

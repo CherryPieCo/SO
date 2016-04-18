@@ -25,13 +25,14 @@ class Email extends AbstractParser
 
                 //get email from contact page if it exists
                 $ch = curl_init();
-
+                curl_setopt($ch, CURLOPT_TIMEOUT, 4);
                 //check headers
                 $headers = @get_headers($c, 1) ?: [];
                 $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
                 switch ($headers[0]) {
                     case "HTTP/1.1 301 Moved Permanently":
-                        curl_setopt($ch, CURLOPT_URL, $headers['Location']);
+                        $redirectLocation = is_array($headers['Location']) ? $headers['Location'][0] : $headers['Location'];
+                        curl_setopt($ch, CURLOPT_URL, $redirectLocation);
                         break;
                     default:                        
                         curl_setopt($ch, CURLOPT_URL, $c);

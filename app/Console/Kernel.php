@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Parsers\Pages::class,
         \App\Console\Parsers\Moz::class,
         \App\Console\Parsers\Email::class,
+        \App\Console\Parsers\Backlinks::class,
         \App\Console\Parsers\NotFound::class,
     ];
 

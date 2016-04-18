@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\ScrapeCallback as Callback;
 use App\Models\Url;
 use App\Models\Pack;
+use App\Helpers\Balancer;
 
 
 class Packs extends Command
@@ -36,28 +37,43 @@ class Packs extends Command
         $pack = Pack::find($this->argument('id'));
         $data = $pack->getData();
         
-        $hashes = array_keys($data);
-        Url::whereIn('hash', $hashes)->delete();
-        
-        foreach ($data as $hash => $info) {
-            $url = $info['url'];
-            Url::insert([
-                'url' => $url,
-                'hash' => md5($url),
-                'created_at' => time(),
-                'parsers' => [],
-            ]);
-            
-            foreach ($info['parsers'] as $type => $parser) {
-                $options = implode('-', $parser['options']);
-                $pattern = 'php '. base_path() .'/artisan scrape:%s %s %s %s > /dev/null 2>/dev/null &';
-                shell_exec(sprintf($pattern, $type, $url, $options, '--pack='. $this->argument('id')));
-                //\Log::info(sprintf($pattern, $type, $url, $options, '--pack='. $this->argument('id')));
-            }
-        }
+        //$hashes = array_keys($data);
+        //Url::whereIn('hash', $hashes)->delete();
         
         $pack->status = 'process';
         $pack->save();
+        
+        foreach ($data as $hash => $info) {
+            $url = $info['url'];
+            $urlEntity = Url::where('hash', md5($url))->first();
+            if (!$urlEntity) {
+                Url::insert([
+                    'url' => $url,
+                    'hash' => md5($url),
+                    'created_at' => time(),
+                    'parsers' => [],
+                ]);
+            }
+            
+            
+            foreach ($info['parsers'] as $type => $parser) {
+                $options = implode('-', $parser['options']);
+                //$pattern = 'php '. base_path() .'/artisan scrape:%s %s %s %s > /dev/null 2>/dev/null &';
+                $pattern = 'php '. base_path() .'/artisan scrape:%s %s %s %s';
+                
+                Balancer::queue(
+                    sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')),
+                    $type, 
+                    urlencode($url), 
+                    $this->argument('id')
+                );
+                //shell_exec('"'.sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')) .'" >> '. base_path() .'/ohhai.log');
+                //$this->dispatch(new SendReminderEmail($user));
+                //shell_exec(sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')));
+                \Log::info('ADD: '. sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')));
+            }
+        }
+        
         return;
         
         

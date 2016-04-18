@@ -48,4 +48,24 @@ class HomeController extends Controller
         ]);
     } // end createAccount
     
+    public function login()
+    {
+        $user = false;
+        $error = 'User not found';
+        try {
+            $user = Sentinel::authenticate([
+                'email'    => Input::get('email'), 
+                'password' => Input::get('password')
+            ], true);
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
+        }
+        
+        
+        return response()->json([
+            'status' => !!$user,
+            'error'  => $error,
+        ]);
+    } // end login
+    
 }

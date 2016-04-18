@@ -22,8 +22,8 @@ class AbstractParser extends Command
     public function handle()
     {
         $context = $this;
-        $this->url = trim($this->argument('url'));
-        $this->site = Url::where('url', $this->url)->first();
+        $this->url = trim(urldecode($this->argument('url')));
+        $this->site = Url::where('hash', md5($this->url))->first();
         if (!$this->site) {
             Url::insert([
                 'url' => $this->url, 
@@ -39,18 +39,33 @@ class AbstractParser extends Command
         $rollingCurl->get($this->url);
         $rollingCurl->setSimultaneousLimit(2);
         $rollingCurl->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use($context) {
+            $isExist = $context->checkValidParsedInfo();
             $context->prepare($request, $rollingCurl);
-            $context->check();
-            $context->exec();
+            if (!$isExist) {
+                $context->check();
+                $context->exec();
+            }
             $context->after();
         });
         $rollingCurl->execute();
     } // end __construct
     
+    protected function checkValidParsedInfo()
+    {
+        $data = $this->site->getValidParserInfo($this->type);
+        if ($data) {
+            $this->data = $data;
+        }
+        
+        return $this->data ? true : false;
+    } // end checkValidParsedInfo
+    
     protected function prepare(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl)
     {
         $this->request = $request;
         $this->curl    = $rollingCurl;
+        
+        $this->idPack = $this->option('pack');
     } // end prepare
     
     protected function after() 

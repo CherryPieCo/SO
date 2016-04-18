@@ -44,8 +44,8 @@ var App =
             contentType: false,
             processData: false,
             success: function(response) {
-            	console.log(response);
-            	
+                console.log(response);
+                
                 if (response.status) {
                     $('#create-bulk-form')[0].reset();
                     $('#create-bulk-modal').modal('hide');
@@ -55,6 +55,26 @@ var App =
             }
         });
     }, // end saveBulk
+    
+    removeBulk: function(ctx, id)
+    {
+        if (!confirm('R U SURE?')) {
+            return;
+        }
+        
+        $(ctx).closest('.bulk-tr').remove();
+        
+        jQuery.ajax({
+            data: { id: id },
+            type: "POST",
+            url: '/me/remove-bulk',
+            cache: false,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+            }
+        });
+    }, // end removeBulk
     
 };
 

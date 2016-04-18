@@ -25,6 +25,18 @@ class Pack extends Eloquent
         return $this->data;
     } // end getData
     
+    public function getCompletedUrlsCount()
+    {
+        $count = 0;
+        foreach ($this->data as $info) {
+            if (isset($info['status']) && $info['status'] == 'complete') {
+                $count++;
+            }
+        }
+        
+        return $count;
+    } // end getCompletedUrlsCount
+    
     public function getUrlsCount()
     {
         return count($this->data);
@@ -68,8 +80,7 @@ class Pack extends Eloquent
                 ];
                 break;
             case self::BACKLINKS_TYPE:
-                throw new \Exception('not implemented yet');
-                $parsers['not_found'] = [
+                $parsers['backlinks'] = [
                     'status' => 'pending',
                     'options' => [],
                     'message' => '',
@@ -130,6 +141,28 @@ class Pack extends Eloquent
         
         return $data;
     } // end getBrokenLinksForXls
+    
+    public function getBacklinksForXls()
+    {
+        $data = [
+            ['Page URL', 'Backlink']
+        ];
+        foreach ($this->data as $info) {
+            $url = $info['url'];
+            
+            $backlinks = [];
+            if (isset($info['parsers']['backlinks']['data'])) {
+                $backlinks = $info['parsers']['backlinks']['data'];
+            }
+            foreach ($backlinks['urls'] as $link) {
+                $data[] = [
+                    $url, $link
+                ];
+            }
+        }
+        
+        return $data;
+    } // end getBacklinksForXls
     
     
 }

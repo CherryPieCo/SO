@@ -72,10 +72,10 @@
             <tbody>  
               
               @foreach ($bulks as $bulk)
-                <tr>
+                <tr class="bulk-tr">
                     <td>{{ $bulk->title }}</td>
                     <td>{{ $bulk->type }}</td>
-                    <td class="text-center">{{ $bulk->getUrlsCount() }}</td>
+                    <td class="text-center">{{ $bulk->getCompletedUrlsCount() }} / {{ $bulk->getUrlsCount() }}</td>
                     <td class="text-center">{{ date('d/m/Y', $bulk->created_at) }}</td>
                     <td class="text-center">
                         @if ($bulk->isComplete())
@@ -90,8 +90,19 @@
                         @endif
                     </td>
                     <td class="text-right">
-                      <a href="/me/bulk/{{ $bulk->id }}/xls/download" target="_blank" class="btn btn-xs btn-default"><i class="fa fa-download"></i></a>
-                      <a href="javascript:void(0);" class="btn btn-xs btn-link"><i class="fa fa-times"></i></a>
+                      @if ($bulk->isComplete())
+                        <a href="/me/bulk/{{ $bulk->id }}/xls/download" target="_blank" class="btn btn-xs btn-default">
+                            <i class="fa fa-download"></i>
+                        </a>
+                      @endif
+                      @if (Sentinel::getUser()->isSuperuser())
+                        <a href="/me/bulk/{{ $bulk->id }}/xls/download?dr=dr" target="_blank" class="btn btn-xs btn-default">
+                            <i class="fa fa-heart"></i>
+                        </a>
+                      @endif
+                      <a onclick="App.removeBulk(this, '{{ $bulk->id }}');" href="javascript:void(0);" class="btn btn-xs btn-link">
+                          <i class="fa fa-times"></i>
+                      </a>
                     </td>
                 </tr>
               @endforeach
