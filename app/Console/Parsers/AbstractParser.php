@@ -77,6 +77,17 @@ class AbstractParser extends Command
         
         $currentHash = md5($this->url);
         $parserType = $this->type;
+        
+        $prePath = 'data.'. $currentHash .'.parsers.'. $parserType .'.';
+        $pack = Pack::where('_id', $idPack)->update([
+            $prePath .'data' => $this->getData(),
+            $prePath .'finished_at' => time(),
+            $prePath .'status' => 'complete',
+        ]);
+        
+        return;
+        //
+        
         $response = $this->getData();
         //DB::transaction(function() use($idPack, $currentHash, $parserType, $response) {
             $pack = Pack::find($idPack);

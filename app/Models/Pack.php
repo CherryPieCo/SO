@@ -27,6 +27,23 @@ class Pack extends Eloquent
     
     public function getCompletedUrlsCount()
     {
+        // HACK: fix me plox
+        $isComplete = true;
+        $i = 0;
+        foreach ($this->getData() as $hash => &$info) {
+            $isUrlComplete = true;
+            foreach ($info['parsers'] as $type => &$parser) {
+                $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
+            }
+            if ($isUrlComplete) {
+                ++$i;
+            }
+            $isComplete = $isComplete && $info['status'] == 'complete';
+        }
+        
+        return $i;
+        //
+        
         $count = 0;
         foreach ($this->data as $info) {
             if (isset($info['status']) && $info['status'] == 'complete') {
@@ -44,7 +61,23 @@ class Pack extends Eloquent
     
     public function isComplete()
     {
-        return $this->status == 'complete';
+        // HACK: fix me plox
+        $isComplete = true;
+        $i = 0;
+        foreach ($this->getData() as $hash => &$info) {
+            $isUrlComplete = true;
+            foreach ($info['parsers'] as $type => &$parser) {
+                $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
+            }
+            if ($isUrlComplete) {
+                ++$i;
+            }
+            $isComplete = $isComplete && $info['status'] == 'complete';
+        }
+        
+        return $this->getUrlsCount() == $i;
+
+        //return $this->status == 'complete';
     } // end isComplete
     
     public function scopeByUser($query, $idUser = false)

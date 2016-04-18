@@ -4,7 +4,7 @@
 Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
 {
     Route::get('me', function() {
-        $user = JWTAuth::parseToken()->toUser();
+        $user = \JWTAuth::parseToken()->toUser();
         
         $data = [
             'first_name' => $user->first_name,
@@ -16,6 +16,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
     
     Route::get('email/{anything}', function($url) {
         $user = JWTAuth::parseToken()->toUser();
+        $url = urldecode($url);
         
         if (!parse_url($url, PHP_URL_SCHEME)) {
             return response()->json([
@@ -23,22 +24,22 @@ Route::group(['prefix' => 'api', 'middleware' => 'jwt.auth'], function()
             ], 422);
         }
         
-        
-        $site = App\Models\Url::where('url', $url)->first();
+        // FIXME: reparse if time
+        $site = App\Models\Url::where('hash', md5($url))->first();
         if (!$site) {
             Artisan::call('scrape:email', [
                 'url' => $url
             ]);
             
-            $site = App\Models\Url::where('url', $url)->first();
+            $site = App\Models\Url::where('hash', md5($url))->first();
         }
         $parsers = $site->parsers;
         $data = [
             'url' => $site->url,
             'emails' => array_get($parsers, 'email.emails', []),
             'contacts' => array_get($parsers, 'email.contacts', []),
-            'created_at' => $site->created_at,
         ];
+        
         return response()->json(compact('data'));
     });
     
