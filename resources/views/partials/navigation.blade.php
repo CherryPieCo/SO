@@ -17,8 +17,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/me/bulk"><i class="fa fa-list"></i> Bulk</a></li>
-        <li><a href="/me/api"><i class="fa fa-tachometer"></i> API</a></li>
+        <li class="{{ Request::is('me/bulk') ? 'active' : '' }}"><a href="/me/bulk"><i class="fa fa-list"></i> Bulk</a></li>
+        <li class="{{ Request::is('me/api') ? 'active' : '' }}"><a href="/me/api"><i class="fa fa-tachometer"></i> API</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><h4><small>0 / 150 requests</small></h4></li>
