@@ -15,10 +15,21 @@ class SoController extends Controller
     
     public function showBulk()
     {
-        $bulks = Pack::byUser()->orderBy('_id', 'desc')->paginate(10);
+        $bulks = Pack::byUser()
+                     ->orderBy('_id', 'desc')
+                     ->paginate((int) session('bulks-per-page', 20));
 
         return view('so.bulk', compact('bulks'));
     } // end showBulk
+    
+    public function setBulksPerPageCount()
+    {
+        session(['bulks-per-page' => Input::get('per_page')]);
+        
+        return response()->json([
+            'status' => true
+        ]);
+    } // end setBulksPerPageCount
     
     public function showApi()
     {

@@ -1,3 +1,4 @@
+/app/Http/routes_dev.php
 /vendor
 /node_modules
 /storage/files/*

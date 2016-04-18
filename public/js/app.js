@@ -56,6 +56,20 @@ var App =
         });
     }, // end saveBulk
     
+    setBulksPerPage: function(perPage)
+    {
+        jQuery.ajax({
+            data: { per_page: perPage },
+            type: "POST",
+            url: '/me/set-bulks-per-page-count',
+            cache: false,
+            dataType: 'json',
+            success: function(response) {
+                window.location.reload();
+            }
+        });
+    }, // end setBulksPerPage
+    
     removeBulk: function(ctx, id)
     {
         if (!confirm('R U SURE?')) {
