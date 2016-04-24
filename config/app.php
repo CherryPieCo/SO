@@ -146,6 +146,7 @@ return [
         //SocialiteProviders\Manager\ServiceProvider::class, 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Skovmand\Mailchimp\MailchimpServiceProvider::class,
         
         
         App\Providers\PackageServiceProvider::class,

@@ -1,4 +1,8 @@
 @charset "UTF-8";
+.text-center {
+  text-align: center;
+}
+
 /* reassign style.css  */
 body {
   font-size: 16px;
@@ -32,6 +36,10 @@ a.btn-cta {
 .btn-wrapper {
   text-align: center;
   margin: 2em 0;
+}
+
+#wrapper {
+  background-image: url(../images/backgrounds/background_01.jpg);
 }
 
 /* login-line */
@@ -122,7 +130,6 @@ a.btn-cta {
   position: absolute;
   top: -8px;
   -webkit-transform: rotate(90deg);
-      -ms-transform: rotate(90deg);
           transform: rotate(90deg);
   fill: #eceff1;
 }
@@ -243,8 +250,8 @@ a.btn-cta {
   position: relative;
   background: #fff;
   padding: 5px;
-  width: 100%;
-  height: 100%;
+  width: 70%;
+  height: 70%;
   border-radius: 50%;
   margin: 0 auto 1em;
   border: 1px solid rgba(0, 0, 0, 0.25);
@@ -296,4 +303,19 @@ a.btn-cta {
 }
 .flex-control-paging li a.flex-active, .flex-control-paging li a:hover {
   background: #c0cad1;
+}
+
+.modal {
+  color: #263238;
+}
+.modal #submit {
+  margin-top: 1em;
+  margin-bottom: .5em;
+  padding: .5em 4em;
+}
+.modal a {
+  color: #e66d4c;
+}
+.modal a:hover {
+  color: #e35b36;
 }

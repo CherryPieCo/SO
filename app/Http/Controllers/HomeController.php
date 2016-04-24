@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Input;
 use Sentinel;
 use Mail;
+use App\Helpers\Email as EmailHelper;
 
 
 class HomeController extends Controller
@@ -28,22 +29,26 @@ class HomeController extends Controller
         
         $error = '';
         if (!Sentinel::findByCredentials(['email' => $email])) {
-            $user = Sentinel::registerAndActivate([
-                'email'       => $email,
-                'password'    => $password,
-                'first_name'  => $firstName,
-                'last_name'   => $lastName,
-            ]);
-        
-            // $activation = Activation::create($user);
-            // Activation::complete($user, $activation->code);
+            if (EmailHelper::exist($email)) {
+                $user = Sentinel::registerAndActivate([
+                    'email'       => $email,
+                    'password'    => $password,
+                    'first_name'  => $firstName,
+                    'last_name'   => $lastName,
+                ]);
             
-            Sentinel::login($user);
-            
-            Mail::send('emails.new_account', compact('fullName', 'password'), function($message) use($fullName, $email) {
-                $message->to($email, $fullName);
-                $message->subject('Your account password');
-            });
+                // $activation = Activation::create($user);
+                // Activation::complete($user, $activation->code);
+                
+                Sentinel::login($user);
+                
+                Mail::send('emails.new_account', compact('fullName', 'password'), function($message) use($fullName, $email) {
+                    $message->to($email, $fullName);
+                    $message->subject('Your account password');
+                });
+            } else {
+                $error = 'Email doesnt exist';
+            }
         } else {
             $error = 'Email is currently in use';
         }

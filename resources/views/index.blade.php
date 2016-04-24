@@ -5,7 +5,9 @@
     <meta charset="utf-8" />
     <title>SimpleOutreach.com</title>
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />  
+    
+    
+    <link href="/css/bootstrap/bootstrap-modal.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet"/> 
     <link href="/css/colors/style-color-04.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/contact.css">  
@@ -583,6 +585,8 @@
     </div>
 </div>
 
+@include('partials.info_modal')
+
 <div class="clearfix"></div> 
 
 <div id="footer">
@@ -612,6 +616,7 @@
 <script src="/js/Chart.min.js"></script>
 <script src="/js/jquery.flexslider-min.js"></script>
 <script src="/js/drawing-chart.js"></script>
+<script src="/js/bootstrap-modal.min.js"></script>
 
 <script>
     $(function() {

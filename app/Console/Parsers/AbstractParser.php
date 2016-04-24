@@ -87,7 +87,7 @@ class AbstractParser extends Command
         
         return;
         //
-        
+        /*
         $response = $this->getData();
         //DB::transaction(function() use($idPack, $currentHash, $parserType, $response) {
             $pack = Pack::find($idPack);
@@ -119,6 +119,7 @@ class AbstractParser extends Command
             $pack->data = $data;
             $pack->save();
         //});
+        */
     } // end after
     
     protected function exec() 

@@ -55,7 +55,8 @@ return array(
         ),
         'value' => array(
             'caption' => 'Value',
-            'type' => 'text',
+            'type' => 'textarea',
+            'rows' => 12,
             'filter' => 'text',
             'is_sorting' => true,
             'validation' => array(

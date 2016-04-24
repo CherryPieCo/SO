@@ -44,7 +44,8 @@ $(function() {
                             $('#success').fadeIn();
                         });
                         
-                        window.location = '/me/bulk';
+                        //window.location = '/me/bulk';
+                        $('#signUpModal').modal('show');
                     } else {
                         alert(response.error);
                     }
