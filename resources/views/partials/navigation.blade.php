@@ -21,7 +21,7 @@
         <li class="{{ Request::is('me/api') ? 'active' : '' }}"><a href="/me/api"><i class="fa fa-tachometer"></i> API</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><h4><small>0 / 150 requests</small></h4></li>
+        <li><h4><small>{{ Sentinel::getUser()->getCurrentRequests() }} / {{ Sentinel::getUser()->getMaximumRequests() }} requests</small></h4></li>
         <li><a href="#" class="btn btn-primary">Upgrade</a></li>            
       </ul>
     </div><!-- /.navbar-collapse -->
