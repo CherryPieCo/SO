@@ -21,7 +21,7 @@ class Url extends Eloquent
     public function getValidParserInfo($parser)
     {
         $info = array_get($this->parsers, $parser, false);
-        if (!$info || ($info['updated_at'] < strtotime('-2 month'))) {
+        if (!$info || ($info['updated_at'] < (time() - \Settings::get('parser_invalidation_interval')))) {
             return false;
         }
         

@@ -71,7 +71,7 @@ class Email extends AbstractParser
             if (preg_match("/[a-z0-9!#$%&;'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&;'*+=?^_`{|}~-]+)*( at | \(at\) | \[at\] |@| @ )(?:[a-z0-9!#$%&;'*+=?^_`{|}~-](?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?(\.| \. | dot | \(dot\) | \[dot\] ))+[a-z0-9!#$%&;'*+=?^_`{|}~-](?![png])(?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?/i", $this->request->getResponseText(), $matches)) {
                 $parsedEmail = str_replace($signSearch, $signReplace, $matches[0]);
                 $parsedEmail = $this->htmlNumberEncoder($parsedEmail);
-                $parsedEmail = strtok($response['email'], '?');
+                $parsedEmail = strtok($parsedEmail, '?');
                 $parsedEmail = (preg_match('/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/', $parsedEmail) ? $parsedEmail : null);
                 $parsedEmail = (preg_match('/\.(png)(?:[\?\#].*)?$/i', $parsedEmail) ? null : $parsedEmail);
                 $response['email'][] = $parsedEmail;
@@ -180,5 +180,10 @@ class Email extends AbstractParser
         
         return $contacts;
     } // end getContacts
+    
+    protected function isApiRequestSuccessful()
+    {
+        return isset($this->data['emails']) && !empty($this->data['emails']);
+    } // end isApiRequestSuccessful
     
 }

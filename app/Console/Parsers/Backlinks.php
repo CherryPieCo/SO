@@ -47,5 +47,10 @@ class Backlinks extends AbstractParser
         return $urls;
     } // end getBacklinks
     
+    protected function isApiRequestSuccessful()
+    {
+        return isset($this->data['urls']) && !empty($this->data['urls']);
+    } // end isApiRequestSuccessful
+    
 }
 

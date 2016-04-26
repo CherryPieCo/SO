@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Url;
 use App\Models\Pack;
 use DB;
+use Sentinel;
 
 
 class AbstractParser extends Command
@@ -75,15 +76,28 @@ class AbstractParser extends Command
             return false;
         }
         
+        $data = $this->getData();
+        $status = 'complete';
+        
+        $idUser = Pack::where('_id', $idPack)->pluck('id_user');
+        $user = Sentinel::findById($idUser);
+        if (!$user->isRequestsAvailable() && $this->isApiRequestSuccessful()) {
+            //$data = [];
+            //$status = 'api_limit'; 
+        }
+        
+        
         $currentHash = md5($this->url);
         $parserType = $this->type;
         
         $prePath = 'data.'. $currentHash .'.parsers.'. $parserType .'.';
         $pack = Pack::where('_id', $idPack)->update([
-            $prePath .'data' => $this->getData(),
+            $prePath .'data' => $data,
             $prePath .'finished_at' => time(),
-            $prePath .'status' => 'complete',
+            $prePath .'status' => $status,
         ]);
+        
+        $user->logRequest($this->type);
         
         return;
         //
@@ -121,6 +135,11 @@ class AbstractParser extends Command
         //});
         */
     } // end after
+    
+    protected function isApiRequestSuccessful()
+    {
+        throw new \RuntimeException('not implemented method');
+    } // end isApiRequestSuccessful
     
     protected function exec() 
     {

@@ -86,5 +86,10 @@ class NotFound extends AbstractParser
         return $result;
     } // end getLinksFromPage
     
+    protected function isApiRequestSuccessful()
+    {
+        return isset($this->data) && !empty($this->data);
+    } // end isApiRequestSuccessful
+    
 }
     
