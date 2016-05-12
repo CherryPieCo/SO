@@ -8,6 +8,7 @@ use Excel;
 use JWTAuth;
 use App\Models\Url;
 use App\Models\Pack;
+use App\Models\RequestLog;
 
 
 class SoController extends Controller
@@ -34,8 +35,9 @@ class SoController extends Controller
     public function showApi()
     {
         $token = JWTAuth::fromUser(Sentinel::getUser());
+        $stats = (new RequestLog())->getUserMonthStatisticsByDate();
         
-        return view('so.api', compact('token'));
+        return view('so.api', compact('token', 'stats'));
     } // end showApi
     
     public function removeBulk()

@@ -34,7 +34,7 @@
                 <p>Find broken links on page</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">
-                @if (Sentinel::getUser()->isCampaignAllowed('broken_links'))
+                @if (Sentinel::getUser()->isCampaignAllowed('not_found'))
                     <button type="button" class="btn btn-primary" onclick="App.modalBrokenLinks();">Create campaign</button>
                 @else
                     <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
@@ -50,7 +50,7 @@
                 <p>Find backlinks by url</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">
-                @if (Sentinel::getUser()->isCampaignAllowed('backlink'))
+                @if (Sentinel::getUser()->isCampaignAllowed('backlinks'))
                     <button type="button" class="btn btn-primary" onclick="App.modalBacklink();">Create campaign</button>
                 @else
                     <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>

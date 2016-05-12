@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Carbon\Carbon;
 use Sentinel;
 
 
@@ -28,13 +29,13 @@ class RequestLog extends Eloquent
     {
         $idUser = $idUser ?: Sentinel::getUser()->id;
         
-        return $this->raw(function($collection) use($idUser) {
+        $requestDates = $this->raw(function($collection) use($idUser) {
             return $collection->aggregate([
                 [
                     '$match' => [
                         'logged_at' => [
-                            '$gte' => \Carbon\Carbon::now()->subMonth(), 
-                            '$lte' => \Carbon\Carbon::now(),
+                            '$gte' => Carbon::now()->subMonth(), 
+                            '$lte' => Carbon::now(),
                         ],
                         'id_user' => $idUser,
                     ]
@@ -42,13 +43,40 @@ class RequestLog extends Eloquent
                 [
                     '$group' => [
                         '_id' => '$logged_at',
-                        'count' => [
+                        'cnt' => [
                             '$sum' => 1
                         ]
                     ],
                 ],
             ]);
         });
+        
+        
+        $requestDatesNew = [];
+        foreach ($requestDates as $requestDate) {
+            $requestCarbon = new Carbon($requestDate->_id->date, $requestDate->_id->timezone);
+            $requestDateKey = $requestCarbon->day .'/'. $requestCarbon->month;
+            $requestDatesNew[$requestDateKey] = $requestDate->cnt;
+        }
+        
+        $nowDateString = Carbon::now()->addDay()->toDateString();
+        $carbon = Carbon::now()->subMonth();
+        
+        $dates = [];
+        while ($carbon->toDateString() != $nowDateString) {
+            $carbon->addDay();
+            $date = $carbon->day .'/'. $carbon->month;
+            
+            $dates[$date] = 0;
+            foreach ($requestDatesNew as $requestDateKey => $requestDateCount) {
+                if ($date == $requestDateKey) {
+                    $dates[$date] = $requestDateCount;
+                    break;
+                }
+            }
+        }
+
+        return $dates;
     } // end getUserMonthStatisticsByDate
     
 }

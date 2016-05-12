@@ -25,10 +25,10 @@ class User extends JarboeUser implements AuthenticatableContract
             case 'emails':
                 
                 break;
-            case 'broken_links':
+            case 'not_found':
                 
                 break;
-            case 'backlink':
+            case 'backlinks':
                 
                 break;
             

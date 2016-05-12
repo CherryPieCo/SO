@@ -3,17 +3,7 @@
 
 @section('main')
 
-<div class="row">
-    <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default panel-custom plan-selector">
-        <div class="panel-body">
-          <h4>API usage</h4>
-          <h4><small>Last 30 days</small></h4>
-          <canvas id="linearChartApi" width="600" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
+  @include('so.partials.stats_chart')
     
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
@@ -100,6 +90,5 @@
 
 @section('scripts')
     <script src="/js/Chart.min.js"></script>
-    <script src="/js/drawing-chart-api.js"></script>
 @stop
 
