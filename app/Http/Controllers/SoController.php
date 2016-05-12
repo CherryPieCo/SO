@@ -42,6 +42,10 @@ class SoController extends Controller
     {
         // TODO: remove from queue
         Pack::byUser()->where('_id', Input::get('id'))->delete();
+        
+        return response()->json([
+            'status' => true
+        ]);
     } // end removeBulk
     
     public function createBulk()

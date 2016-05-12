@@ -31,7 +31,14 @@ class Email extends AbstractParser
                 $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
                 switch ($headers[0]) {
                     case "HTTP/1.1 301 Moved Permanently":
-                        $redirectLocation = is_array($headers['Location']) ? $headers['Location'][0] : $headers['Location'];
+                        if (isset($headers['Location'])) {
+                            $redirectLocation = is_array($headers['Location']) ? $headers['Location'][0] : $headers['Location'];
+                        } elseif (isset($headers['location'])) {
+                            $redirectLocation = is_array($headers['location']) ? $headers['location'][0] : $headers['location'];
+                        } else {
+                            break 2;
+                        }
+                        
                         curl_setopt($ch, CURLOPT_URL, $redirectLocation);
                         break;
                     default:                        

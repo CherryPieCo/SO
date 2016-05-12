@@ -27,6 +27,12 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small
   border-color: #e97f62 !important;
 }
 
+.btn-logout {
+  padding-top: .6em !important;
+  padding-bottom: .6em !important;
+  font-size: 1.3em;
+}
+
 .navbar-custom {
   border-radius: 0;
   padding: 0 1em;
@@ -46,10 +52,29 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small
 .navbar-custom .navbar-nav li {
   margin-left: .75em;
 }
-.navbar-custom .navbar-right .btn-primary {
+.navbar-custom .navbar-right .btn-primary,
+.navbar-custom .navbar-right .btn-success {
   padding-top: .4em;
   padding-bottom: .4em;
   margin-top: .4em;
+  color: white;
+}
+.navbar-custom .navbar-right .btn-primary svg,
+.navbar-custom .navbar-right .btn-success svg {
+  position: relative;
+  top: 2px;
+  height: 17px;
+}
+.navbar-custom .navbar-right .btn-primary svg path,
+.navbar-custom .navbar-right .btn-success svg path {
+  fill: currentColor;
+}
+.navbar-custom .navbar-right .btn-success {
+  background-color: #4cae4c;
+}
+.navbar-custom .navbar-right .btn-success:hover {
+  background-color: #5cb85c;
+  border-color: #5cb85c;
 }
 .navbar-custom .navbar-right h4 {
   padding-right: 1em;

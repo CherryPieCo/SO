@@ -18,7 +18,11 @@
                 <p>Find the Email from URL list</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">
-                <button type="button" class="btn btn-primary" onclick="App.modalEmails();">Create campaign</button>
+                @if (Sentinel::getUser()->isCampaignAllowed('emails'))
+                    <button type="button" class="btn btn-primary" onclick="App.modalEmails();">Create campaign</button>
+                @else
+                    <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
+                @endif
               </div>
               <div class="clearfix"></div>
             </div>  
@@ -30,7 +34,11 @@
                 <p>Find broken links on page</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">
-                <button type="button" class="btn btn-primary" onclick="App.modalBrokenLinks();">Create campaign</button>
+                @if (Sentinel::getUser()->isCampaignAllowed('broken_links'))
+                    <button type="button" class="btn btn-primary" onclick="App.modalBrokenLinks();">Create campaign</button>
+                @else
+                    <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
+                @endif
               </div>
               <div class="clearfix"></div>
             </div>  
@@ -42,7 +50,11 @@
                 <p>Find backlinks by url</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">
-                <button type="button" class="btn btn-primary" onclick="App.modalBacklink();">Create campaign</button>
+                @if (Sentinel::getUser()->isCampaignAllowed('backlink'))
+                    <button type="button" class="btn btn-primary" onclick="App.modalBacklink();">Create campaign</button>
+                @else
+                    <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
+                @endif
               </div>
               <div class="clearfix"></div>
             </div>  
@@ -53,6 +65,7 @@
   </div>
     
   @include('so.modals.create_bulk')
+  @include('so.modals.delete_bulk')
     
   <div id="bulks-table-container">
     @include('so.partials.bulk_table')

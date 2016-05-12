@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'driver' => 'sendmail',//env('MAIL_DRIVER', 'smtp'),
+    'driver' => 'mailgun',//env('MAIL_DRIVER', 'smtp'),sendmail
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
+    'username' => 'postmaster@www.simpleoutreach.com',//env('MAIL_USERNAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return [
     |
     */
 
-    'password' => env('MAIL_PASSWORD'),
+    'password' => 'db7403e80a78617b4d8f544d50ed92e8',//env('MAIL_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------

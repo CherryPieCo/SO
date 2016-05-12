@@ -40,8 +40,11 @@ class Backlinks extends AbstractParser
         $data = json_decode($response, true);
         
         $urls = [];
-        foreach ($data['backlinks'] as $url) {
-            $urls[] = $url['url'];
+        // FIXME:
+        if (isset($data['backlinks'])) {
+            foreach ($data['backlinks'] as $url) {
+                $urls[] = $url['url'];
+            }
         }
         
         return $urls;

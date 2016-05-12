@@ -72,22 +72,26 @@ var App =
     
     removeBulk: function(ctx, id)
     {
-        if (!confirm('R U SURE?')) {
-            return;
-        }
+        var $modal = $('#modal-delete-project');
         
-        $(ctx).closest('.bulk-tr').remove();
-        
-        jQuery.ajax({
-            data: { id: id },
-            type: "POST",
-            url: '/me/remove-bulk',
-            cache: false,
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
-            }
-        });
+        $modal.find('.bulk-name').text($(ctx).closest('.bulk-tr').find('td:first').text());
+        $modal.find('.ok-delete-button')
+            .off('click')
+            .on('click', function() {
+                $(ctx).closest('.bulk-tr').remove();
+                
+                jQuery.ajax({
+                    data: { id: id },
+                    type: "POST",
+                    url: '/me/remove-bulk',
+                    cache: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        $modal.modal('hide');
+                    }
+                });
+            });
+        $modal.modal('show');
     }, // end removeBulk
     
 };

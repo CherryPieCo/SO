@@ -38,6 +38,7 @@ Route::group([
     
     Route::get('/logout', function() {
         Sentinel::logout();
+        return redirect('/');
     });
 
 });

@@ -81,7 +81,7 @@ class AbstractParser extends Command
         
         $idUser = Pack::where('_id', $idPack)->pluck('id_user');
         $user = Sentinel::findById($idUser);
-        if (!$user->isRequestsAvailable() && $this->isApiRequestSuccessful()) {
+        if ($user && (!$user->isRequestsAvailable() && $this->isApiRequestSuccessful())) {
             //$data = [];
             //$status = 'api_limit'; 
         }
@@ -97,7 +97,10 @@ class AbstractParser extends Command
             $prePath .'status' => $status,
         ]);
         
-        $user->logRequest($this->type);
+        if ($user && ($user->isRequestsAvailable())) {
+            $user->logRequest($this->type);
+        }
+        
         
         return;
         //

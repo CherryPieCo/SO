@@ -18,6 +18,27 @@ class User extends JarboeUser implements AuthenticatableContract
         return $this->first_name .' '. $this->last_name;
     } // end getFullname
     
+    public function isCampaignAllowed($campaign)
+    {
+        // TODO:
+        switch ($campaign) {
+            case 'emails':
+                
+                break;
+            case 'broken_links':
+                
+                break;
+            case 'backlink':
+                
+                break;
+            
+            default:
+                throw new \RuntimeException(sprintf('Unknown campaign: [%s]', $campaign));
+        }
+        
+        return true;
+    } // end isCampaignAllowed
+    
     public function getMaximumRequests()
     {
         switch ($this->type) {
