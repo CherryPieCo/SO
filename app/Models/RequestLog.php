@@ -10,7 +10,7 @@ use Sentinel;
 class RequestLog extends Eloquent
 {
     
-    protected $dates = ['logged_at'];
+    //protected $dates = ['logged_at'];
     
     protected $collection = 'logs';
     protected $connection = 'mongodb';
@@ -22,61 +22,38 @@ class RequestLog extends Eloquent
     {
         $idUser = $idUser ?: Sentinel::getUser()->id;
         
-        return $query->where('id_user', $idUser); // (int) 
+        return $query->where('id_user', $idUser); 
     } // end byUser
     
-    public function getUserMonthStatisticsByDate($idUser = false)
+    public function scopeInMonth($query)
     {
-        $idUser = $idUser ?: Sentinel::getUser()->id;
-        
-        $requestDates = $this->raw(function($collection) use($idUser) {
-            return $collection->aggregate([
-                [
-                    '$match' => [
-                        'logged_at' => [
-                            '$gte' => Carbon::now()->subMonth(), 
-                            '$lte' => Carbon::now(),
-                        ],
-                        'id_user' => $idUser,
-                    ]
-                ],
-                [
-                    '$group' => [
-                        '_id' => '$logged_at',
-                        'cnt' => [
-                            '$sum' => 1
-                        ]
-                    ],
-                ],
-            ]);
-        });
-        
-        
-        $requestDatesNew = [];
-        foreach ($requestDates as $requestDate) {
-            $requestCarbon = new Carbon($requestDate->_id->date, $requestDate->_id->timezone);
-            $requestDateKey = $requestCarbon->day .'/'. $requestCarbon->month;
-            $requestDatesNew[$requestDateKey] = $requestDate->cnt;
-        }
+        return $query->whereBetween('logged_at', [Carbon::now()->subMonth(), Carbon::now()]); 
+    } // end inMonth
+    
+    public static function getUserMonthStatisticsByDate($idUser = false)
+    {
+        $stats = [];
         
         $nowDateString = Carbon::now()->addDay()->toDateString();
         $carbon = Carbon::now()->subMonth();
         
-        $dates = [];
         while ($carbon->toDateString() != $nowDateString) {
             $carbon->addDay();
-            $date = $carbon->day .'/'. $carbon->month;
+            $dateKey = $carbon->day .'/'. $carbon->month;
             
-            $dates[$date] = 0;
-            foreach ($requestDatesNew as $requestDateKey => $requestDateCount) {
-                if ($date == $requestDateKey) {
-                    $dates[$date] = $requestDateCount;
-                    break;
-                }
-            }
+            $stats[$dateKey] = 0;
         }
-
-        return $dates;
+        
+        $dates = RequestLog::byUser()->inMonth()->get();
+        foreach ($dates as $date) {
+            $date->logged_at = new Carbon($date->logged_at['date'], $date->logged_at['timezone']);
+            $dateKey = $date->logged_at->day .'/'. $date->logged_at->month;
+            
+            ++$stats[$dateKey];
+        }
+    
+        
+        return $stats;
     } // end getUserMonthStatisticsByDate
     
 }
