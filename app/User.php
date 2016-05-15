@@ -46,16 +46,13 @@ class User extends JarboeUser implements AuthenticatableContract
                 return 150;
                 
             case 'starter':
-                return 1000;
-                
-            case 'growth':
-                return 5000;
+                return 2000;
                 
             case 'pro':
-                return 20000;
+                return PHP_INT_MAX; // unlimited
             
             default:
-                throw new \Exception('Unknown user subscription type: '. $this->type);
+                throw new \RuntimeException('Unknown user subscription type: '. $this->type);
         }
     } // end getMaximumRequests
     
@@ -80,5 +77,10 @@ class User extends JarboeUser implements AuthenticatableContract
             'logged_at' => Carbon::now(), 
         ]);
     } // end logRequest
+    
+    public function isProType()
+    {
+        return $this->type == 'pro';
+    } // end isProType
     
 }

@@ -3,7 +3,7 @@
 ## Api
 To make authenticated requests via http using the built in methods, you will need to set an authorization header as follows:
 
-``` Authorization: Bearer {your_token_here} ```
+``` Authorization: {your_token_here} ```
 
 Alternatively you can include the token via a query string:
 

@@ -35,6 +35,7 @@ class HomeController extends Controller
                     'password'    => $password,
                     'first_name'  => $firstName,
                     'last_name'   => $lastName,
+                    'token'       => str_random(32),
                 ]);
             
                 // $activation = Activation::create($user);

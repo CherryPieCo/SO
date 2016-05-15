@@ -34,8 +34,8 @@ class SoController extends Controller
     
     public function showApi()
     {
-        $token = JWTAuth::fromUser(Sentinel::getUser());
-        $stats = (new RequestLog())->getUserMonthStatisticsByDate();
+        $token = Sentinel::getUser()->token;
+        $stats = RequestLog::getUserMonthStatisticsByDate();
         
         return view('so.api', compact('token', 'stats'));
     } // end showApi

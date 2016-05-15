@@ -20,7 +20,7 @@ return array(
     
     'position' => array(
         'tabs' => array(
-            'Инфо' => array(['first_name', 'last_name'], 'email', 'pattern.user_password', 'pattern.user_api_key'),
+            'Инфо' => array(['first_name', 'last_name'], 'email', 'pattern.user_password', 'token'),
             'Права' => array('pattern.user_permissions'),
             'Активность' => array('pattern.user_activation'),
         )
@@ -34,6 +34,11 @@ return array(
             'width' => '1%',
             'is_sorting' => true,
             'hide' => true,
+        ),
+        'token' => array(
+            'caption' => 'Token',
+            'type' => 'readonly',
+            'hide_list' => true,
         ),
         'email' => array(
             'caption' => 'Email',
