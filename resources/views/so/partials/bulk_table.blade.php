@@ -2,7 +2,7 @@
     <div class="col-md-10 col-md-offset-1">
       <div class="panel panel-default panel-custom">
         <div class="panel-body">
-          <table class="table table-responsive table-hover table-custom">
+          <table id="bulk-table" class="table table-responsive table-hover table-custom">
             <thead>
               <tr>
                 <th>List name</th>
@@ -73,3 +73,27 @@
       </div>
     </div>
   </div>
+  
+
+<script id="bulk-tr-template" type="text/html">
+    <tr class="bulk-tr">
+        <td>~title~</td>
+        <td>~type~</td>
+        <td class="text-center">0 / ~count~</td>
+        <td class="text-center">{{ date('d/m/Y') }}</td>
+        <td class="text-center">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                  in progress
+                </div>
+            </div>
+        </td>
+        <td class="text-right">
+          <a onclick="App.removeBulk(this, '~id~');" href="javascript:void(0);" class="btn btn-xs btn-link">
+              <i class="fa fa-times"></i>
+          </a>
+        </td>
+    </tr>
+</script>
+

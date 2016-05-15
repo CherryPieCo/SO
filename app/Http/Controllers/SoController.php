@@ -94,7 +94,10 @@ class SoController extends Controller
         
         return response()->json([
             'status' => true,
-            'id_pack' => $id->__toString(),
+            'id'     => $id->__toString(),
+            'title'  => Input::get('title', ''),
+            'type'   => Input::get('type', ''),
+            'count'  => count($urls),
         ]);
     } // end createBulk
     

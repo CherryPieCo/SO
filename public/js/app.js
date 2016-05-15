@@ -47,6 +47,8 @@ var App =
                 console.log(response);
                 
                 if (response.status) {
+                    $('#bulk-table tbody').prepend(wo.fetch('bulk-tr-template', response));
+                    
                     $('#create-bulk-form')[0].reset();
                     $('#create-bulk-modal').modal('hide');
                 } else {
