@@ -29,3 +29,16 @@ function resize_intro(){
 		}
 	} 
 }
+
+$(function() {
+
+    var loginToggler = $('#loginToggler');
+    var loginLine = $('.login-line');
+    loginToggler.on('click', function() {
+        loginLine.toggleClass('opened');
+    });
+    
+    var page_height =  $(window).height();
+    var form_margin = (page_height - $('.hero').height()) / 3;
+    $(".hero").css('margin-top',form_margin+'px');
+});

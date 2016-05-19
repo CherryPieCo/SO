@@ -1,6 +1,6 @@
 $(function() {
-	'use strict';
-	// Main contact form
+    'use strict';
+    // Main contact form
     $('#contact').validate({
         rules: {
             name: {
@@ -102,9 +102,9 @@ $(function() {
             });
         }
     });
-	
-	// Subscription form
-   	$('#subscribe').validate({
+    
+    // Subscription form
+    $('#subscribe').validate({
         rules: {
             subscribe_email: {
                 required: true,

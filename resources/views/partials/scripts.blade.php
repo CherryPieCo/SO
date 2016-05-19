@@ -1,6 +1,5 @@
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="/js/bootstrap.min.js"></script>
-
-<script src="/js/app.js"></script>
-
+<!--[if lte IE 7]><script src="/js/icons-lte-ie7.js"></script><![endif]-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/respond.min.js"></script>
+<script src="/js/scripts.js"></script>  

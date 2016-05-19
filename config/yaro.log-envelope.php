@@ -12,9 +12,9 @@ return [
         'telegram',
         //'database',
     ],
-    'should_queue' => false,
     'force_config' => [
         'mail.driver' => 'sendmail',
+        'queue.default' => 'sync',
     ],
     
     /*

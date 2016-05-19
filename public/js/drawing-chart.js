@@ -1,5 +1,3 @@
-var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-
 var linearChartData = {
 	labels : ["January","February","March","April","May","June","July", "August", "September", "October", "November", "December"],
 	datasets : [
@@ -27,7 +25,8 @@ var linearChartData = {
 }
 
 // Line charts options
-var linearChartOptions = { 
+var linearChartOptions = {
+	animation: false,
 	responsive: true,
 	//Boolean - Whether the line is curved between points
   bezierCurve : false,

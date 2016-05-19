@@ -16,6 +16,16 @@ class HomeController extends Controller
         return view('index');
     } // end showIndex
     
+    public function showContact()
+    {
+        return view('contact');
+    } // end showContact
+    
+    public function showPassRecovery()
+    {
+        return view('pass_recovery');
+    } // end showPassRecovery
+    
     public function createAccount()
     {
         // csrf

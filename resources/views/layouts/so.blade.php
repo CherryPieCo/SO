@@ -29,13 +29,13 @@
     
   </head>
   <body>
-      @include('partials.navigation')
+      @include('so.partials.navigation')
       
       <section class="container">
         @yield('main')
       </section>
       
-      @include('partials.scripts')
+      @include('so.partials.scripts')
       @yield('scripts')
   </body>
 </html>

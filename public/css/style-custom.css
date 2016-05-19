@@ -3,6 +3,14 @@
   text-align: center;
 }
 
+.fwb {
+  font-weight: 600;
+}
+
+.text-branded {
+  color: #e66d4c;
+}
+
 /* reassign style.css  */
 body {
   font-size: 16px;
@@ -223,6 +231,14 @@ a.btn-cta {
   height: 1em;
 }
 
+.pricing .blocks .inner ul li.price {
+  background-color: #e7ecef;
+  border-bottom-color: #ced9de;
+}
+.pricing .blocks .inner ul li.price h1 * {
+  color: #4f6875;
+}
+
 .testimonials {
   margin-bottom: 2em;
   padding-bottom: 2em;
@@ -318,4 +334,25 @@ a.btn-cta {
 }
 .modal a:hover {
   color: #e35b36;
+}
+
+.contact-form {
+  margin-bottom: 2em;
+}
+
+.form-box-custom {
+  display: block;
+  border: 1px solid #cfd6db;
+  background: transparent;
+}
+.form-box-custom .bottom {
+  background: transparent;
+}
+.form-box-custom input[type="text"],
+.form-box-custom textarea {
+  width: 100%;
+}
+
+#sidebar .form-row input.text, #sidebar .form-row input.btn {
+  padding: .5em 1em;
 }

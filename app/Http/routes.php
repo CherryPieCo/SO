@@ -45,6 +45,23 @@ Route::group([
 
 
 Route::get('/', 'HomeController@showIndex');
+Route::get('/contact', 'HomeController@showContact');
+Route::get('/password-recovery', 'HomeController@showPassRecovery');
+
 Route::post('/create-account', 'HomeController@createAccount');
 Route::post('/login', 'HomeController@login');
+
+
+Route::group([
+    'prefix' => 'twocheckout', 
+], function () {
+    
+    Route::post('/recurring/success', 'TwoCheckout\RecurringController@success');
+    Route::post('/recurring/failed', 'TwoCheckout\RecurringController@failed');
+    Route::post('/recurring/stopped', 'TwoCheckout\RecurringController@stopped');
+    Route::post('/recurring/complete', 'TwoCheckout\RecurringController@complete');
+    Route::post('/recurring/restarted', 'TwoCheckout\RecurringController@restarted');
+    
+});
+
 

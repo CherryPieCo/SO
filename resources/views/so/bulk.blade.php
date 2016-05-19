@@ -71,6 +71,6 @@
     @include('so.partials.bulk_table')
   </div>
   
-  @include('partials.upgrade_account')
+  @include('so.partials.upgrade_account')
 
 @stop

@@ -24,7 +24,7 @@
     </div>
   </div>
     
-  @include('partials.upgrade_account')
+  @include('so.partials.upgrade_account')
 
 @stop
 
