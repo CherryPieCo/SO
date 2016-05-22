@@ -21,10 +21,10 @@ class User extends JarboeUser implements AuthenticatableContract
         return $this->first_name .' '. $this->last_name;
     } // end getFullname
     
-    public function mailchimpSubscribe(\Mailchimp $mailchimp)
+    public function mailchimpSubscribe()
     {
         try {
-            $mailchimp->lists->subscribe(
+            app('Mailchimp')->lists->subscribe(
                 '25a788b707',
                 ['email' => $this->email]
             );
