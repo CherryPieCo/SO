@@ -24,11 +24,11 @@
         <li>
             <h4>
                 <small>
-                    {{ Sentinel::getUser()->getCurrentRequests() }} 
-                    @if (!Sentinel::getUser()->isProType())
-                     / {{ Sentinel::getUser()->getMaximumRequests() }}
+                    @if (Sentinel::getUser()->isFreeType())
+                        {{ Sentinel::getUser()->getTrialDaysLeftCount() }} Free Trial Days
+                    @else
+                        {{ Sentinel::getUser()->getCurrentRequests() }} requests
                     @endif
-                    requests
                 </small>
             </h4>
         </li>
@@ -41,7 +41,10 @@
             </a>
         </li>  
         --}}
-        <li><a href="#" class="btn btn-primary">Upgrade</a></li>      
+        
+        @if (!Sentinel::getUser()->isProType())
+            <li><a href="#" class="btn btn-primary">Upgrade</a></li>   
+        @endif   
         <li><a href="/me/logout" class="btn btn-link btn-logout" title="Log Out"><i class="fa fa-sign-out"></i></a></li>      
       </ul>
     </div><!-- /.navbar-collapse -->

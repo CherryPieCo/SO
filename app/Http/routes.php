@@ -2,6 +2,7 @@
 
 Route::pattern('id', '[0-9]+');
 Route::pattern('slug', '[A-Za-z0-9-_]+');
+Route::pattern('code', '[A-Za-z0-9]{64}');
 Route::pattern('base64', '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
 Route::pattern('anything', '.+');
 
@@ -51,6 +52,9 @@ Route::get('/', 'HomeController@showIndex');
 Route::get('/contact', 'HomeController@showContact');
 Route::post('/contact/save', 'HomeController@saveContact');
 Route::get('/password-recovery', 'HomeController@showPassRecovery');
+Route::post('/password-recovery', 'HomeController@sendPassRecovery');
+Route::get('/password-recovery/check/{code}', 'HomeController@showCheckPassRecovery');
+Route::post('/password-recovery/check/{code}', 'HomeController@changePasswordByCode');
 
 Route::post('/create-account', 'HomeController@createAccount');
 Route::post('/login', 'HomeController@login');

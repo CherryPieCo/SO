@@ -10,18 +10,21 @@ var App =
     modalEmails: function()
     {
         $('#bulk-type').val('emails');
+        $('#bulk-urls-limit').text(500);
         $('#create-bulk-modal').modal('show');
     }, // end 
     
     modalBrokenLinks: function()
     {
         $('#bulk-type').val('not_found');
+        $('#bulk-urls-limit').text(500);
         $('#create-bulk-modal').modal('show');
     }, // end 
     
     modalBacklink: function()
     {
         $('#bulk-type').val('backlinks');
+        $('#bulk-urls-limit').text(100);
         $('#create-bulk-modal').modal('show');
     }, // end 
     
@@ -44,15 +47,16 @@ var App =
             contentType: false,
             processData: false,
             success: function(response) {
-                console.log(response);
-                
                 if (response.status) {
+                    // FIXME: make me awesome
+                    window.location.reload();
+                    
                     $('#bulk-table tbody').prepend(wo.fetch('bulk-tr-template', response));
                     
                     $('#create-bulk-form')[0].reset();
                     $('#create-bulk-modal').modal('hide');
                 } else {
-                    alert('fcuk');
+                    toastr.error(response.error);
                 }
             }
         });

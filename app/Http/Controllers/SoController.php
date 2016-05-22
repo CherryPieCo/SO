@@ -59,7 +59,7 @@ class SoController extends Controller
         $data = [];
         $parsers = Pack::getParsersByType($request->get('type'));
         
-        $urls = $this->getUrls();
+        $urls = $this->getUrls($request);
         foreach ($urls as $url) {
             $url = trim($url);
             if (!$url) {
@@ -78,9 +78,23 @@ class SoController extends Controller
             ];
         }
         
+        // XXX:
+        if ($request->get('type') == 'backlinks' && count($urls) > 100) {
+            return response()->json([
+                'status' => false,
+                'error'  => 'Exceeded limit of 100 sites per request: '. count($urls)
+            ]);
+        }
+        if (count($urls) > 500) {
+            return response()->json([
+                'status' => false,
+                'error'  => 'Exceeded limit of 500 sites per request: '. count($urls)
+            ]);
+        }
         if (!$urls || !$parsers) {
             return response()->json([
                 'status' => false,
+                'error'  => 'There is no sites'
             ]);
         }
         

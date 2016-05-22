@@ -576,12 +576,6 @@
 
 <script>
     $(function() {
-        var loginToggler = $('#loginToggler');
-        var loginLine = $('.login-line');
-        loginToggler.on('click', function() {
-            loginLine.toggleClass('opened');
-        });
-
         $('.flexslider').flexslider({
             animation : "slide",
             // randomize: true,

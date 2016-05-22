@@ -32,7 +32,7 @@
                 <div class="form-group">
                   <label><small>Please, input urls: *</small></label>
                   <textarea name="urls" id="bulk-urls" class="form-control" placeholder="Example: http://site1.com" rows="5"></textarea>
-                  <span class="help-block"><small>* - not more 1000 sites per one time</small></span>
+                  <span class="help-block"><small>* - not more <span id="bulk-urls-limit">500</span> sites per one time</small></span>
                 </div>  
               </div>
             </div>

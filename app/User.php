@@ -9,6 +9,7 @@ use App\Models\RequestLog;
 use App\Models\Pack;
 use Carbon\Carbon;
 use Log;
+use Mail;
 
 
 class User extends JarboeUser implements AuthenticatableContract
@@ -36,7 +37,13 @@ class User extends JarboeUser implements AuthenticatableContract
     
     public function isCampaignAllowed($campaign)
     {
-        if (!$this->isRequestsAvailable() || $this->countCurrentActiveBulks() > 2) {
+        if (!$this->isSubscriptionActive()) {
+            return false;
+        }
+        if ($this->isFreeType() && $this->getTotalBulksCount() >= 50) {
+            return false;
+        }
+        if (!$this->isRequestsAvailable() || $this->getCurrentActiveBulksCount() > 2) {
             return false;
         }
         
@@ -46,10 +53,14 @@ class User extends JarboeUser implements AuthenticatableContract
                 
                 break;
             case 'not_found':
-                
+                if ($this->isStarterType()) {
+                    return false;
+                }
                 break;
             case 'backlinks':
-                
+                if ($this->isStarterType()) {
+                    return false;
+                }
                 break;
             
             default:
@@ -59,10 +70,52 @@ class User extends JarboeUser implements AuthenticatableContract
         return true;
     } // end isCampaignAllowed
     
-    public function countCurrentActiveBulks()
+    public function sendResetPasswordMail()
+    {
+        $this->confirmation_code = str_random(64);
+        $this->save();
+        
+        $user = $this;
+        
+        Mail::send('emails.reset_password', ['user' => $user], function($message) use($user) {
+            $message->to($user->email, $user->getFullname());
+            $message->subject('Password Recover Confirmation');
+        });
+    } // end sendResetPasswordMail
+    
+    public function isSubscriptionActive()
+    {
+        if ($this->type == 'free') {
+            return (bool) $this->getTrialDaysLeftCount();
+        }
+        
+        $subscriptionDate = new Carbon($this->last_subscription_at);
+        $monthAgoDate = Carbon::now()->subMonth();
+        
+        return $monthAgoDate->lte($subscriptionDate);
+    } // end isSubscriptionActive
+    
+    public function getTrialDaysLeftCount()
+    {
+        $created = new Carbon($this->created_at);
+        $now = Carbon::now();
+        
+        $days = $created->diff($now)->days;
+        if ($days > 14) {
+            return 0;
+        }
+        return $days;
+    } // end getTrialDaysLeftCount
+    
+    public function getCurrentActiveBulksCount()
     {
         return Pack::byUser()->where('status', '!=', 'complete')->count();
-    } // end countCurrentActiveBulks
+    } // end getCurrentActiveBulksCount
+    
+    public function getTotalBulksCount()
+    {
+        return Pack::byUser()->count();
+    } // end getTotalBulksCount
     
     public function getMaximumRequests()
     {
@@ -71,7 +124,7 @@ class User extends JarboeUser implements AuthenticatableContract
                 return 150;
                 
             case 'starter':
-                return 2000;
+                return 3000;
                 
             case 'pro':
                 return PHP_INT_MAX; // unlimited
@@ -107,5 +160,15 @@ class User extends JarboeUser implements AuthenticatableContract
     {
         return $this->type == 'pro';
     } // end isProType
+    
+    public function isStarterType()
+    {
+        return $this->type == 'starter';
+    } // end isStarterType
+    
+    public function isFreeType()
+    {
+        return $this->type == 'free';
+    } // end isFreeType
     
 }

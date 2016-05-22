@@ -6,6 +6,7 @@ use Input;
 use Sentinel;
 use Mail;
 use Log;
+use App\User;
 use Illuminate\Http\Request;
 use App\Models\ContactRequest;
 use App\Helpers\Email as EmailHelper;
@@ -29,17 +30,58 @@ class HomeController extends Controller
         return view('pass_recovery');
     } // end showPassRecovery
     
+    public function showCheckPassRecovery($code)
+    {
+        $idUser = User::where('confirmation_code', $code)->pluck('id');
+        if (!$idUser) {
+            abort(404);
+        }
+        
+        $user = Sentinel::findById($idUser);
+        
+        return view('pass_change', compact('user'));
+    } // end showCheckPassRecovery
+    
+    public function changePasswordByCode(Request $request, $code)
+    {
+        $idUser = User::where('confirmation_code', $code)->pluck('id');
+        if (!$idUser) {
+            throw new \RuntimeException('wtf');
+        }
+        
+        $user = Sentinel::findById($idUser);
+        $password = $request->get('password');
+        $confirmation_code = '';
+        Sentinel::update($user, compact('password', 'confirmation_code'));
+        
+        return redirect('/');
+    } // end changePasswordByCode
+    
+    public function sendPassRecovery(Request $request) 
+    {
+        $email = $request->get('email');
+        
+        $user = Sentinel::findByCredentials(compact('email'));
+        if ($user) {
+            $user->sendResetPasswordMail();
+        }
+        
+        return response()->json([
+            'status' => true
+        ]);
+    } // end sendPassRecovery
+    
     public function saveContact(Request $request)
     {
         $data = $request->only(['name', 'email', 'subject', 'text']);
         $data['created_at'] = date('Y-m-d H:i:s');
         
+        $status = ContactRequest::insert($data);
+        
         Mail::send('emails.new_contact', $data, function($message) use($data) {
             $message->to('brian@simpleoutreach.com', 'Brian');
             $message->subject('Contact: '. $data['subject']);
         });
-        
-        $status = ContactRequest::insert($data);
         
         return response()->json(compact('status'));
     } // end saveContact
