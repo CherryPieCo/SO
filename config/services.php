@@ -15,7 +15,7 @@ return [
     */
 
     'mailgun' => [
-        'domain' => 'www.simpleoutreach.com',
+        'domain' => 'simpleoutreach.com',
         'secret' => 'key-2f226c390fd875573db652bc252349f8',
     ],
 

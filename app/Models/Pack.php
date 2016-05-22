@@ -27,23 +27,6 @@ class Pack extends Eloquent
     
     public function getCompletedUrlsCount()
     {
-        // HACK: fix me plox
-        $isComplete = true;
-        $i = 0;
-        foreach ($this->getData() as $hash => &$info) {
-            $isUrlComplete = true;
-            foreach ($info['parsers'] as $type => &$parser) {
-                $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
-            }
-            if ($isUrlComplete) {
-                ++$i;
-            }
-            $isComplete = $isComplete && $info['status'] == 'complete';
-        }
-        
-        return $i;
-        //
-        
         $count = 0;
         foreach ($this->data as $info) {
             if (isset($info['status']) && $info['status'] == 'complete') {
@@ -61,23 +44,7 @@ class Pack extends Eloquent
     
     public function isComplete()
     {
-        // HACK: fix me plox
-        $isComplete = true;
-        $i = 0;
-        foreach ($this->getData() as $hash => &$info) {
-            $isUrlComplete = true;
-            foreach ($info['parsers'] as $type => &$parser) {
-                $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
-            }
-            if ($isUrlComplete) {
-                ++$i;
-            }
-            $isComplete = $isComplete && $info['status'] == 'complete';
-        }
-        
-        return $this->getUrlsCount() == $i;
-
-        //return $this->status == 'complete';
+        return isset($this->status) && $this->status == 'complete';
     } // end isComplete
     
     public function scopeByUser($query, $idUser = false)
@@ -86,6 +53,67 @@ class Pack extends Eloquent
         
         return $query->where('id_user', $idUser); // (int) 
     } // end byUser
+    
+    public function scopeComplete($query, $idPack, $hash, $parserType, $data)
+    {
+        $prePath = 'data.'. $hash .'.parsers.'. $parserType .'.';
+        
+        $result = $query->where('_id', $idPack)->update([
+            $prePath .'data' => $data,
+            $prePath .'finished_at' => time(),
+            $prePath .'status' => 'complete',
+        ]);
+        
+        $this->recheckParsersStatus($query, $idPack, $hash);
+        
+        return $result;
+    } // end complete
+    
+    public function recheckParsersStatus($query, $idPack, $hash)
+    {
+        $class = __CLASS__;
+        
+        $entity = $class::where('_id', $idPack)->first();
+        $info = $entity->data[$hash];
+        
+        $isCompleted = true;
+        foreach ($info['parsers'] as $parser) {
+            $isCompleted = $isCompleted && $parser['status'] == 'complete';
+        }
+        
+        if (!$isCompleted) {
+            return;
+        }
+        
+        $prePath = 'data.'. $hash .'.';
+        $query->where('_id', $idPack)->update([
+            $prePath .'finished_at' => time(),
+            $prePath .'status' => 'complete',
+        ]);
+        
+        $this->recheckStatus($query, $idPack);
+    } // end recheckParsersStatus
+    
+    public function recheckStatus($query, $idPack)
+    {
+        $class = __CLASS__;
+        
+        $entity = $class::where('_id', $idPack)->first();
+        
+        $isCompleted = true;
+        foreach ($entity->data as $hash => $info) {
+            $isCompleted = $isCompleted && $info['status'] == 'complete';
+        }
+        
+        if (!$isCompleted) {
+            return;
+        }
+        
+        $query->where('_id', $idPack)->update([
+            'finished_at' => time(),
+            'status' => 'complete',
+        ]);
+    } // end recheckStatus
     
     public static function getParsersByType($type)
     {

@@ -77,44 +77,13 @@
         </div>
     </div>
 
-    <!-- modal -->
-    <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title">Notice</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <ol style="color: #263238;">
-                                <li>
-                                    Pleace check your inbox to confirm your email address and complete your request. (Make sure to check your Spam box if you don't see our email).
-                                </li>
-                                <li>
-                                    Now you'll be directed to <a href="#">http://simpleoutreach.com</a> where you'll be able to see our backlinks inventory, link prices, select and buy the best Pr1-Pr8 links by yourself, OR <a href="#">request a dedicated SEO expert</a> who will manage your entire SEO and link building campaign for you, for no extra cost.
-                                </li>
-                            </ol>
-                            <div class="text-center form-row">
-                                <input id="submit" type="submit" name="submit" value="OK" class="btn" data-dismiss="modal">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    <!-- /modal -->
-
     <!-- End content -->
 
     <div class="clearfix"></div>
 
 </div>
 
+<a name="features"></a>
 <div class="strip features">
 
     <div class="container">
@@ -351,6 +320,7 @@
     </div>
 </div>
 
+<a name="pricing"></a>
 <div class="strip pricing">
     <div class="container">
         <div class="row blocks">

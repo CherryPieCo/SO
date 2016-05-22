@@ -34,8 +34,8 @@ class RequestLog extends Eloquent
     {
         $stats = [];
         
-        $nowDateString = Carbon::now()->addDay()->toDateString();
-        $carbon = Carbon::now()->subMonth();
+        $nowDateString = Carbon::now()->toDateString();//->addDay()
+        $carbon = Carbon::now()->subMonth()->subDay();
         
         while ($carbon->toDateString() != $nowDateString) {
             $carbon->addDay();

@@ -8,39 +8,24 @@
     @include('partials.header')
 
     <div class="container">
-
         <div class="row">
-
             <div class="span12">
-
                 <div class="inner">
-
                     <div class="hero">
-
                         <h1>Contact Us</h1>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
     <div class="clearfix"></div>
 
 </div>
 
 <div class="strip" id="content">
-
     <div class="container">
-
         <div class="row">
-
             <div class="span8">
-
                 <div class="inner">
                     <div class="row">
                         <!-- <div class="span1">
@@ -64,13 +49,13 @@
                                     </div>
 
                                     <div class="bottom">
-                                        <form id="signup" name="signup" method="post" novalidate="novalidate">
+                                        <form id="contactus-from" action="/contact/save" method="post" novalidate="novalidate">
                                             <div class="form-row">
                                                 <div class="span3">
                                                     <label>Name</label>
                                                 </div>
                                                 <div class="span9">
-                                                    <input name="contact_name" id="contact_name" size="30" value="" required="" class="text login_input" placeholder="Your name" type="text">
+                                                    <input name="name" id="contact_name" size="30" value="" required="" class="text login_input" placeholder="Your name" type="text">
                                                 </div>
                                                 <div class="clearfix"></div>
                                             </div>
@@ -80,7 +65,7 @@
                                                     <label>Email</label>
                                                 </div>
                                                 <div class="span9">
-                                                    <input name="contact_email" id="contact_email" size="30" value="" required="" class="text login_input" placeholder="Email Address" type="text">
+                                                    <input name="email" id="contact_email" size="30" value="" required="" class="text login_input" placeholder="Email Address" type="text">
                                                 </div>
                                                 <div class="clearfix"></div>
                                             </div>
@@ -90,7 +75,7 @@
                                                     <label>Subject</label>
                                                 </div>
                                                 <div class="span9">
-                                                    <input name="contact_subject" id="contact_subject" size="30" value="" class="text login_input" placeholder="Subject" type="text">
+                                                    <input name="subject" id="contact_subject" size="30" value="" class="text login_input" placeholder="Subject" type="text">
                                                 </div>
                                                 <div class="clearfix"></div>
                                             </div>
@@ -100,13 +85,13 @@
                                                     <label>Text</label>
                                                 </div>
                                                 <div class="span9">
-                                                    <textarea name="contact_text" id="contact_text" placeholder="Text"></textarea>
+                                                    <textarea name="text" id="contact_text" placeholder="Text"></textarea>
                                                 </div>
                                                 <div class="clearfix"></div>
                                             </div>
 
                                             <div class="form-row">
-                                                <input id="send" name="send" value="Send" class="btn btn-wide btn-extrawide" data-loading-text="Loading..." type="submit">
+                                                <input id="send" value="Send" class="btn btn-wide btn-extrawide" data-loading-text="Loading..." type="submit">
                                                 <div class="clearfix"></div>
                                             </div>
                                             <div class="clearfix"></div>
@@ -138,23 +123,21 @@
                         </li>-->
                         <li>
                             <h3><span class="glyph-item  icon-pencil" aria-hidden="true" ></span> Signup</h3>
-                            <form method="post" action="#" name="example">
-
+                            <form method="post" action="/create-account" id="signup">
                                 <div class="form-row">
-                                    <input id="user_name" placeholder="Your name" class="text login_input" type="text" name="user_name" required />
+                                    <input id="user_name" placeholder="Your name" class="text login_input" type="text" name="name" required />
                                     <div class="clearfix"></div>
                                 </div>
 
                                 <div class="form-row">
-                                    <input id="user_email" type="email" placeholder="Your email" class="text login_input" name="user_email" required />
+                                    <input id="user_email" type="email" placeholder="Your email" class="text login_input" name="email" required />
                                     <div class="clearfix"></div>
                                 </div>
 
                                 <div class="form-row">
-                                    <input type="submit" name="register" value="Sign up now!" class="btn btn-wide" data-loading-text="Loading..." />
+                                    <input type="submit" value="Sign up now!" class="btn btn-wide" data-loading-text="Loading..." />
                                     <div class="clearfix"></div>
                                 </div>
-
                             </form>
                         </li>
                     </ul>
@@ -174,6 +157,13 @@
 
 @include('partials.footer')
 
-
 @stop
 
+
+@section('scripts')
+
+<script src="/js/jquery.form.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/contact.js"></script>
+
+@stop

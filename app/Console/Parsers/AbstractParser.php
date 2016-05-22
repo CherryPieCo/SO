@@ -77,7 +77,8 @@ class AbstractParser extends Command
         }
         
         $data = $this->getData();
-        $status = 'complete';
+        $parserType = $this->type;
+        $currentHash = md5($this->url);
         
         $idUser = Pack::where('_id', $idPack)->pluck('id_user');
         $user = Sentinel::findById($idUser);
@@ -86,57 +87,13 @@ class AbstractParser extends Command
             //$status = 'api_limit'; 
         }
         
-        
-        $currentHash = md5($this->url);
-        $parserType = $this->type;
-        
-        $prePath = 'data.'. $currentHash .'.parsers.'. $parserType .'.';
-        $pack = Pack::where('_id', $idPack)->update([
-            $prePath .'data' => $data,
-            $prePath .'finished_at' => time(),
-            $prePath .'status' => $status,
-        ]);
+        $pack = Pack::complete($idPack, $currentHash, $parserType, $data);
         
         if ($user && ($user->isRequestsAvailable())) {
             $user->logRequest($this->type);
         }
         
-        
         return;
-        //
-        /*
-        $response = $this->getData();
-        //DB::transaction(function() use($idPack, $currentHash, $parserType, $response) {
-            $pack = Pack::find($idPack);
-            $data = $pack->getData();
-            $isComplete = true;
-            foreach ($data as $hash => &$info) {
-                if ($currentHash == $hash) {
-                    $isUrlComplete = true;
-                    foreach ($info['parsers'] as $type => &$parser) {
-                        if ($parserType == $type) {
-                            $parser['status'] = 'complete';
-                            $parser['data'] = $response;
-                            $parser['finished_at'] = time();
-                        }
-
-                        $isUrlComplete = $isUrlComplete && $parser['status'] == 'complete';
-                    }
-                    if ($isUrlComplete) {
-                        $info['status'] = 'complete';
-                    }
-                }
-                $isComplete = $isComplete && $info['status'] == 'complete';
-            }
-            
-            if ($isComplete) {
-                $pack->status = 'complete';
-                $pack->finished_at = time();
-            }
-            $pack->data = $data;
-            $pack->save();
-        //});
-        */
     } // end after
     
     protected function isApiRequestSuccessful()

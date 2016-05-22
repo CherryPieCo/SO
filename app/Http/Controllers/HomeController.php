@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Input;
 use Sentinel;
 use Mail;
+use Log;
+use Illuminate\Http\Request;
+use App\Models\ContactRequest;
 use App\Helpers\Email as EmailHelper;
 
 
@@ -25,6 +28,21 @@ class HomeController extends Controller
     {
         return view('pass_recovery');
     } // end showPassRecovery
+    
+    public function saveContact(Request $request)
+    {
+        $data = $request->only(['name', 'email', 'subject', 'text']);
+        $data['created_at'] = date('Y-m-d H:i:s');
+        
+        Mail::send('emails.new_contact', $data, function($message) use($data) {
+            $message->to('brian@simpleoutreach.com', 'Brian');
+            $message->subject('Contact: '. $data['subject']);
+        });
+        
+        $status = ContactRequest::insert($data);
+        
+        return response()->json(compact('status'));
+    } // end saveContact
     
     public function createAccount()
     {
@@ -47,6 +65,7 @@ class HomeController extends Controller
                     'last_name'   => $lastName,
                     'token'       => str_random(32),
                 ]);
+                $user->mailchimpSubscribe();
             
                 // $activation = Activation::create($user);
                 // Activation::complete($user, $activation->code);

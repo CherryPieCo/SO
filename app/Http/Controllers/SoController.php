@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Input;
 use Sentinel;
 use Excel;
-use JWTAuth;
+use Illuminate\Http\Request;
 use App\Models\Url;
 use App\Models\Pack;
 use App\Models\RequestLog;
@@ -23,9 +23,9 @@ class SoController extends Controller
         return view('so.bulk', compact('bulks'));
     } // end showBulk
     
-    public function setBulksPerPageCount()
+    public function setBulksPerPageCount(Request $request)
     {
-        session(['bulks-per-page' => Input::get('per_page')]);
+        session(['bulks-per-page' => $request->get('per_page')]);
         
         return response()->json([
             'status' => true
@@ -40,20 +40,24 @@ class SoController extends Controller
         return view('so.api', compact('token', 'stats'));
     } // end showApi
     
-    public function removeBulk()
+    public function removeBulk(Request $request)
     {
         // TODO: remove from queue
-        Pack::byUser()->where('_id', Input::get('id'))->delete();
+        Pack::byUser()->where('_id', $request->get('id'))->delete();
         
         return response()->json([
             'status' => true
         ]);
     } // end removeBulk
     
-    public function createBulk()
+    public function createBulk(Request $request)
     {
+        if (!Sentinel::getUser()->isCampaignAllowed($request->get('type'))) {
+            throw new \RuntimeException('priv');
+        }
+        
         $data = [];
-        $parsers = Pack::getParsersByType(Input::get('type'));
+        $parsers = Pack::getParsersByType($request->get('type'));
         
         $urls = $this->getUrls();
         foreach ($urls as $url) {
@@ -84,8 +88,8 @@ class SoController extends Controller
             'data'       => $data,
             'status'     => 'pending',
             'id_user'    => Sentinel::getUser()->id,
-            'type'       => Input::get('type', ''),
-            'title'      => Input::get('title', ''),
+            'type'       => $request->get('type', ''),
+            'title'      => $request->get('title', ''),
             'created_at' => time(),
         ]);
         
@@ -95,15 +99,15 @@ class SoController extends Controller
         return response()->json([
             'status' => true,
             'id'     => $id->__toString(),
-            'title'  => Input::get('title', ''),
-            'type'   => Input::get('type', ''),
+            'title'  => $request->get('title', ''),
+            'type'   => $request->get('type', ''),
             'count'  => count($urls),
         ]);
     } // end createBulk
     
-    private function getUrls()
+    private function getUrls(Request $request)
     {
-        $urls = explode("\n", Input::get('urls'));
+        $urls = explode("\n", $request->get('urls'));
         
         if (Input::hasFile('file')) {
             $file = Input::file('file');
@@ -133,7 +137,6 @@ class SoController extends Controller
         $title = urlify($pack->title) .'_'. date('Y-m-d', $pack->created_at);
         
         Excel::create($title, function($excel) use($pack) {
-            
             switch ($pack->type) {
                 case Pack::EMAILS_TYPE:
                     $excel->sheet('Email', function($sheet) use($pack) {

@@ -28,6 +28,9 @@ Route::group([
     'before' => ['auth'],
 ], function () {
     
+    Route::get('/', function() {
+        return redirect('/me/bulk');
+    });
     Route::get('/bulk', 'SoController@showBulk');
     Route::get('/bulk/{slug}/xls/download', 'SoController@downloadBulkXls');
     Route::get('/api', 'SoController@showApi');
@@ -46,6 +49,7 @@ Route::group([
 
 Route::get('/', 'HomeController@showIndex');
 Route::get('/contact', 'HomeController@showContact');
+Route::post('/contact/save', 'HomeController@saveContact');
 Route::get('/password-recovery', 'HomeController@showPassRecovery');
 
 Route::post('/create-account', 'HomeController@createAccount');

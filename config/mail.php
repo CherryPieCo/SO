@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'driver' => 'mailgun',//env('MAIL_DRIVER', 'smtp'),sendmail
+    'driver' => 'sendmail',//env('MAIL_DRIVER', 'smtp'),sendmail
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
