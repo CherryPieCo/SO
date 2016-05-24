@@ -47,7 +47,7 @@ $(function() {
                         //window.location = '/me/bulk';
                         $('#signUpModal').modal('show');
                     } else {
-                        alert(response.error);
+                        toastr.error(response.error);
                     }
                     
                 },

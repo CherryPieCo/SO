@@ -10,7 +10,6 @@
       <div class="row">
         <div class="col-xs-8">
           <label>
-            <input type="radio" name="select-plan" value="">
             <span>
               <strong class="text-primary">Trial Account</strong>
               <p><strong>All Opportunities</strong> </p>
@@ -27,15 +26,14 @@
       <div class="row">
         <div class="col-xs-8">
           <label>
-            <input type="radio" name="select-plan" value="">
             <span>
               <strong class="text-primary">Blogger</strong>
-              <p><strong>E-mail Finder</strong> - 3000 requests/ month</p>
+              <p><strong>E-mail Finder</strong> - Unlim requests / month</p>
             </span>
           </label>
         </div>
         <div class="col-xs-4">
-          <div class="col-sm-6 text-right"><h5>$31.00</h5></div>
+          <div class="col-sm-6 text-right"><h5>$27.00</h5></div>
           <div class="col-sm-6 text-right">
               <form action="https://www.2checkout.com/checkout/purchase" method="post">
                   <input type="hidden" name="sid" value="102893557">
@@ -50,7 +48,6 @@
       <div class="row">
         <div class="col-xs-8">
           <label>
-            <input type="radio" name="select-plan" value="">
             <span>
               <strong class="text-primary">Pro</strong>
               <p><strong>All opportunities:</strong> E-mail Finder, 404 Checker, Backlink Checker - Unlim requests / month</p>

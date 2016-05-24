@@ -52,8 +52,12 @@ class SoController extends Controller
     
     public function createBulk(Request $request)
     {
-        if (!Sentinel::getUser()->isCampaignAllowed($request->get('type'))) {
-            throw new \RuntimeException('priv');
+        $error = '';
+        if (!Sentinel::getUser()->isCampaignAllowed($request->get('type'), $error)) {
+            return response()->json([
+                'status' => true,
+                'error'  => $error
+            ]);
         }
         
         $data = [];

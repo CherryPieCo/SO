@@ -171,6 +171,12 @@ class Pack extends Eloquent
             if (isset($info['parsers']['email']['data']['emails'])) {
                 $emails = $info['parsers']['email']['data']['emails'];
             }
+            
+            // show urls even if there is no result
+            if (!$emails) {
+                $emails[] = '';
+            }
+            
             foreach ($emails as $email) {
                 $data[] = [
                     $domain, $url, $email
@@ -193,6 +199,12 @@ class Pack extends Eloquent
             if (isset($info['parsers']['not_found']['data'])) {
                 $brokenLinks = $info['parsers']['not_found']['data'];
             }
+            
+            // show urls even if there is no result
+            if (!$brokenLinks) {
+                $brokenLinks[] = '';
+            }
+
             foreach ($brokenLinks as $link) {
                 $data[] = [
                     $url, $link
@@ -215,6 +227,12 @@ class Pack extends Eloquent
             if (isset($info['parsers']['backlinks']['data'])) {
                 $backlinks = $info['parsers']['backlinks']['data'];
             }
+            
+            // show urls even if there is no result
+            if (!$backlinks) {
+                $backlinks['urls'][] = '';
+            }
+            
             foreach ($backlinks['urls'] as $link) {
                 $data[] = [
                     $url, $link
@@ -224,7 +242,6 @@ class Pack extends Eloquent
         
         return $data;
     } // end getBacklinksForXls
-    
     
 }
 

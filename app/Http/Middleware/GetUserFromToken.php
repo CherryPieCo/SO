@@ -22,8 +22,7 @@ class GetUserFromToken
         $token = Input::get('token', $request->header('Authorization'));
         if (!$token) {
             $content = json_encode([
-                'message' => 'token_not_provided',
-                'code' => 400 
+                'error' => 'Token not provided',
             ]);
             return (new Response($content, 400))->header('Content-Type', 'application/json');
         }
@@ -31,8 +30,7 @@ class GetUserFromToken
         $user = User::where('token', $token)->first();
         if (!$user) {
             $content = json_encode([
-                'message' => 'user_not_found',
-                'code' => 404 
+                'error' => 'User not found',
             ]);
             return (new Response($content, 404))->header('Content-Type', 'application/json');
         }

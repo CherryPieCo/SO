@@ -35,15 +35,24 @@ class User extends JarboeUser implements AuthenticatableContract
         }
     } // end mailchimpSubscribe
     
-    public function isCampaignAllowed($campaign)
+    public function isCampaignAllowed($campaign, &$error = '', $isApi = false)
     {
         if (!$this->isSubscriptionActive()) {
+            $error = 'Subscription expired.';
             return false;
         }
+        /*
         if ($this->isFreeType() && $this->getTotalBulksCount() >= 50) {
+            $error = '50 bulks is maximum that allowed for trial account.';
             return false;
         }
-        if (!$this->isRequestsAvailable() || $this->getCurrentActiveBulksCount() > 2) {
+        */
+        if (!$this->isRequestsAvailable()) {
+            $error = 'Requests limit exceeded.';
+            return false;
+        }
+        if (!$isApi && $this->getCurrentActiveBulksCount() > 2) {
+            $error = 'Please wait until we finish processing the current project.';
             return false;
         }
         
@@ -136,6 +145,8 @@ class User extends JarboeUser implements AuthenticatableContract
     
     public function isRequestsAvailable()
     {
+        // cuz currently we have unlim requests
+        return true;
         return $this->getCurrentRequests() < $this->getMaximumRequests();
     } // end isRequestsAvailable
     

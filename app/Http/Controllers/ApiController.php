@@ -8,6 +8,7 @@ use Artisan;
 use App\User;
 use App\Models\Url;
 use App\Models\Pack;
+use Illuminate\Http\Response;
 
 
 class ApiController extends Controller
@@ -34,6 +35,13 @@ class ApiController extends Controller
     
     public function email($url)
     {
+        $error = '';
+        if (!$this->user->isCampaignAllowed('emails', $error, true)) {
+            $content = json_encode(compact('error'));
+            return (new Response($content, 403))->header('Content-Type', 'application/json');
+        }
+        
+        
         $url = urldecode(Input::get('url'));
         
         if (!parse_url($url, PHP_URL_SCHEME)) {
@@ -58,5 +66,6 @@ class ApiController extends Controller
         
         return response()->json(compact('data'));
     } // end email
+    
     
 }
