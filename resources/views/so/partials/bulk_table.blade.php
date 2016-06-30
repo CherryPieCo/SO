@@ -35,7 +35,7 @@
                     </td>
                     <td class="text-right">
                       @if ($bulk->isComplete())
-                        <a href="/me/bulk/{{ $bulk->id }}/xls/download" target="_blank" class="btn btn-xs btn-default">
+                        <a {!! $bulk->isBacklinksType() ? 'onclick="App.downloadBacklinkXls(this);return false;"' : '' !!} href="/me/bulk/{{ $bulk->id }}/xls/download" target="_blank" class="btn btn-xs btn-default">
                             <i class="fa fa-download"></i>
                         </a>
                       @endif

@@ -42,6 +42,9 @@ window.wo = (function() {
                 this.data = [this.data];
             }
             
+            if (!this.data.length) {
+                this.data.push('');
+            }
             var html = '';
             this.data.forEach(function(item) {
                 html += self.fetch(template, item);

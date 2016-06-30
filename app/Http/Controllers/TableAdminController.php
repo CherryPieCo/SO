@@ -26,4 +26,13 @@ class TableAdminController extends \App\Http\Controllers\Controller
     
     } // end showPacks
     
+    public function showLinks()
+    {
+        $options = array(
+            'def_name' => 'links',
+        );
+        return Jarboe::table($options);
+    
+    } // end showLinks
+    
 }

@@ -25,9 +25,9 @@ class Balancer
         // 'q55' => 0, 'q56' => 0, 'q57' => 0, 'q58' => 0, 'q59' => 0, 
     ];
     
-    public static function queue($data, $parser, $url, $pack)
+    public static function queue($data, $parser, $url, $pack, $options)
     {
-        $job = new CommandHandler($data, $parser, $url, $pack);
+        $job = new CommandHandler($data, $parser, $url, $pack, $options);
         $job->onQueue(self::getLowestQueueName());
         
         Bus::dispatch($job);

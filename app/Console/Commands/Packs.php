@@ -65,7 +65,8 @@ class Packs extends Command
                     sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')),
                     $type, 
                     urlencode($url), 
-                    $this->argument('id')
+                    $this->argument('id'),
+                    $options
                 );
                 //shell_exec('"'.sprintf($pattern, $type, urlencode($url), $options, '--pack='. $this->argument('id')) .'" >> '. base_path() .'/ohhai.log');
                 //$this->dispatch(new SendReminderEmail($user));

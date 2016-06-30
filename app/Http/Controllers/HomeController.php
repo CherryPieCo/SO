@@ -88,6 +88,11 @@ class HomeController extends Controller
     
     public function createAccount()
     {
+        return response()->json([
+            'status' => false,
+            'error'  => 'Closed for now',
+        ]);
+        
         // csrf
         $fullName = Input::get('name');
         $names = explode(' ', $fullName);

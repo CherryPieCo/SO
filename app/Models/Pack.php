@@ -25,6 +25,11 @@ class Pack extends Eloquent
         return $this->data;
     } // end getData
     
+    public function isBacklinksType()
+    {
+        return $this->type == self::BACKLINKS_TYPE;
+    } // end isBacklinksType
+    
     public function getCompletedUrlsCount()
     {
         $count = 0;
@@ -115,12 +120,12 @@ class Pack extends Eloquent
         ]);
     } // end recheckStatus
     
-    public static function getParsersByType($type)
+    public static function getParsersByType($type, $options = [])
     {
         $parsers = [];
         $emailsParser = [
             'status' => 'pending',
-            'options' => [],
+            'options' => $options,
             'message' => '',
             'created_at' => time(),
             'finished_at' => 0,
@@ -134,7 +139,7 @@ class Pack extends Eloquent
                 $parsers['email'] = $emailsParser;
                 $parsers['not_found'] = [
                     'status' => 'pending',
-                    'options' => [],
+                    'options' => $options,
                     'message' => '',
                     'created_at' => time(),
                     'finished_at' => 0,
@@ -143,7 +148,7 @@ class Pack extends Eloquent
             case self::BACKLINKS_TYPE:
                 $parsers['backlinks'] = [
                     'status' => 'pending',
-                    'options' => [],
+                    'options' => $options,
                     'message' => '',
                     'created_at' => time(),
                     'finished_at' => 0,
@@ -215,7 +220,7 @@ class Pack extends Eloquent
         return $data;
     } // end getBrokenLinksForXls
     
-    public function getBacklinksForXls()
+    public function getBacklinksForXls($type)
     {
         $data = [
             ['Page URL', 'Backlink']
@@ -230,13 +235,32 @@ class Pack extends Eloquent
             
             // show urls even if there is no result
             if (!$backlinks) {
-                $backlinks['urls'][] = '';
+                $backlinks['fcuk'][] = '';
             }
             
-            foreach ($backlinks['urls'] as $link) {
-                $data[] = [
-                    $url, $link
-                ];
+            if ($type == 'one') {
+                $domains = [];
+                foreach ($backlinks as $backlinkType) {
+                    foreach ($backlinkType as $link) {
+                        $domain = parse_url($link, PHP_URL_HOST);
+                        if (array_key_exists($domain, $domains)) {
+                            continue;
+                        }
+                        
+                        $data[] = [
+                            $url, $link
+                        ];
+                        $domains[$domain] = 'dummy';
+                    }
+                }
+            }
+            
+            foreach ($backlinks as $backlinkType) {
+                foreach ($backlinkType as $link) {
+                    $data[] = [
+                        $url, $link
+                    ];
+                }
             }
         }
         

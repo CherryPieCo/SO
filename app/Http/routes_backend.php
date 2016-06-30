@@ -16,5 +16,6 @@ Route::group(array(
     Route::any('packs', 'TableAdminController@showPacks');
     Route::any('settings', 'TableAdminController@settings');
     
+    Route::any('links', 'TableAdminController@showLinks');
 
 });

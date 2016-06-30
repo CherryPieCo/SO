@@ -26,7 +26,8 @@ info of token bearer
 ```json
 {
 	"data": {
-		"url": "http:\/\/cherry-pie.co",
+        "domain": "http:\/\/cherry-pie.co",
+        "url": "http:\/\/cherry-pie.co",
 		"emails": [
 			"sexy@cherry-pie.co"
 		],

@@ -42,8 +42,7 @@ class ApiController extends Controller
         }
         
         
-        $url = urldecode(Input::get('url'));
-        
+        $url = urldecode($url);
         if (!parse_url($url, PHP_URL_SCHEME)) {
             $url = 'http://'. $url;
         }
@@ -57,8 +56,11 @@ class ApiController extends Controller
             
             $site = Url::where('hash', md5($url))->first();
         }
+        
+        $domain = parse_url($site->url, PHP_URL_SCHEME) .'://'. parse_url($site->url, PHP_URL_HOST);
         $parsers = $site->parsers;
         $data = [
+            'domain' => $domain,
             'url' => $site->url,
             'emails' => array_get($parsers, 'email.emails', []),
             'contacts' => array_get($parsers, 'email.contacts', []),

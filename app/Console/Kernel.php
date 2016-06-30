@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \App\Console\Commands\Test::class,
         \App\Console\Commands\WebScraper::class,
         \App\Console\Commands\Packs::class,
         \App\Console\Parsers\Pages::class,

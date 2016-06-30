@@ -66,6 +66,7 @@
     
   @include('so.modals.create_bulk')
   @include('so.modals.delete_bulk')
+  @include('so.modals.download_backlinks_type_xls')
     
   <div id="bulks-table-container">
     @include('so.partials.bulk_table')

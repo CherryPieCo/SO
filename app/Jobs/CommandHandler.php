@@ -19,18 +19,21 @@ class CommandHandler extends Job implements SelfHandling, ShouldQueue
     public $parser = '';
     public $pack = '';
     public $url = '';
+    public $options = '';
+    
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($command, $parser, $url, $pack)
+    public function __construct($command, $parser, $url, $pack, $options)
     {
         $this->command = $command;
         
         $this->parser = $parser;
         $this->url = $url;
         $this->pack = $pack;
+        $this->options = $options;
     }
 
     /**
@@ -40,10 +43,10 @@ class CommandHandler extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        //shell_exec($this->command);
         \Log::info('START: '. $this->command);
         Artisan::call('scrape:'. $this->parser, [
             'url' => $this->url, 
+            'options' => $this->options,
             '--pack' => $this->pack
         ]);
         \Log::info('STOP: '. $this->command);

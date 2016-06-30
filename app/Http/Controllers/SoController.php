@@ -61,7 +61,10 @@ class SoController extends Controller
         }
         
         $data = [];
-        $parsers = Pack::getParsersByType($request->get('type'));
+        $parsers = Pack::getParsersByType(
+            $request->get('type'), 
+            array_unique(array_filter(explode(',', $request->get('options'))))
+        );
         
         $urls = $this->getUrls($request);
         foreach ($urls as $url) {
@@ -148,8 +151,8 @@ class SoController extends Controller
             dr($pack->getAttributes());
         }
         
-        if (!$pack->isComplete()) {
-            die('привет хуцкер');
+        if (!$pack || !$pack->isComplete()) {
+            abort(404);
         }
         
         $title = urlify($pack->title) .'_'. date('Y-m-d', $pack->created_at);
@@ -183,7 +186,13 @@ class SoController extends Controller
                         $sheet->cells('A1:B1', function($cells) {
                             $cells->setFontWeight('bold');
                         });
-                        $sheet->fromArray($pack->getBacklinksForXls(), null, 'A1', false, false);
+                        $sheet->fromArray(
+                            $pack->getBacklinksForXls(Input::get('type', 'all')), 
+                            null, 
+                            'A1', 
+                            false, 
+                            false
+                        );
                     });
             }
             

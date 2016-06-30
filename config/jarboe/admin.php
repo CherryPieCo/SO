@@ -80,9 +80,9 @@ return array(
             }
         ),
         array(
-            'title' => 'ПАчки',
-            'icon'  => 'home',
-            'link'  => '/packs',
+            'title' => 'Links',
+            'icon'  => 'link',
+            'link'  => '/links',
             'check' => function() {
                 return true;
             }

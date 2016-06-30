@@ -14,11 +14,26 @@
             <div class="row">
               <div class="col-xs-12">
                 <div class="form-group">
-                  <label><small>Project name</small></label>
+                  <label><small>Project name:</small></label>
                   <input name="title" id="bulk-title" class="form-control" placeholder="Project name" type="text">
                 </div>  
               </div>
             </div>
+            
+            <div id="bulk-options"></div>
+            <script id="backlinks-options" into="bulk-options" type="text/html">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="form-group">
+                      <label><small>Get Backlinks From:</small></label>
+                      <br>
+                      <label style="font-weight: 400;"><input name="options[]" value="url" type="radio" checked="checked"> Url</label>
+                      <label style="font-weight: 400;"><input name="options[]" value="domain" type="radio" style="margin-left: 25px;"> Domain</label>
+                    </div>  
+                  </div>
+                </div>
+            </script>
+            
             <div class="row">
               <div class="col-xs-12">
                 <div class="form-group">

@@ -72,7 +72,7 @@ class AbstractParser extends Command
     protected function after() 
     {
         $idPack = $this->idPack;
-        if (!$idPack) {
+        if (!$idPack || !Pack::where('_id', $idPack)->first()) {
             return false;
         }
         

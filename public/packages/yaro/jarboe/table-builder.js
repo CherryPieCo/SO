@@ -40,11 +40,8 @@ var TableBuilder = {
     
     getActionUrl: function()
     { 
-        // FIXME:
-        return !!TableBuilder.options ? TableBuilder.options.action_url : '/admin/handle/tree';
+        return TableBuilder.options.action_url;
     }, // end getActionUrl
-
-
 
     initSearchOnEnterPressed: function()
     {
@@ -60,13 +57,13 @@ var TableBuilder = {
     }, // end initSearchOnEnterPressed
 
     getOptions: function(options) {
+        // review
         var defaultOptions = {
             lang: {},
             ident: null,
-            table_ident: null,
-            form_ident: null,
-            action_url: null,
-            list_url: null,
+            table_ident: 'jarboe_table_ident',
+            form_ident: 'jarboe_form_ident',
+            action_url: window.location.pathname,
             is_page_form: false,
             onSearchResponse: null,
             onFastEditResponse: null,
@@ -107,8 +104,7 @@ var TableBuilder = {
     {
         TableBuilder.showProgressBar();
 
-        var $form = jQuery('#'+ TableBuilder.options.table_ident);
-
+        var $form = jQuery('#'+TableBuilder.options.table_ident);
         var data = $form.serializeArray();
         data.push({ name: "query_type", value: "search" });
         data.push({ name: "__node", value: TableBuilder.getUrlParameter('node') });
@@ -122,30 +118,9 @@ var TableBuilder = {
         );
         
         var $posting = jQuery.post(TableBuilder.getActionUrl(), data);
-
         $posting.done(function(response) {
             window.location.replace(window.location.origin + window.location.pathname + window.location.search);
-            //window.location.replace(response.url);
-            /*
-             TableBuilder.hideProgressBar();
-
-             $form.find('tbody')
-             .fadeOut("fast")
-             .html(response.tbody)
-             .fadeIn("fast");
-
-             $form.find('.tb-pagination')
-             .fadeOut("fast")
-             .html(response.pagination)
-             .fadeIn("fast");
-
-             if (jQuery.isFunction(TableBuilder.options.onSearchResponse)) {
-             TableBuilder.options.onSearchResponse(response);
-             }
-             TableBuilder.initDoubleClickEditor();
-             */
         });
-
     }, // end search
 
     showProgressBar: function()
@@ -634,7 +609,6 @@ var TableBuilder = {
                 if (response.id) {
                     TableBuilder.showSuccessNotification("Поле обновлено успешно");
                     if (TableBuilder.options.is_page_form) {
-                        //window.location.href = TableBuilder.options.list_url;
                         window.history.back();
                         return;
                     }
@@ -700,7 +674,6 @@ var TableBuilder = {
                 if (response.id) {
                     TableBuilder.showSuccessNotification("Новое поле создано успешно");
                     if (TableBuilder.options.is_page_form) {
-                        //window.location.href = TableBuilder.options.list_url;
                         window.history.back();
                         return;
                     }
