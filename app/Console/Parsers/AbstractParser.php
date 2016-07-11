@@ -39,6 +39,7 @@ class AbstractParser extends Command
         $rollingCurl = new \RollingCurl\RollingCurl();
         $rollingCurl->addOptions([
             CURLOPT_USERAGENT => 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)',
+            CURLOPT_SSL_VERIFYPEER => false,
         ]);
         $rollingCurl->get($this->url);
         $rollingCurl->setSimultaneousLimit(2);

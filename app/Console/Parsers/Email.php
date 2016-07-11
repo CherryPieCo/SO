@@ -17,35 +17,49 @@ class Email extends AbstractParser
         $response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
         $response['contacts'] = $this->getContacts();
         
-        if (!$response['email'] && $response['contacts']) {
-            foreach ($response['contacts'] as $c) {
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+        // FIXME: not mainainable statement
+        if (!$response['contacts']) {
+            $javascriptUrl = parse_url($this->url, PHP_URL_SCHEME) .'://'
+                           . parse_url($this->url, PHP_URL_HOST) .'/nav.js';
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_URL, $javascriptUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $output = curl_exec($ch);
+            
+            $response['contacts'] = $this->getContacts($output);
+        }
 
-                $headers = @get_headers($c, 1) ?: [];
-                $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
-                switch ($headers[0]) {
-                    case "HTTP/1.1 301 Moved Permanently":
-                        if (isset($headers['Location'])) {
-                            $redirectLocation = is_array($headers['Location']) ? $headers['Location'][0] : $headers['Location'];
-                        } elseif (isset($headers['location'])) {
-                            $redirectLocation = is_array($headers['location']) ? $headers['location'][0] : $headers['location'];
-                        } else {
-                            break 2;
-                        }
-                        
-                        curl_setopt($ch, CURLOPT_URL, $redirectLocation);
-                        break;
-                    default:                        
-                        curl_setopt($ch, CURLOPT_URL, $c);
-                }
+        foreach ($response['contacts'] as $c) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                $output = curl_exec($ch);
-                
-                $response['email'] = array_merge($response['email'], $this->getEmails($output));
+            $headers = @get_headers($c, 1) ?: [];
+            $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
+            switch ($headers[0]) {
+                case "HTTP/1.1 301 Moved Permanently":
+                    if (isset($headers['Location'])) {
+                        $redirectLocation = is_array($headers['Location']) ? $headers['Location'][0] : $headers['Location'];
+                    } elseif (isset($headers['location'])) {
+                        $redirectLocation = is_array($headers['location']) ? $headers['location'][0] : $headers['location'];
+                    } else {
+                        break 2;
+                    }
+                    
+                    curl_setopt($ch, CURLOPT_URL, $redirectLocation);
+                    break;
+                default:                        
+                    curl_setopt($ch, CURLOPT_URL, $c);
             }
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $output = curl_exec($ch);
+            
+            $response['email'] = array_merge($response['email'], $this->getEmails($output));
         }
 
         $emails = [];
@@ -75,6 +89,7 @@ class Email extends AbstractParser
     {
         $html = $this->changeAtSymbol($html);
         $html = $this->changeDotSymbol($html);
+        $html = $this->changeMiscSymbol($html);
         
         $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
         preg_match_all($pattern, $html, $matches);
@@ -102,6 +117,8 @@ class Email extends AbstractParser
             '~\s*\[\{at\}\]\s*~',
             '~\s*@\s*~',
             '~\[change this to@\]~',
+            '~\s*\[ at \]\s*~',
+            '~\s*\(AT\)\s*~',
         ];
         
         foreach ($patterns as $pattern) {
@@ -119,11 +136,25 @@ class Email extends AbstractParser
             '~\s*\(dot\)\s*~',
             '~\s*\(\(the\s+dot\s+thingie\)\)\s*~',
             '~\s*\[\{dot\}\]\s*~',
-            '~\sdot\s~',
+            '~\s*dot\s*~',
+            '~\s*\[\.\]\s*~',
+            '~\s*dott\s*~',
         ];
         
         foreach ($patterns as $pattern) {
             $text = preg_replace($pattern, '.', $text);
+        }
+        return $text;
+    } // end changeDotSymbol
+    
+    private function changeMiscSymbol($text)
+    {
+        $patterns = [
+             '.com' => '~(DotCom)~',
+        ];
+        
+        foreach ($patterns as $replacement => $pattern) {
+            $text = preg_replace($pattern, $replacement, $text);
         }
         return $text;
     } // end changeDotSymbol
@@ -134,12 +165,13 @@ class Email extends AbstractParser
     
     //
     //
-    private function getEmail($regexp, $order) 
+    private function getEmail($regexp, $order, $content = false) 
     {
+        $content = $content ?: $this->request->getResponseText();
         $parse_url = parse_url($this->url);
         $url = "";
         
-        if (preg_match("~$regexp~iU", $this->request->getResponseText(), $matches)) {
+        if (preg_match("~$regexp~iU", $content, $matches)) {
             
             $parse_contact_url = parse_url($matches[$order]);
 
@@ -152,6 +184,7 @@ class Email extends AbstractParser
                 $slash = (((substr($parse_url['host'], -1) != "/") && (substr($matches[$order], 0, 1) != "/")) ? "/" : "/");
                 $matches[$order] = ltrim($matches[$order], "\.\./");
                 if (!empty($parse_url['scheme'])) {
+                    $matches[$order] = trim($matches[$order], "'");
                     $url = (strpos($matches[$order], '://') ? trim($matches[$order], "'") : "{$parse_url['scheme']}://{$parse_url['host']}{$slash}{$matches[$order]}");
                 } else {
                     $url = (strpos($matches[$order], '://') ? $matches[$order] : ($this->request->getUrl() . $matches[$order]));
@@ -172,14 +205,14 @@ class Email extends AbstractParser
         }, $input);
     } // end htmlNumberEncoder
 
-    private function getContacts()
+    private function getContacts($content = false)
     {
         $contacts = array();
     
         // FIXME:
         $phrases = \DB::table('links')->where('id_type', 1)->lists('phrase');
         if (!$phrases) {
-            return false;
+            return [];
         }
 
         $contacts1 = [];
@@ -190,13 +223,13 @@ class Email extends AbstractParser
             $phrase = preg_quote($phrase);
             
             $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>( |){$phrase}(!| |)<\/a>";
-            $contacts1[] = $this->getEmail($regexp, 2);
+            $contacts1[] = $this->getEmail($regexp, 2, $content);
 
             $regexp = "href=\"(\S*{$phrase}(\/|))\"";                            
-            $contacts2[] = $this->getEmail($regexp, 1);
+            $contacts2[] = $this->getEmail($regexp, 1, $content);
             
             $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*><img.*?alt=\".*?{$phrase}.*?\".*><\/a>";
-            $contacts3[] = $this->getEmail($regexp, 2);
+            $contacts3[] = $this->getEmail($regexp, 2, $content);
         }
 
         $contacts = array_merge($contacts1, $contacts2, $contacts3);
