@@ -10,7 +10,7 @@ class NotFound extends AbstractParser
 {
     
     public $type = 'not_found';
-    protected $signature = 'scrape:not_found {url : site url} {--pack= : pack id}';
+    protected $signature = 'scrape:not_found {url : site url} {options : options} {--pack= : pack id}';
     protected $description = 'scrape:not_found ex.com';
 
     public function exec()

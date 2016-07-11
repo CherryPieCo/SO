@@ -6,27 +6,23 @@ namespace App\Console\Parsers;
 class Email extends AbstractParser
 {
     public $type = 'email';
-    protected $signature = 'scrape:email {url : site url} {--pack= : pack id}';
+    protected $signature = 'scrape:email {url : site url} {options : options} {--pack= : pack id}';
     protected $description = 'scrape:email example.com';
     
     public function exec()
     {
         $this->idPack = $this->option('pack');
-        
         $response = ['email' => [], 'contacts' => []]; 
-        $contactForm = "";
-        $signSearch  = array(' @ ', ' at ', ' [at] ', ' (at) ', ' . ', ' dot ', ' [dot] ', ' (dot) ', '"', "'");
-        $signReplace = array('@', '@', '@', '@', '.', '.', '.', '.', '', '');
 
-        $contacts = $this->getContacts();
-        $response['contacts'] = $contacts;
-        if ($contacts) {
-            foreach ($contacts as $c) {
-
-                //get email from contact page if it exists
+        $response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
+        $response['contacts'] = $this->getContacts();
+        
+        if (!$response['email'] && $response['contacts']) {
+            foreach ($response['contacts'] as $c) {
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-                //check headers
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+
                 $headers = @get_headers($c, 1) ?: [];
                 $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
                 switch ($headers[0]) {
@@ -43,53 +39,12 @@ class Email extends AbstractParser
                         break;
                     default:                        
                         curl_setopt($ch, CURLOPT_URL, $c);
-                        break;
                 }
 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output = curl_exec($ch);
-
-                //curl_close($ch);
-                if (preg_match("/[a-z0-9!#$%&;'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&;'*+=?^_`{|}~-]+)*( at | \(at\) | \[at\] |@| @ )(?:[a-z0-9!#$%&;'*+=?^_`{|}~-](?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?(\.| \. | dot | \(dot\) | \[dot\] ))+[a-z0-9!#$%&;'*+=?^_`{|}~-](?![png])(?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?/i", $output, $matches)) {
-                    $parsedEmail = str_replace($signSearch, $signReplace, $matches[0]);
-                    $parsedEmail = $this->htmlNumberEncoder($parsedEmail);
-                    $parsedEmail = strtok($parsedEmail, '?');
-                    $parsedEmail = (preg_match('/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/', $parsedEmail) ? $parsedEmail : null);
-                    $parsedEmail = (preg_match('/\.(png)(?:[\?\#].*)?$/i', $parsedEmail) ? null : $parsedEmail);
-                    $response['email'][] = $parsedEmail;
-                    //$response['contact_form'] = $c;
-                    //if (!empty($response['email'])) break;
-                } elseif (preg_match('/<a.*?prefix=(["\'])(.*?)\1.*?href=(["\'])mailto:(.*?)\1.*/', $output, $matches)) {
-                    $response['email'][] = "{$matches[2]}@{$matches[4]}";
-                    //$response['contact_form'] = $c;
-                    //if (!empty($response['email'])) break;
-                } elseif (strpos($output,'username + "@" + hostname') !== false) {
-                    $username_pattern = '/var username = "(.*?)";/';
-                    $hostname_pattern = '/var hostname = "(.*?)";/';
-                    if (preg_match($username_pattern, $output, $username_matches) && preg_match($hostname_pattern, $output, $hostname_matches)) {
-                        $response['email'][] = "{$username_matches[1]}@{$hostname_matches[1]}";
-                        //$response['contact_form'] = $c;
-                        //if (!empty($response['email'])) break;
-                    }
-                }
-            }
-        } else {
-            //get email from target page if contact page not exists
-            if (preg_match("/[a-z0-9!#$%&;'*+=?^_`{|}~-]+(?:\.[a-z0-9!#$%&;'*+=?^_`{|}~-]+)*( at | \(at\) | \[at\] |@| @ )(?:[a-z0-9!#$%&;'*+=?^_`{|}~-](?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?(\.| \. | dot | \(dot\) | \[dot\] ))+[a-z0-9!#$%&;'*+=?^_`{|}~-](?![png])(?:[a-z0-9-!#$%&;'*+=?^_`{|}~-]*[a-z0-9!#$%&;'*+=?^_`{|}~-])?/i", $this->request->getResponseText(), $matches)) {
-                $parsedEmail = str_replace($signSearch, $signReplace, $matches[0]);
-                $parsedEmail = $this->htmlNumberEncoder($parsedEmail);
-                $parsedEmail = strtok($parsedEmail, '?');
-                $parsedEmail = (preg_match('/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/', $parsedEmail) ? $parsedEmail : null);
-                $parsedEmail = (preg_match('/\.(png)(?:[\?\#].*)?$/i', $parsedEmail) ? null : $parsedEmail);
-                $response['email'][] = $parsedEmail;
-            } elseif (preg_match('/<a.*?prefix=(["\'])(.*?)\1.*?href=(["\'])mailto:(.*?)\1.*/', $this->request->getResponseText(), $matches)) {
-                $response['email'][] = "{$matches[2]}@{$matches[4]}";
-            } elseif (strpos($this->request->getResponseText(),'username + "@" + hostname') !== false) {
-                $username_pattern = '/var username = "(.*?)";/';
-                $hostname_pattern = '/var hostname = "(.*?)";/';
-                if (preg_match($username_pattern, $this->request->getResponseText(), $username_matches) && preg_match($hostname_pattern, $this->request->getResponseText(), $hostname_matches)) {
-                    $response['email'][] = "{$username_matches[1]}@{$hostname_matches[1]}";
-                }
+                
+                $response['email'] = array_merge($response['email'], $this->getEmails($output));
             }
         }
 
@@ -116,12 +71,75 @@ class Email extends AbstractParser
         ];
     } // end exec
     
+    private function getEmails($html) 
+    {
+        $html = $this->changeAtSymbol($html);
+        $html = $this->changeDotSymbol($html);
+        
+        $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
+        preg_match_all($pattern, $html, $matches);
+        
+        $emails = isset($matches[0]) ? array_filter(array_unique($matches[0])) : [];
+        
+        return $emails;
+    } // end getEmails
+    
+    private function changeAtSymbol($text)
+    {
+        $patterns = [
+            '~\s*\[the-at-symb\]\s*~',
+            '~\s*\(at\)\s*\(attempting to alleviate spam\) were encoded in such a way\.\s*~',
+            '~\s*\(\(that little "at" thingie\)\)\s*~',
+            '#\[~at~\]#',
+            '~\[at\]~',
+            '~\{\@\}~',
+            '~\s*\[whirlpool\]\s*~',
+            '~\s*\[\'at\'\]\s*~',
+            '~\s*\(\s*a\s*t\s*\)\s*~',
+            '~\s*\(\@t\)\s*~',
+            '~\s*\(\@\)\s*~',
+            '~\[atmark\]~',
+            '~\s*\[\{at\}\]\s*~',
+            '~\s*@\s*~',
+            '~\[change this to@\]~',
+        ];
+        
+        foreach ($patterns as $pattern) {
+            $text = preg_replace($pattern, '@', $text);
+        }
+        return $text;
+    } // end changeAtSymbol
+    
+    private function changeDotSymbol($text)
+    {
+        $patterns = [
+            '~\s*-\.-\s*~',
+            '~\[insert\s+period\s+here\]~',
+            '~\s*\[spot\]\s*~',
+            '~\s*\(dot\)\s*~',
+            '~\s*\(\(the\s+dot\s+thingie\)\)\s*~',
+            '~\s*\[\{dot\}\]\s*~',
+            '~\sdot\s~',
+        ];
+        
+        foreach ($patterns as $pattern) {
+            $text = preg_replace($pattern, '.', $text);
+        }
+        return $text;
+    } // end changeDotSymbol
+    
+    
+    
+    
+    
+    //
+    //
     private function getEmail($regexp, $order) 
     {
         $parse_url = parse_url($this->url);
         $url = "";
         
-        if (preg_match("/$regexp/iU", $this->request->getResponseText(), $matches)) {
+        if (preg_match("~$regexp~iU", $this->request->getResponseText(), $matches)) {
             
             $parse_contact_url = parse_url($matches[$order]);
 

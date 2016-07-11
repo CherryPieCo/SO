@@ -37,6 +37,9 @@ class AbstractParser extends Command
         $this->id = $this->site->id;
         
         $rollingCurl = new \RollingCurl\RollingCurl();
+        $rollingCurl->addOptions([
+            CURLOPT_USERAGENT => 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)',
+        ]);
         $rollingCurl->get($this->url);
         $rollingCurl->setSimultaneousLimit(2);
         $rollingCurl->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use($context) {
