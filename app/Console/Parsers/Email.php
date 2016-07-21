@@ -63,11 +63,16 @@ class Email extends AbstractParser
         }
 
         $emails = [];
-        foreach (array_unique(array_filter($response['email'])) as $email) {
+        foreach ($response['email'] as $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $emails[] = $email;
+                $emails[] = mb_strtolower($email);
             }
         }
+        
+        $emails = array_unique(array_filter($emails));
+        
+        $emails = $this->filterSpamCatcherEmails($emails);
+        $emails = $this->revealSpamCatcherEmails($emails);
         
         $parsers = $this->site->parsers;
         $parsers['email'] = [
@@ -84,6 +89,48 @@ class Email extends AbstractParser
             'contacts' => array_values($response['contacts']),
         ];
     } // end exec
+    
+    private function filterSpamCatcherEmails($emails)
+    {
+        $domains = [
+            'nospam.',
+            'example.com',
+            'domain.com',
+            'yoursite.com',
+            'yourdomain.com',
+            'emailadress.com',
+            'company.com',
+            'yourdomain.com',
+        ];
+        
+        foreach ($emails as $key => $email) {
+            foreach ($domains as $domain) {
+                $pattern = '~@'. preg_quote($domain) .'~';
+                if (preg_match($pattern, $email)) {
+                    unset($emails[$key]);
+                    break;
+                }
+            }
+        }
+        
+        return $emails;
+    } // end filterSpamCatcherEmails
+    
+    private function revealSpamCatcherEmails($emails)
+    {
+        $replacements = [
+            '@googlemail.com' => '@gmail.com',
+        ];
+        
+        foreach ($emails as &$email) {
+            foreach ($replacements as $from => $to) {
+                $pattern = '~'. preg_quote($from) .'~';
+                $email = preg_replace($pattern, $to, $email);
+            }
+        }
+        
+        return $emails;
+    } // end revealSpamCatcherEmails
     
     private function getEmails($html) 
     {
