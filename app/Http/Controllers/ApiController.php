@@ -51,7 +51,8 @@ class ApiController extends Controller
         $site = Url::where('hash', md5($url))->first();
         if (!$site) {
             Artisan::call('scrape:email', [
-                'url' => $url
+                'url' => $url,
+                'options' => '',
             ]);
             
             $site = Url::where('hash', md5($url))->first();
