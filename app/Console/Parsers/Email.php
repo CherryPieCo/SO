@@ -14,7 +14,7 @@ class Email extends AbstractParser
         $this->idPack = $this->option('pack');
         $response = ['email' => [], 'contacts' => []]; 
 
-        $response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
+        //$response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
         $response['contacts'] = $this->getContacts();
         
         // FIXME: not mainainable statement
