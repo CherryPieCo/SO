@@ -2,6 +2,8 @@
 
 namespace App\Console\Parsers;
 
+use App\Helpers\TLD;
+
 
 class Email extends AbstractParser
 {
@@ -73,6 +75,8 @@ class Email extends AbstractParser
         
         $emails = $this->filterSpamCatcherEmails($emails);
         $emails = $this->revealSpamCatcherEmails($emails);
+        $emails = $this->checkForRealEmails($emails);
+        
         
         $parsers = $this->site->parsers;
         $parsers['email'] = [
@@ -89,6 +93,17 @@ class Email extends AbstractParser
             'contacts' => array_values($response['contacts']),
         ];
     } // end exec
+    
+    private function checkForRealEmails($emails)
+    {
+        foreach ($emails as $key => $email) {
+            if (!TLD::check($email)) {
+                unset($emails[$key]);
+            }
+        }
+        
+        return $emails;
+    } // end checkForRealEmails
     
     private function filterSpamCatcherEmails($emails)
     {
