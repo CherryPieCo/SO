@@ -12,6 +12,8 @@ use Sentinel;
 class AbstractParser extends Command
 {
     
+    const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0';
+    
     protected $idPack = false;
     protected $id = null;
     protected $site = null;
@@ -38,7 +40,7 @@ class AbstractParser extends Command
         
         $rollingCurl = new \RollingCurl\RollingCurl();
         $rollingCurl->addOptions([
-            CURLOPT_USERAGENT => 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)',
+            CURLOPT_USERAGENT => self::USER_AGENT,
             CURLOPT_SSL_VERIFYPEER => false,
         ]);
         $rollingCurl->get($this->url);

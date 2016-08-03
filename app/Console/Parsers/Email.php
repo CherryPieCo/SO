@@ -18,14 +18,15 @@ class Email extends AbstractParser
 
         //$response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
         $response['contacts'] = $this->getContacts();
-        
+
+        // urls in js
         // FIXME: not mainainable statement
         if (!$response['contacts']) {
             $javascriptUrl = parse_url($this->url, PHP_URL_SCHEME) .'://'
                            . parse_url($this->url, PHP_URL_HOST) .'/nav.js';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+            curl_setopt($ch, CURLOPT_USERAGENT, AbstractParser::USER_AGENT);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_URL, $javascriptUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -37,7 +38,7 @@ class Email extends AbstractParser
         foreach ($response['contacts'] as $c) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)');
+            curl_setopt($ch, CURLOPT_USERAGENT, AbstractParser::USER_AGENT);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
             $headers = @get_headers($c, 1) ?: [];
@@ -63,6 +64,7 @@ class Email extends AbstractParser
             
             $response['email'] = array_merge($response['email'], $this->getEmails($output));
         }
+
 
         $emails = [];
         foreach ($response['email'] as $email) {
@@ -152,6 +154,7 @@ class Email extends AbstractParser
         $html = $this->changeAtSymbol($html);
         $html = $this->changeDotSymbol($html);
         $html = $this->changeMiscSymbol($html);
+        $html = html_entity_decode($html);
         
         $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
         preg_match_all($pattern, $html, $matches);
@@ -181,6 +184,7 @@ class Email extends AbstractParser
             '~\[change this to@\]~',
             '~\s*\[ at \]\s*~',
             '~\s*\(AT\)\s*~',
+            '~\s*{\s*at\s*}\s*~',
         ];
         
         foreach ($patterns as $pattern) {
@@ -234,7 +238,6 @@ class Email extends AbstractParser
         $url = "";
         
         if (preg_match("~$regexp~iU", $content, $matches)) {
-            
             $parse_contact_url = parse_url($matches[$order]);
 
             //check full link for contact page
