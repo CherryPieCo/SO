@@ -33,6 +33,20 @@
                   </div>
                 </div>
             </script>
+            <script id="moz-options" into="bulk-options" type="text/html">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="form-group">
+                      <label><small>Get Data:</small></label>
+                      <br>
+                      <label style="font-weight: 400;"><input name="options[]" value="page_authority" type="checkbox" checked="checked"> MOZ: page authority</label><br>
+                      <label style="font-weight: 400;"><input name="options[]" value="domain_authority" type="checkbox" checked="checked"> MOZ: domain authority</label><br>
+                      <label style="font-weight: 400;"><input name="options[]" value="alexa" type="checkbox" checked="checked"> Alexa: popularity rank</label>
+                    </div>  
+                  </div>
+                </div>
+            </script>
+            
             
             <div class="row">
               <div class="col-xs-12">

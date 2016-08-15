@@ -13,6 +13,7 @@ class Pack extends Eloquent
     const EMAILS_TYPE    = 'emails';
     const NOT_FOUND_TYPE = 'not_found';
     const BACKLINKS_TYPE = 'backlinks';
+    const MOZ_TYPE       = 'moz';
     
     
     protected $collection = 'packs';
@@ -147,6 +148,15 @@ class Pack extends Eloquent
                 break;
             case self::BACKLINKS_TYPE:
                 $parsers['backlinks'] = [
+                    'status' => 'pending',
+                    'options' => $options,
+                    'message' => '',
+                    'created_at' => time(),
+                    'finished_at' => 0,
+                ];
+                break;
+            case self::MOZ_TYPE:
+                $parsers['moz'] = [
                     'status' => 'pending',
                     'options' => $options,
                     'message' => '',

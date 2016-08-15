@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Settings;
+use Mail;
+
 
 class MozCredentials extends Model
 {
@@ -25,9 +28,17 @@ class MozCredentials extends Model
     
     public function addError($response)
     {
-        $this->error  = $response;
+        $this->error  = print_r($response, true);
         $this->status = 'error';
         $this->save();
+        
+        Mail::send('emails.moz_error', ['moz' => $this->toArray()], function($m) {
+            $emails = array_map(
+                'trim', 
+                explode(',', Settings::get('moz_notify_error_emails'))
+            );
+            $m->to($emails)->subject('MOZ account problem');
+        });
     } // end addError
     
 }

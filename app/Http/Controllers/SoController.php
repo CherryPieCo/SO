@@ -92,7 +92,7 @@ class SoController extends Controller
                 'error'  => 'Exceeded limit of 100 sites per request: '. count($urls)
             ]);
         }
-        if (count($urls) > 500) {
+        if (!Sentinel::getUser()->isSuperuser() && count($urls) > 500) {
             return response()->json([
                 'status' => false,
                 'error'  => 'Exceeded limit of 500 sites per request: '. count($urls)

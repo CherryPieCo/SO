@@ -47,9 +47,8 @@ class ApiController extends Controller
             $url = 'http://'. $url;
         }
         
-        // FIXME: reparse if time
         $site = Url::where('hash', md5($url))->first();
-        if (!$site) {
+        if (!$site || !$site->getValidParserInfo('email')) {
             Artisan::call('scrape:email', [
                 'url' => $url,
                 'options' => '',

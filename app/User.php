@@ -71,6 +71,11 @@ class User extends JarboeUser implements AuthenticatableContract
                     return false;
                 }
                 break;
+            case 'moz':
+                if ($this->isStarterType()) {
+                    return false;
+                }
+                break;
             
             default:
                 throw new \RuntimeException(sprintf('Unknown campaign: [%s]', $campaign));

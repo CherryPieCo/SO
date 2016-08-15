@@ -87,6 +87,14 @@ return array(
                 return true;
             }
         ),
+        array(
+            'title' => 'MOZ',
+            'icon'  => 'link',
+            'link'  => '/moz',
+            'check' => function() {
+                return true;
+            }
+        ),
         \Jarboe\Component\Logs\Util::getNavigationMenuItem(),
         \Jarboe\Component\Users\Util::getNavigationMenuItem(),
     ),

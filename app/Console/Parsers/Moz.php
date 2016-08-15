@@ -4,6 +4,7 @@ namespace App\Console\Parsers;
 
 use App\Models\MozCredentials;
 use App\Models\MozMetrics;
+use App\Hekpers\Alexa;
 
 
 class Moz extends AbstractParser
@@ -14,7 +15,7 @@ class Moz extends AbstractParser
     
     public $type = 'moz';
     protected $signature = 'scrape:moz {url : site url} {options : options list} {--pack= : pack id}';
-    protected $description = 'scrape:moz ex.com page_authority-domain_authority';
+    protected $description = 'scrape:moz ex.com page_authority-domain_authority-alexa';
     private $options = [];
     
     private $allowedAttributes = [
@@ -37,27 +38,28 @@ class Moz extends AbstractParser
     {
         $this->idPack = $this->option('pack');
         $this->options = explode('-', $this->argument('options'));
+        // HACK: parse all for cache sanity
+        $this->options = [
+            'page_authority',
+            'domain_authority',
+            'alexa',
+        ];
+        
+        
+        if (MozCredentials::where('status', 'ok')->count()) {
+            throw new \RuntimeException('No available MOZ accounts');
+        }
         
         $credentials = MozCredentials::available()->first();
         while (!$credentials) {
+            if (MozCredentials::where('status', 'ok')->count()) {
+                throw new \RuntimeException('No available MOZ accounts');
+            }
+
             sleep(5);
             $credentials = MozCredentials::available()->first();
         }
         $credentials->markAsUsed();
-        /*
-        $expires = time() + 300;
-        $stringToSign = $credentials->access_id ."\n". $expires;
-        $binarySignature = hash_hmac('sha1', $stringToSign, $credentials->secret_key, true);
-        $signature = urlencode(base64_encode($binarySignature));
-        
-        $query = http_build_query([
-            'Cols'      => $this->getPageAuthorityKey() + $this->getDomainAuthorityKey(),
-            'AccessID'  => $credentials->access_id,
-            'Expires'   => $expires,
-            'Signature' => $signature,
-        ]);
-        $requestUrl = 'http://lsapi.seomoz.com/linkscape/url-metrics/'. urlencode($this->url) .'?'. $query;
-        */
         
         $accessID = $credentials->access_id;
         $secretKey = $credentials->secret_key;     
@@ -71,7 +73,6 @@ class Moz extends AbstractParser
         // Use Curl to send off your request.
                 
                 
-                
         $metrics = $this->getMozResponse($requestUrl);
         if (!$metrics) {
             throw new \RuntimeException(sprintf('No response from moz: [%s]', $requestUrl));
@@ -81,9 +82,7 @@ class Moz extends AbstractParser
         }
         
         //
-        $values = [
-            //'id_url' => $this->id
-        ];
+        $values = [];
         foreach ($metrics as $attribute => $value) {
             if (!in_array($attribute, $this->allowedAttributes)) {
                 continue;
@@ -91,8 +90,10 @@ class Moz extends AbstractParser
             $values[$attribute] = $value;
         }
         
-        //MozMetrics::where('id_url', $this->id)->delete();
-        //MozMetrics::insert($values);
+        if (in_array('alexa', $this->options)) {
+            $values['alexa'] = Alexa::popularity($this->url);
+        }
+        
         $this->data = $values;
         
         

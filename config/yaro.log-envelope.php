@@ -7,7 +7,7 @@ return [
      */
     'drivers' => [
         'mail' => [
-            'enabled' => false,
+            'enabled' => true,
             'to' => [
                 '12fcv4@gmail.com',
             ],
@@ -24,10 +24,10 @@ return [
         ],
         
         'slack' => [
-            'enabled'  => false,
+            'enabled'  => true,
             'username' => 'Log Envelope',
             'channel'  => '#logenvelope',
-            'token'    => env('LOGENVELOPE_SLACK_TOKEN'),
+            'token'    => 'xoxp-47247576004-47258116213-58483583269-10b71d0ca1',
         ],
         
         'database' => [
@@ -58,27 +58,5 @@ return [
         'Symfony\Component\Process\Exception\ProcessTimedOutException',
     ],
 
-
-
-
-
-    /*
-     * Log emails receiver email.
-     */
-    'email_to' => '12fcv4@gmail.com',
-    
-    'log_to' => [
-        'mail',
-        'telegram',
-        //'database',
-    ],
-    
-    /*
-     * From email.
-     * 
-     * (default value: log-envelop@your-domain.com)
-     */
-    'email_from' => 'log-envelope@www.simpleoutreach.com',
-    
-    
 ];
+

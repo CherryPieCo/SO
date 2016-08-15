@@ -22,17 +22,23 @@ class Email extends AbstractParser
         // urls in js
         // FIXME: not mainainable statement
         if (!$response['contacts']) {
-            $javascriptUrl = parse_url($this->url, PHP_URL_SCHEME) .'://'
-                           . parse_url($this->url, PHP_URL_HOST) .'/nav.js';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_USERAGENT, AbstractParser::USER_AGENT);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_URL, $javascriptUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $output = curl_exec($ch);
             
-            $response['contacts'] = $this->getContacts($output);
+            $jsUrls = [
+                'nav.js',
+            ];
+            foreach ($jsUrls as $jsUrl) {
+                $javascriptUrl = parse_url($this->url, PHP_URL_SCHEME) .'://'
+                               . parse_url($this->url, PHP_URL_HOST) .'/'. $jsUrl;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch, CURLOPT_USERAGENT, AbstractParser::USER_AGENT);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_URL, $javascriptUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $output = curl_exec($ch);
+                
+                $response['contacts'] = array_merge($response['contacts'], $this->getContacts($output));
+            }
         }
 
         foreach ($response['contacts'] as $c) {
@@ -241,13 +247,14 @@ class Email extends AbstractParser
             $parse_contact_url = parse_url($matches[$order]);
 
             //check full link for contact page
-            if (isset($parse_contact_url['host']) && ($parse_contact_url['host'] == $parse_url['host'])) {
+            if (isset($parse_contact_url['host'])) {
                 //get full page's link
                 $url = $matches[$order];
             } else {
                 //concat full link from short page's link
                 $slash = (((substr($parse_url['host'], -1) != "/") && (substr($matches[$order], 0, 1) != "/")) ? "/" : "/");
                 $matches[$order] = ltrim($matches[$order], "\.\./");
+                
                 if (!empty($parse_url['scheme'])) {
                     $matches[$order] = trim($matches[$order], "'");
                     $url = (strpos($matches[$order], '://') ? trim($matches[$order], "'") : "{$parse_url['scheme']}://{$parse_url['host']}{$slash}{$matches[$order]}");
@@ -256,9 +263,15 @@ class Email extends AbstractParser
                 }
             }
             
+            $parse_contact_url = parse_url($url);
+            // possible contact page is not from this site
+            if (isset($parse_contact_url['host']) && mb_strtolower($parse_contact_url['host']) != mb_strtolower($parse_url['host'])) {
+                return '';
+            }
         }
         
         $url = mb_strtolower($url, "utf-8");
+        
         
         return $url;
     } // end getEmail
@@ -288,7 +301,10 @@ class Email extends AbstractParser
             $phrase = preg_quote($phrase);
             
             $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>( |){$phrase}(!| |)<\/a>";
-            $contacts1[] = $this->getEmail($regexp, 2, $content);
+            $contactUrl = $this->getEmail($regexp, 2, $content);
+            if (!preg_match('~mailto:~', $contactUrl)) {
+                $contacts1[] = $contactUrl;
+            }
 
             $regexp = "href=\"(\S*{$phrase}(\/|))\"";                            
             $contacts2[] = $this->getEmail($regexp, 1, $content);

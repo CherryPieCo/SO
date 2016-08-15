@@ -17,5 +17,7 @@ Route::group(array(
     Route::any('settings', 'TableAdminController@settings');
     
     Route::any('links', 'TableAdminController@showLinks');
+    
+    Route::any('moz', 'TableAdminController@showMozapiAccounts');
 
 });

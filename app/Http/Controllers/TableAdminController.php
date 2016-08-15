@@ -23,7 +23,6 @@ class TableAdminController extends \App\Http\Controllers\Controller
             'def_name' => 'packs',
         );
         return Jarboe::table($options);
-    
     } // end showPacks
     
     public function showLinks()
@@ -32,7 +31,15 @@ class TableAdminController extends \App\Http\Controllers\Controller
             'def_name' => 'links',
         );
         return Jarboe::table($options);
-    
     } // end showLinks
     
+    public function showMozapiAccounts()
+    {
+        $options = array(
+            'def_name' => 'mozapi_accounts',
+        );
+        return Jarboe::table($options);
+    } // end showshowMozapiAccounts
+        
 }
+

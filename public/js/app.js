@@ -15,6 +15,14 @@ var App =
         $('#create-bulk-modal').modal('show');
     }, // end 
     
+    modalMoz: function()
+    {
+        $('#bulk-type').val('moz');
+        $('#bulk-urls-limit').text(500);
+        wo.render('moz-options');
+        $('#create-bulk-modal').modal('show');
+    }, // end 
+    
     modalBrokenLinks: function()
     {
         $('#bulk-type').val('not_found');

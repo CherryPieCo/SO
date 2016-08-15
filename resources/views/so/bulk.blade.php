@@ -43,6 +43,7 @@
               <div class="clearfix"></div>
             </div>  
           </div>
+          
           <div class="row">
             <div class="wrapper">
               <div class="col-sm-8 col-xs-12">
@@ -52,6 +53,23 @@
               <div class="col-sm-4 col-xs-12 text-right">
                 @if (Sentinel::getUser()->isCampaignAllowed('backlinks'))
                     <button type="button" class="btn btn-primary" onclick="App.modalBacklink();">Create campaign</button>
+                @else
+                    <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
+                @endif
+              </div>
+              <div class="clearfix"></div>
+            </div>  
+          </div>
+          
+          <div class="row">
+            <div class="wrapper">
+              <div class="col-sm-8 col-xs-12">
+                <h4><span class="icon-link"></span> MOZ / Alexa</h4>
+                <p>MOZ / Alexa</p>
+              </div>
+              <div class="col-sm-4 col-xs-12 text-right">
+                @if (Sentinel::getUser()->isCampaignAllowed('moz'))
+                    <button type="button" class="btn btn-primary" onclick="App.modalMoz();">Create campaign</button>
                 @else
                     <button type="button" class="btn btn-primary"><i class="fa fa-lock" aria-hidden="true"></i> Upgrade</button>
                 @endif
