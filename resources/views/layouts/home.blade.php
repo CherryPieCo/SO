@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/simple-line-icons.css">
     <link rel="stylesheet" href="/css/flexslider.css">
     <link href="/css/style-custom.css" rel="stylesheet"/> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700' rel='stylesheet' type='text/css'>
 </head> 
 <body>

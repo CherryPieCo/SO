@@ -31,8 +31,16 @@ class Pack extends Eloquent
         return $this->type == self::BACKLINKS_TYPE;
     } // end isBacklinksType
     
+    public function isEmailsType()
+    {
+        return $this->type == self::EMAILS_TYPE;
+    } // end isEmailsType
+    
     public function getCompletedUrlsCount()
     {
+        // FIXME:
+        return isset($this->count['complete']) ? $this->count['complete'] : 0;
+        
         $count = 0;
         foreach ($this->data as $info) {
             if (isset($info['status']) && $info['status'] == 'complete') {
@@ -45,7 +53,7 @@ class Pack extends Eloquent
     
     public function getUrlsCount()
     {
-        return count($this->data);
+        return $this->count['total'];
     } // end getUrlsCount
     
     public function isComplete()
@@ -63,6 +71,8 @@ class Pack extends Eloquent
     public function scopeComplete($query, $idPack, $hash, $parserType, $data)
     {
         $prePath = 'data.'. $hash .'.parsers.'. $parserType .'.';
+        
+        $query->where('_id', $idPack)->increment('count.complete');
         
         $result = $query->where('_id', $idPack)->update([
             $prePath .'data' => $data,

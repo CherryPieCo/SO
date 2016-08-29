@@ -17,8 +17,10 @@ class SoController extends Controller
     public function showBulk()
     {
         $bulks = Pack::byUser()
+                     ->select('title', 'type', 'status', 'count', 'created_at')
                      ->orderBy('_id', 'desc')
                      ->paginate((int) session('bulks-per-page', 20));
+
 
         return view('so.bulk', compact('bulks'));
     } // end showBulk
@@ -31,6 +33,11 @@ class SoController extends Controller
             'status' => true
         ]);
     } // end setBulksPerPageCount
+    
+    public function showBulkProfiler($idPack)
+    {
+        return view('so.bulk_profiler');
+    } // end showBulkProfiler
     
     public function showApi()
     {
@@ -111,6 +118,10 @@ class SoController extends Controller
             'id_user'    => Sentinel::getUser()->id,
             'type'       => $request->get('type', ''),
             'title'      => $request->get('title', ''),
+            'count'      => [
+                'complete' => 0,
+                'total'    => count($data),
+            ],
             'created_at' => time(),
         ]);
         
