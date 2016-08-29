@@ -7,7 +7,7 @@ return [
      */
     'drivers' => [
         'mail' => [
-            'enabled' => true,
+            'enabled' => false,
             'to' => [
                 '12fcv4@gmail.com',
             ],
@@ -17,6 +17,7 @@ return [
         
         'telegram' => [
             'enabled' => true, 
+            'token'   => env('LOGENVELOPE_TELEGRAM_TOKEN'),
             'chats'   => [
                 130250735, 
                 //210291143,
@@ -24,10 +25,10 @@ return [
         ],
         
         'slack' => [
-            'enabled'  => true,
+            'enabled'  => false,
             'username' => 'Log Envelope',
             'channel'  => '#logenvelope',
-            'token'    => 'xoxp-47247576004-47258116213-58483583269-10b71d0ca1',
+            'token'    => env('LOGENVELOPE_SLACK_TOKEN'),
         ],
         
         'database' => [

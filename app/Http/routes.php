@@ -3,6 +3,7 @@
 Route::pattern('id', '[0-9]+');
 Route::pattern('slug', '[A-Za-z0-9-_]+');
 Route::pattern('code', '[A-Za-z0-9]{64}');
+Route::pattern('mongo', '[a-f\d]{24}');
 Route::pattern('base64', '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
 Route::pattern('anything', '.+');
 
@@ -34,6 +35,7 @@ Route::group([
     });
     Route::get('/bulk', 'SoController@showBulk');
     Route::get('/bulk/{slug}/xls/download', 'SoController@downloadBulkXls');
+    Route::get('/bulk/{mongo}/profiler', 'SoController@showBulkProfiler');
     Route::get('/api', 'SoController@showApi');
     
     Route::post('/create-bulk', 'SoController@createBulk');

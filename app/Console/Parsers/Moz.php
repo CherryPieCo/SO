@@ -46,13 +46,13 @@ class Moz extends AbstractParser
         ];
         
         
-        if (MozCredentials::where('status', 'ok')->count()) {
+        if (!MozCredentials::where('status', 'ok')->count()) {
             throw new \RuntimeException('No available MOZ accounts');
         }
         
         $credentials = MozCredentials::available()->first();
         while (!$credentials) {
-            if (MozCredentials::where('status', 'ok')->count()) {
+            if (!MozCredentials::where('status', 'ok')->count()) {
                 throw new \RuntimeException('No available MOZ accounts');
             }
 

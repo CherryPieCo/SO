@@ -37,6 +37,10 @@ class User extends JarboeUser implements AuthenticatableContract
     
     public function isCampaignAllowed($campaign, &$error = '', $isApi = false)
     {
+        if ($this->isSuperuser()) {
+            return true;
+        }
+        
         if (!$this->isSubscriptionActive()) {
             $error = 'Subscription expired.';
             return false;
@@ -99,6 +103,10 @@ class User extends JarboeUser implements AuthenticatableContract
     
     public function isSubscriptionActive()
     {
+        if ($this->isSuperuser()) {
+            return true;
+        }
+        
         if ($this->type == 'free') {
             return (bool) $this->getTrialDaysLeftCount();
         }

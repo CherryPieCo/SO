@@ -17,7 +17,11 @@
               
               @foreach ($bulks as $bulk)
                 <tr class="bulk-tr">
-                    <td>{{ $bulk->title }}</td>
+                    @if ($bulk->isEmailsType() && $bulk->isComplete())
+                        <td><a href="/me/bulk/{{ $bulk->id }}/profiler">{{ $bulk->title }}</a></td>
+                    @else
+                        <td>{{ $bulk->title }}</td>
+                    @endif
                     <td>{{ $bulk->type }}</td>
                     <td class="text-center">{{ $bulk->getCompletedUrlsCount() }} / {{ $bulk->getUrlsCount() }}</td>
                     <td class="text-center">{{ date('d/m/Y', $bulk->created_at) }}</td>
