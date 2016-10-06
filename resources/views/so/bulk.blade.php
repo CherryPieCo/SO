@@ -64,7 +64,7 @@
           <div class="row">
             <div class="wrapper">
               <div class="col-sm-8 col-xs-12">
-                <h4><span class="icon-link"></span> MOZ / Alexa</h4>
+                <h4><span class="icon-bar-chart"></span> MOZ / Alexa</h4>
                 <p>MOZ / Alexa</p>
               </div>
               <div class="col-sm-4 col-xs-12 text-right">

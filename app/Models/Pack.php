@@ -11,6 +11,7 @@ class Pack extends Eloquent
 {
     
     const EMAILS_TYPE    = 'emails';
+    const ADVANCED_EMAILS_TYPE = 'advanced_emails';
     const NOT_FOUND_TYPE = 'not_found';
     const BACKLINKS_TYPE = 'backlinks';
     const MOZ_TYPE       = 'moz';
@@ -35,6 +36,11 @@ class Pack extends Eloquent
     {
         return $this->type == self::EMAILS_TYPE;
     } // end isEmailsType
+    
+    public function isAdvancedEmailsType()
+    {
+        return $this->type == self::ADVANCED_EMAILS_TYPE;
+    } // end isAdvancedEmailsType
     
     public function getCompletedUrlsCount()
     {
@@ -133,8 +139,9 @@ class Pack extends Eloquent
     
     public static function getParsersByType($type, $options = [])
     {
+        // FIXME: generate options
         $parsers = [];
-        $emailsParser = [
+        $defaultParser = [
             'status' => 'pending',
             'options' => $options,
             'message' => '',
@@ -144,35 +151,30 @@ class Pack extends Eloquent
         
         switch ($type) {
             case self::EMAILS_TYPE:
-                $parsers['email'] = $emailsParser;
+                $parsers['email'] = $defaultParser;
+                break;
+            case self::ADVANCED_EMAILS_TYPE:
+                $parsers['email'] = $defaultParser;
+                $parsers['moz'] = $defaultParser;
+                $parsers['alexa'] = $defaultParser;
                 break;
             case self::NOT_FOUND_TYPE:
-                $parsers['email'] = $emailsParser;
-                $parsers['not_found'] = [
-                    'status' => 'pending',
-                    'options' => $options,
-                    'message' => '',
-                    'created_at' => time(),
-                    'finished_at' => 0,
-                ];
+                $parsers['email'] = $defaultParser;
+                $parsers['not_found'] = $defaultParser;
                 break;
             case self::BACKLINKS_TYPE:
-                $parsers['backlinks'] = [
-                    'status' => 'pending',
-                    'options' => $options,
-                    'message' => '',
-                    'created_at' => time(),
-                    'finished_at' => 0,
-                ];
+                $parsers['backlinks'] = $defaultParser;
                 break;
             case self::MOZ_TYPE:
-                $parsers['moz'] = [
-                    'status' => 'pending',
-                    'options' => $options,
-                    'message' => '',
-                    'created_at' => time(),
-                    'finished_at' => 0,
-                ];
+                $mozOptions = array_intersect(['page_authority', 'domain_authority'], $options);
+                if ($mozOptions) {
+                    $parsers['moz'] = $defaultParser;
+                    $parsers['moz']['options'] = $mozOptions;
+                }
+                
+                if (in_array('alexa', $options)) {
+                    $parsers['alexa'] = $defaultParser;
+                }
                 break;
             
             default:
@@ -286,6 +288,31 @@ class Pack extends Eloquent
         
         return $data;
     } // end getBacklinksForXls
+    
+    public function getMozAlexaForXls()
+    {
+        $data = [
+            ['Domain', 'Page URL', 'DA', 'PA', 'Alexa']
+        ];
+        foreach ($this->data as $info) {
+            $data[] = [
+                $this->getDomain($info['url']), 
+                $info['url'], 
+                array_get($info, 'parsers.moz.data.pda', '-'),
+                array_get($info, 'parsers.moz.data.upa', '-'),
+                array_get($info, 'parsers.alexa.data.rank', '-'),
+            ];
+        }
+        
+        return $data;
+    } // end getMozAlexaForXls
+    
+    public function getDomain($url)
+    {
+        $info = parse_url($url);
+        
+        return $info['scheme'] .'://'. $info['host'];
+    } // end getDomain
     
 }
 

@@ -4,7 +4,7 @@ namespace App\Console\Parsers;
 
 use App\Models\MozCredentials;
 use App\Models\MozMetrics;
-use App\Hekpers\Alexa;
+use App\Helpers\Alexa; 
 
 
 class Moz extends AbstractParser
@@ -15,7 +15,7 @@ class Moz extends AbstractParser
     
     public $type = 'moz';
     protected $signature = 'scrape:moz {url : site url} {options : options list} {--pack= : pack id}';
-    protected $description = 'scrape:moz ex.com page_authority-domain_authority-alexa';
+    protected $description = 'scrape:moz ex.com page_authority-domain_authority';
     private $options = [];
     
     private $allowedAttributes = [
@@ -34,15 +34,25 @@ class Moz extends AbstractParser
         return in_array('domain_authority', $this->options) ? self::DOMAIN_AUTHORITY : 0;
     } // end getDomainAuthorityKey
     
+    private function validateOptions($options)
+    {
+        return in_array('page_authority', $options) || in_array('domain_authority', $options);
+    } // end validateOptions
+    
     public function exec()
     {
         $this->idPack = $this->option('pack');
         $this->options = explode('-', $this->argument('options'));
+        
+        if (!$this->validateOptions($this->options)) {
+            $this->data = [];
+            $this->finish();
+        }
+        
         // HACK: parse all for cache sanity
         $this->options = [
             'page_authority',
             'domain_authority',
-            'alexa',
         ];
         
         
@@ -56,7 +66,7 @@ class Moz extends AbstractParser
                 throw new \RuntimeException('No available MOZ accounts');
             }
 
-            sleep(5);
+            sleep(1);
             $credentials = MozCredentials::available()->first();
         }
         $credentials->markAsUsed();
@@ -90,19 +100,19 @@ class Moz extends AbstractParser
             $values[$attribute] = $value;
         }
         
-        if (in_array('alexa', $this->options)) {
-            $values['alexa'] = Alexa::popularity($this->url);
-        }
-        
         $this->data = $values;
         
-        
+        $this->finish();
+    } // end exec
+    
+    private function finish()
+    {
         $parsers = $this->site->parsers;
         $values['updated_at'] = time();
-        $parsers['moz'] = $values;
+        $parsers['moz'] = $this->data;
         $this->site->parsers = $parsers;
         $this->site->save();
-    } // end exec
+    } // end finish
     
     public function getMozResponse($url)
     {

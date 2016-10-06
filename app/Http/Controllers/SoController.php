@@ -36,7 +36,9 @@ class SoController extends Controller
     
     public function showBulkProfiler($idPack)
     {
-        return view('so.bulk_profiler');
+        $pack = Pack::byUser()->where('_id', $idPack)->first();
+        
+        return view('so.bulk_profiler', compact('pack'));
     } // end showBulkProfiler
     
     public function showApi()
@@ -205,6 +207,17 @@ class SoController extends Controller
                             false
                         );
                     });
+                    break;
+                case Pack::MOZ_TYPE:
+                    $excel->sheet('Moz & Alexa', function($sheet) use($pack) {
+                        $sheet->cells('A1:E1', function($cells) {
+                            $cells->setFontWeight('bold');
+                        });
+                        $sheet->fromArray($pack->getMozAlexaForXls(), null, 'A1', false, false);
+                    });
+                    break;
+                default:
+                    throw new \RuntimeException('Not implemented');
             }
             
         })->export('xls');

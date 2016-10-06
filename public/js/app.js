@@ -11,7 +11,7 @@ var App =
     {
         $('#bulk-type').val('emails');
         $('#bulk-urls-limit').text(500);
-        $('#bulk-options').html('');
+        wo.render('emails-options'); 
         $('#create-bulk-modal').modal('show');
     }, // end 
     

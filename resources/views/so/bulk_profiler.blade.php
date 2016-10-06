@@ -242,6 +242,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
+                                    @foreach ($pack->getData() as $hash => $site)
+                                        @include('so.partials.bulk_profiler_row')
+                                    @endforeach
+                                    
+                                    {{--
                                     <tr>
                                         <td class="text-center">
                                         <div class="checkbox">
@@ -370,6 +376,7 @@
                                         <td>100</td><!-- DA -->
                                         <td>1 000 000</td><!-- Alex -->
                                     </tr>
+                                    --}}
                                 </tbody>
                             </table>
                         </div>

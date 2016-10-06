@@ -21,6 +21,19 @@
             </div>
             
             <div id="bulk-options"></div>
+            <script id="emails-options" into="bulk-options" type="text/html">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="form-group">
+                      <label><small>Type:</small></label>
+                      <br>
+                      <label style="font-weight: 400;"><input onclick="$('#bulk-type').val(this.value)" name="type" value="emails" type="radio" checked="checked"> Simple (emails, pages, etc)</label>
+                      <br>
+                      <label style="font-weight: 400;"><input onclick="$('#bulk-type').val(this.value);" name="type" value="advanced_emails" type="radio"> Advanced (with MOZ pa/da, Alexa rank)</label>
+                    </div>  
+                  </div>
+                </div>
+            </script>
             <script id="backlinks-options" into="bulk-options" type="text/html">
                 <div class="row">
                   <div class="col-xs-12">
@@ -28,7 +41,8 @@
                       <label><small>Get Backlinks From:</small></label>
                       <br>
                       <label style="font-weight: 400;"><input name="options[]" value="url" type="radio" checked="checked"> Url</label>
-                      <label style="font-weight: 400;"><input name="options[]" value="domain" type="radio" style="margin-left: 25px;"> Domain</label>
+                      <br>
+                      <label style="font-weight: 400;"><input name="options[]" value="domain" type="radio"> Domain</label>
                     </div>  
                   </div>
                 </div>

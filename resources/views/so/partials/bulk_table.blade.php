@@ -17,7 +17,7 @@
               
               @foreach ($bulks as $bulk)
                 <tr class="bulk-tr">
-                    @if ($bulk->isEmailsType() && $bulk->isComplete())
+                    @if ($bulk->isAdvancedEmailsType() && $bulk->isComplete())
                         <td><a href="/me/bulk/{{ $bulk->id }}/profiler">{{ $bulk->title }}</a></td>
                     @else
                         <td>{{ $bulk->title }}</td>
