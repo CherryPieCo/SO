@@ -34,7 +34,7 @@ class AbstractParser extends Command
                 'created_at' => time(),
                 'parsers' => [],
             ]);
-            $this->site = Url::where('url', $this->url)->first();
+            $this->site = Url::where('hash', md5($this->url))->first();
         }
         $this->id = $this->site->id;
         
@@ -93,14 +93,20 @@ class AbstractParser extends Command
             //$status = 'api_limit'; 
         }
         
-        $pack = Pack::complete($idPack, $currentHash, $parserType, $data);
+        $title = $this->getPageTitle($this->request->getResponseText());
+        $pack = Pack::complete($idPack, $currentHash, $parserType, $data, $title);
         
         if ($user && ($user->isRequestsAvailable())) {
             $user->logRequest($this->type);
         }
-        
-        return;
     } // end after
+    
+    protected function getPageTitle($content)
+    {
+        preg_match('~<title[^>]*>\s*\n*\s*(.*)\s*\n*\s*<\/title>~i', $content, $title);
+        
+        return isset($title[1]) ? $title[1] : '';
+    } // end getPageTitle
     
     protected function isApiRequestSuccessful()
     {

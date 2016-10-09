@@ -31,180 +31,7 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default panel-custom">
-                <div class="panel-heading filters-section">
-                    <div class="row">
-                        <!-- basik filters -->
-                        <div class="col-sm-3">
-                            <h6>Additional</h6>
-                            <div class="checkbox small">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Get Email </label>
-                            </div>
-                            <div class="checkbox small">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Contact Form </label>
-                            </div>
-                            <div class="checkbox small">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Social Profile </label>
-                            </div>
-                            <div class="checkbox small">
-                                <label>
-                                    <input type="checkbox" value="">
-                                    Bad Links </label>
-                            </div>
-                        </div>
-                        <!-- /"Additional" -->
-                        <div class="col-sm-3">
-                            <h6>Domain Authority</h6>
-                            <div>
-                                <!-- Info for using this slider -->
-                                <!-- https://github.com/seiyria/bootstrap-slider -->
-                                <input id="slider-da" type="text" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="[20,90]"/>
-                            </div>
-                        </div>
-                        <!-- /"Domain Authority" -->
-                        <div class="col-sm-3">
-                            <h6>Alexa Rank</h6>
-                            <div>
-                                <!-- Info for using this slider -->
-                                <!-- https://github.com/seiyria/bootstrap-slider -->
-                                <input id="slider-ar" type="text" class="span2" value="" data-slider-min="0" data-slider-max="150000" data-slider-step="1" data-slider-value="[60000,100000]"/>
-                            </div>
-                        </div>
-                        <!-- /"Alexa Rank" -->
-                        <div class="col-sm-3" style="padding-top: 2em;">
-                            <a href="#" class="btn btn-block btn-primary">Search</a>
-                            <a href="#" class="btn btn-block btn-default btn-sm btn-advanced"> Advanced <span class="glyphicon glyphicon-menu-down" aria-hidden="true"> </a>
-                        </div>
-                    </div>
-                    <!-- /basik filters -->
-                    <div class="row advanced-inner">
-                        <div class="col-xs-12">
-                            <div class="row advanced-filters">
-                                <!-- .advanced-filters -->
-                                <div class="advanced-filters-inner">
-                                    <div class="col-sm-2">
-                                        <label> <h6>Advertise opportunities</h6>
-                                            <select tabindex="1">
-                                                <option>donate</option>
-                                                <option>useful links</option>
-                                            </select> </label>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label> <h6>Links by type</h6>
-                                            <select tabindex="1">
-                                                <option>comment</option>
-                                                <option>forum</option>
-                                                <option>profile</option>
-                                            </select> </label>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label> <h6>Domain</h6>
-                                            <select tabindex="1">
-                                                <option>.com</option>
-                                                <option>.org</option>
-                                                <option>.net</option>
-                                                <option>.co.uk</option>
-                                            </select> </label>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <form>
-                                            <label> <h6>Find by URL</h6>
-                                                <input type="text">
-                                            </label>
-                                        </form>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <form>
-                                            <label> <h6>Find by title</h6>
-                                                <input type="text">
-                                            </label>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- /.advanced-filters-inner -->
-                            </div>
-                            <!-- /.advanced-filters -->
-                            <div class="row applied-filters">
-                                <!-- .applied-filters -->
-                                <div class="applied-filters-inner">
-                                    <div class="col-sm-2">
-                                        <h6>Applied filters:</h6>
-                                    </div>
-                                    <div class="col-sm-7">
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            filter #1
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            filter #2
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            another filter #2
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            filter #3
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            filter #4
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            filter #5
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            another filter #5
-                                        </div>
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            just another filter
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <button class="btn btn-block btn-xs btn-default">
-                                            Remove all filters
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.applied-filters-inner -->
-                            </div>
-                            <!-- /.applied-filters -->
-                        </div>
-                    </div>
-                    <!-- /.advanced-inner -->
-                </div>
-                <!-- /.panel-heading -->
-            </div>
-        </div>
-    </div>
+    @include('so.partials.bulk_profiler_filters')
 
     <div class="row content-table">
         <div class="col-md-10 col-md-offset-1">
@@ -475,18 +302,17 @@
 
 @section('scripts')
 <script src="/js/bootstrap-slider.min.js"></script>
+<script src="/js/profiler.js"></script>
 
 <script>
-    $(function() {
-        $("#slider-da, #slider-ar").slider({
-            tooltip : 'always'
-        });
-
-        $('.btn-advanced').on('click', function() {
-            $('.advanced-inner').toggle();
-            return false;
-        });
-    }); 
+Profiler.sites = [
+@foreach ($pack->getData() as $hash => $site)
+    {
+        hash: '{{ $hash }}',
+        url: '{{ $site['url'] }}',
+        title: '{{ addslashes(mb_strtolower($site['title'])) }}',
+    },
+@endforeach
+];
 </script>
-
 @stop

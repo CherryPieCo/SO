@@ -11,6 +11,9 @@ class Email extends AbstractParser
     protected $signature = 'scrape:email {url : site url} {options : options} {--pack= : pack id}';
     protected $description = 'scrape:email example.com';
     
+    private $social = [];
+    
+    
     public function exec()
     {
         $this->idPack = $this->option('pack');
@@ -18,6 +21,7 @@ class Email extends AbstractParser
 
         //$response['email'] = array_merge($response['email'], $this->getEmails($this->request->getResponseText()));
         $response['contacts'] = $this->getContacts();
+        $this->grabSocialProfiles();
 
         // urls in js
         // FIXME: not mainainable statement
@@ -38,6 +42,7 @@ class Email extends AbstractParser
                 $output = curl_exec($ch);
                 
                 $response['contacts'] = array_merge($response['contacts'], $this->getContacts($output));
+                $this->grabSocialProfiles($output);
             }
         }
 
@@ -69,6 +74,7 @@ class Email extends AbstractParser
             $output = curl_exec($ch);
             
             $response['email'] = array_merge($response['email'], $this->getEmails($output));
+            $this->grabSocialProfiles($output);
         }
 
 
@@ -85,11 +91,17 @@ class Email extends AbstractParser
         $emails = $this->revealSpamCatcherEmails($emails);
         $emails = $this->checkForRealEmails($emails);
         
+        $social = [];
+        foreach ($this->social as $socialType => $socialData) {
+            $social[$socialType] = array_filter(array_unique($socialData));
+        }
+        
         
         $parsers = $this->site->parsers;
         $parsers['email'] = [
             'emails' => $emails,
             'contacts' => array_values($response['contacts']),
+            'social' => $social,
             'updated_at' => time(),
         ];
         $this->site->parsers = $parsers;
@@ -99,6 +111,7 @@ class Email extends AbstractParser
         $this->data = [
             'emails' => $emails,
             'contacts' => array_values($response['contacts']),
+            'social' => $social,
         ];
     } // end exec
     
@@ -231,12 +244,6 @@ class Email extends AbstractParser
         return $text;
     } // end changeDotSymbol
     
-    
-    
-    
-    
-    //
-    //
     private function getEmail($regexp, $order, $content = false) 
     {
         $content = $content ?: $this->request->getResponseText();
@@ -276,13 +283,6 @@ class Email extends AbstractParser
         return $url;
     } // end getEmail
     
-    private function htmlNumberEncoder($input) 
-    {
-        return preg_replace_callback("/(&#[0-9]+;)/", function($m) {
-             return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES"); 
-        }, $input);
-    } // end htmlNumberEncoder
-
     private function getContacts($content = false)
     {
         $contacts = array();
@@ -319,6 +319,137 @@ class Email extends AbstractParser
         
         return $contacts;
     } // end getContacts
+    
+    // legacy fuck
+    private function grabSocialProfiles($content = false)
+    {
+        $content = $content ?: $this->request->getResponseText();
+        
+        $fb_except = array(
+            "likebox.php",
+            "like.php",
+            "tr",
+            "sharer.php",
+            "share.php",
+            "photo.php",
+            "fbml",
+            "",
+            "home.php",
+            "oneupweb",
+            "Mode",
+            "permalink.php",
+            "facepile.php",
+            "debug",
+            "plugins",
+            "feed",
+            "oauth",
+            "v2.2",
+            "fbconnect",
+            "api_lib",
+            "timeline",
+            "application.php",
+            "group.php",
+            "video.php"
+        );
+        $in_except = array(
+            "share",
+            "shareArticle?",
+            "groups?"
+        );
+        $pn_except = array(
+            "/pin/create/",
+            "/pin/find/"
+        );
+        $tw_except = array(
+            "twitter.com/share",
+            "twitter.com/home",
+            "twitter.com/login",
+            "twitter.com/about",
+            "twitter.com/intent",
+            "twitter.com/search"
+        );
+        $gp_except = array(
+            "share",
+            "/u/0/"
+        );
+        
+        if (preg_match_all('/(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\.\-]*)?/', $content, $matches)) {
+            if (count($matches[1])) {
+                foreach($matches[1] as $k => $v) {
+                    if (in_array($v, $fb_except) === false) {
+                        $this->social['facebook'][] = $matches[0][$k];
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (preg_match_all('|https?://(?:www\.)?pinterest.com/[a-z0-9_/-]+|im', $content, $matches)) {
+            if (count($matches)) {
+                foreach($matches as $mm) {
+                    foreach($mm as $m) {
+                        if ($this->strpos_array($m, $pn_except, 1) === false) {
+                            $this->social['pinterest'][] = $m;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (preg_match_all('|https?://(?:www\.)?twitter.com/[a-z0-9_]+|im', $content, $matches)) {
+            if (count($matches)) {
+                foreach($matches as $mm) {
+                    foreach($mm as $m) {
+                        if ($this->strpos_array($m, $tw_except, 1) === false) {
+                            $this->social['twitter'][] = $m;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (preg_match_all('|https?://(?:www\.)?linkedin.com/[a-z0-9_/-?=\-]+|im', $content, $matches)) {
+            if (count($matches)) {
+                foreach($matches as $mm) {
+                    foreach($mm as $m) {
+                        if ($this->strpos_array($m, $in_except, 1) === false) {
+                            $this->social['linkedin'][] = $m;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (preg_match_all('|https?://(?:www\.)?plus.google.com/[a-z0-9_/-?=]+|im', $content, $matches)) {
+            if (count($matches)) {
+                foreach($matches as $mm) {
+                    foreach($mm as $m) {
+                        if ($this->strpos_array($m, $gp_except, 1) === false) {
+                            $this->social['gplus'][] = $m;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    } // end grabSocialProfiles
+    
+    // legacy fuck
+    private function strpos_array($haystack, $needles = [], $offset = 0) 
+    {
+        $chr = array();
+        foreach($needles as $needle) {
+            $res = strpos($haystack, $needle, $offset);
+            if ($res !== false) $chr[$needle] = $res;
+        }
+        if(empty($chr)) return false;
+        
+        return min($chr);
+    } // end strpos_array
+    
     
     protected function isApiRequestSuccessful()
     {

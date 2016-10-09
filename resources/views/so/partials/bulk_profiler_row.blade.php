@@ -1,4 +1,4 @@
-<tr>
+<tr class="{{ $hash }} hashed">
     <td class="text-center">
         <div class="checkbox">
             <label>
@@ -7,8 +7,8 @@
         </div>
     </td>
     <td class="sitename">
-        <strong>Модуль Broken link building</strong>
-        <a href="#">{{ $site['url'] }}</a>
+        <strong>{{ $site['title'] }}</strong>
+        <a target="_blank" href="{{ $site['url'] }}">{{ $site['url'] }}</a>
         <div class="status-icons">
             <i class="fa fa-envelope fa-lg brand-mail active" data-title="description text"></i>
             <i class="fa fa-list fa-lg brand-form active" data-title="description text"></i>
@@ -32,11 +32,11 @@
             <i class="fa fa-pencil fa-lg active" data-title="description text"></i>
         </div>
     </td><!-- Status -->
-    <td>{{ array_get($site, 'parsers.moz.data.page_authority', '-') }}</td><!-- PA -->
-    <td>{{ array_get($site, 'parsers.moz.data.domain_authority', '-') }}</td><!-- DA -->
+    <td>{{ array_get($site, 'parsers.moz.data.upa', '-') }}</td><!-- PA -->
+    <td>{{ array_get($site, 'parsers.moz.data.pda', '-') }}</td><!-- DA -->
     <td>{{ array_get($site, 'parsers.alexa.data.rank', '-') }}</td><!-- Alex -->
 </tr>
-<tr class="advanced-info">
+<tr class="advanced-info {{ $hash }} hashed">
     <td></td>
     <td colspan="6">
     <div>
@@ -47,11 +47,9 @@
             </div>
             <div class="block-emails">
                 <i class="fa fa-envelope" data-title="description text"></i>
-                <a href="mailto:somebody@somesite.com">Theaticand1990@jourrapide.com</a>
-                <a href="mailto:somebody@somesite.com">samuel.ross@example.com</a>
-                <a href="mailto:somebody@somesite.com">tracy.edwards50@example.com</a>
-                <a href="mailto:somebody@somesite.com">hannah.terry51@example.com</a>
-                <a href="mailto:somebody@somesite.com">edward.franklin47@example.com</a>
+                @foreach (array_get($site, 'parsers.email.data.emails', []) as $email)
+                    <a href="mailto:{{ $email }}">{{ $email }}</a>
+                @endforeach
             </div>
             <div class="block-contacts">
                 <i class="fa fa-info-circle" data-title="description text"></i>
@@ -61,11 +59,11 @@
             </div>
             <div class="block-socials">
                 <i class="fa fa-user" data-title="description text"></i>
-                <a href="#">Facebook</a>
-                <a href="#">Twitter</a>
-                <a href="#">Pinterest</a>
-                <a href="#">Google+</a>
-                <a href="#">LinkedIn</a>
+                @foreach (array_get($site, 'parsers.email.data.social', []) as $social => $socialLinks)
+                    @foreach ($socialLinks as $socialLink)
+                        <a href="{{ $socialLink }}" target="_blank">{{ $social }}</a>
+                    @endforeach
+                @endforeach
             </div>
         </div>
         <!-- /.advanced-info-wrapper -->

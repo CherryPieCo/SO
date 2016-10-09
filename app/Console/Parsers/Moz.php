@@ -44,9 +44,10 @@ class Moz extends AbstractParser
         $this->idPack = $this->option('pack');
         $this->options = explode('-', $this->argument('options'));
         
-        if (!$this->validateOptions($this->options)) {
+        if (true || !$this->validateOptions($this->options)) { 
             $this->data = [];
             $this->finish();
+            return;
         }
         
         // HACK: parse all for cache sanity

@@ -21,6 +21,11 @@ class Pack extends Eloquent
     protected $connection = 'mongodb';
     public $timestamps = false;
     
+    private $highestAlexaRank = null;
+    private $lowestAlexaRank = null;
+    private $highestPda = null;
+    private $lowestPda = null;
+    
     
     public function getData()
     {
@@ -74,17 +79,20 @@ class Pack extends Eloquent
         return $query->where('id_user', $idUser); // (int) 
     } // end byUser
     
-    public function scopeComplete($query, $idPack, $hash, $parserType, $data)
+    public function scopeComplete($query, $idPack, $hash, $parserType, $data, $title = '')
     {
         $prePath = 'data.'. $hash .'.parsers.'. $parserType .'.';
         
-        $query->where('_id', $idPack)->increment('count.complete');
-        
-        $result = $query->where('_id', $idPack)->update([
-            $prePath .'data' => $data,
+        $update = [
+            $prePath .'data'        => $data,
             $prePath .'finished_at' => time(),
-            $prePath .'status' => 'complete',
-        ]);
+            $prePath .'status'      => 'complete',
+        ];
+        if ($title) {
+            $update['data.'. $hash .'.title'] = $title;
+        }
+        
+        $result = $query->where('_id', $idPack)->update($update);
         
         $this->recheckParsersStatus($query, $idPack, $hash);
         
@@ -112,6 +120,7 @@ class Pack extends Eloquent
             $prePath .'finished_at' => time(),
             $prePath .'status' => 'complete',
         ]);
+        $query->where('_id', $idPack)->increment('count.complete');
         
         $this->recheckStatus($query, $idPack);
     } // end recheckParsersStatus
@@ -313,6 +322,93 @@ class Pack extends Eloquent
         
         return $info['scheme'] .'://'. $info['host'];
     } // end getDomain
+    
+    public function getHighestAlexaRank()
+    {
+        if (!is_null($this->highestAlexaRank)) {
+            return $this->highestAlexaRank;
+        }
+        
+        $rank = null;
+        foreach ($this->getData() as $hash => $data) {
+            $alexaRank = array_get($data, 'parsers.alexa.data.rank', 0);
+            if (is_null($rank) || $alexaRank > $rank) {
+                $rank = $alexaRank;
+            }
+        }
+        
+        $this->highestAlexaRank = $rank;
+        
+        return $rank;
+    } // end getHighestAlexaRank
+    
+    public function getLowestAlexaRank()
+    {
+        if (!is_null($this->lowestAlexaRank)) {
+            return $this->lowestAlexaRank;
+        }
+        
+        $rank = null;
+        foreach ($this->getData() as $hash => $data) {
+            $alexaRank = array_get($data, 'parsers.alexa.data.rank', 0);
+            if (is_null($rank) || $alexaRank < $rank) {
+                $rank = $alexaRank;
+            }
+        }
+        
+        $this->lowestAlexaRank = $rank;
+        
+        return $rank;
+    } // end getLowestAlexaRank
+    
+    public function getLowestPda()
+    {
+        if (!is_null($this->lowestPda)) {
+            return $this->lowestPda;
+        }
+        
+        $result = null;
+        foreach ($this->getData() as $hash => $data) {
+            $pda = array_get($data, 'parsers.moz.data.pda', 0);
+            if (is_null($result) || $pda < $result) {
+                $result = $pda;
+            }
+        }
+        
+        $this->lowestPda = $result;
+        
+        return $result;
+    } // end getLowestPda
+    
+    public function getHighestPda()
+    {
+        if (!is_null($this->highestPda)) {
+            return $this->highestPda;
+        }
+        
+        $result = null;
+        foreach ($this->getData() as $hash => $data) {
+            $pda = array_get($data, 'parsers.moz.data.pda', 0);
+            if (is_null($result) || $pda > $result) {
+                $result = $pda;
+            }
+        }
+        
+        $this->highestPda = $result;
+        
+        return $result;
+    } // end getHighestPda
+    
+    public function getTlds()
+    {
+        $tlds = [];
+        foreach ($this->getData() as $hash => $data) {
+            preg_match('~([^\.]+)$~', $this->getDomain($data['url']), $matches);
+            $tlds[] = $matches[1];
+        }
+        
+        return array_unique($tlds);
+    } // end getTlds
     
 }
 

@@ -37,7 +37,7 @@ class SoController extends Controller
     public function showBulkProfiler($idPack)
     {
         $pack = Pack::byUser()->where('_id', $idPack)->first();
-        
+
         return view('so.bulk_profiler', compact('pack'));
     } // end showBulkProfiler
     
