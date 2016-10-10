@@ -41,10 +41,12 @@
     <td colspan="6">
     <div>
         <div class="advanced-info-wrapper">
+            {{-- 
             <div class="username">
                 <!-- <i class="fa fa-user" data-title="description text"></i> -->
                 Martin Scorsese
             </div>
+             --}}
             <div class="block-emails">
                 <i class="fa fa-envelope" data-title="description text"></i>
                 @foreach (array_get($site, 'parsers.email.data.emails', []) as $email)
@@ -53,9 +55,9 @@
             </div>
             <div class="block-contacts">
                 <i class="fa fa-info-circle" data-title="description text"></i>
-                <a href="#">About Us</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Write Us</a>
+                @foreach (array_get($site, 'parsers.email.data.contacts', []) as $contactUrl)
+                    <a href="{{ $contactUrl }}" target="_blank">{{ $contactUrl }}</a>
+                @endforeach
             </div>
             <div class="block-socials">
                 <i class="fa fa-user" data-title="description text"></i>

@@ -50,6 +50,63 @@ var Profiler =
             }
         }
         
+        var tld = $('#filter-by-tld').val().toLowerCase();
+        if (tld) {
+            this.filters.push({
+                title: 'tld: '+ tld,
+                type: 'tld'
+            });
+            for (var i = 0; i < filtered.length; i++) { 
+                var info = filtered[i];
+                if (info.tld.indexOf(tld) === -1) {
+                    filtered.splice(i, 1);
+                }
+            }
+        }
+        
+        var hasEmail = $('#filter-by-has-email').is(':checked');
+        if (hasEmail) {
+            this.filters.push({
+                title: 'Get Email',
+                type: 'has-email'
+            });
+            for (var i = 0; i < filtered.length; i++) { 
+                var info = filtered[i];
+                if (!info.has_email) {
+                    filtered.splice(i, 1);
+                }
+            }
+        }
+        
+        var hasContacts = $('#filter-by-has-contact-form').is(':checked');
+        if (hasContacts) {
+            this.filters.push({
+                title: 'Contact Form',
+                type: 'has-contact-form'
+            });
+            for (var i = 0; i < filtered.length; i++) { 
+                var info = filtered[i];
+                if (!info.has_contacts) {
+                    filtered.splice(i, 1);
+                }
+            }
+        }
+        
+        var hasSocialProfiles = $('#filter-by-has-social-profile').is(':checked');
+        if (hasSocialProfiles) {
+            this.filters.push({
+                title: 'Social Profile',
+                type: 'has-social-profile'
+            });
+            for (var i = 0; i < filtered.length; i++) { 
+                var info = filtered[i];
+                if (!info.has_social_profiles) {
+                    filtered.splice(i, 1);
+                }
+            }
+        }
+        
+        
         if (filtered.length) {
             $('.hashed').hide();
             $.each(filtered, function(key, info) {
@@ -59,7 +116,7 @@ var Profiler =
             $('.hashed').show();
         }
         
-        console.table(this.filters);
+        //console.table(this.filters);
         if (this.filters.length) {
             wo.each(this.filters).render('single-close');
         }
@@ -67,14 +124,16 @@ var Profiler =
     
     removeFilter: function(type)
     {
-        $('#filter-by-'+ type).val('');
+        $('#filter-by-'+ type).val('').attr('checked', false);
+        
         this.search();
     }, // end removeFilter
     
     removeAllFilters: function()
     {
-        $('.filter-input').val('');
+        $('.filter-input').val('').attr('checked', false);
         $('#applied-filters').html('');
+
         this.search();
     }, // end removeAllFilters
     

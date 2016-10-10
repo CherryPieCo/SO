@@ -8,22 +8,22 @@
                         <h6>Additional</h6>
                         <div class="checkbox small">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" value="1" id="filter-by-has-email" class="filter-input">
                                 Get Email </label>
                         </div>
                         <div class="checkbox small">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" value="1" id="filter-by-has-contact-form" class="filter-input">
                                 Contact Form </label>
                         </div>
                         <div class="checkbox small">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" value="1" id="filter-by-has-social-profile" class="filter-input">
                                 Social Profile </label>
                         </div>
                         <div class="checkbox small">
                             <label>
-                                <input type="checkbox" value="">
+                                <input type="checkbox" value="" disabled>
                                 Bad Links </label>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <label> <h6>Top-level Domain</h6>
-                                        <select tabindex="1">
+                                        <select id="filter-by-tld" class="filter-input">
                                             <option></option>
                                             @foreach ($pack->getTlds() as $tld)
                                                 <option value="{{ $tld }}">.{{ $tld }}</option>

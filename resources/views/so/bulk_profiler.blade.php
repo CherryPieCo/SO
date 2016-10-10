@@ -9,7 +9,12 @@
         <div class="col-md-10 col-md-offset-1">
             <!-- <div class="panel panel-default panel-custom plan-selector"> -->
             <!-- <div class="panel-body"> -->
-            <h3 class="page-title">Link Profiler</h3>
+            <h3 class="page-title">
+                Link Profiler
+                <div style="float: right;">
+                    <a href="/me/bulk" class="btn btn-block btn-primary btn-sm">Back</a>
+                </div>
+            </h3>
             <div class="row">
                 <div class="col-xs-6">
                     <form>
@@ -22,7 +27,8 @@
                                 <option>Guiness</option>
                                 <option>Amstel</option>
                                 <option>Corona</option>
-                            </select> </label>
+                            </select> 
+                        </label>
                     </form>
                 </div>
             </div>
@@ -311,6 +317,10 @@ Profiler.sites = [
         hash: '{{ $hash }}',
         url: '{{ $site['url'] }}',
         title: '{{ addslashes(mb_strtolower($site['title'])) }}',
+        tld: '{{ mb_strtolower($site['tld']) }}',
+        has_email: {{ array_get($site, 'parsers.email.data.emails', []) ? 'true' : 'false' }},
+        has_contacts: {{ array_get($site, 'parsers.email.data.contacts', []) ? 'true' : 'false' }},
+        has_social_profiles: {{ array_get($site, 'parsers.email.data.social', []) ? 'true' : 'false' }},
     },
 @endforeach
 ];

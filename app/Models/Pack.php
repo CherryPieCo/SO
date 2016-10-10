@@ -401,11 +401,18 @@ class Pack extends Eloquent
     
     public function getTlds()
     {
+        $newData = [];
+        
         $tlds = [];
-        foreach ($this->getData() as $hash => $data) {
+        foreach ($this->data as $hash => $data) {
             preg_match('~([^\.]+)$~', $this->getDomain($data['url']), $matches);
+            $data['tld'] = $matches[1];
             $tlds[] = $matches[1];
+            
+            $newData[$hash] = $data;
         }
+        
+        $this->data = $newData;
         
         return array_unique($tlds);
     } // end getTlds
