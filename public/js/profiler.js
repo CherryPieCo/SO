@@ -4,11 +4,19 @@ var Profiler =
 {
     sites: [],
     filters: [],
+    filtered: [],
     
     init: function()
     {
-        $("#slider-da, #slider-ar").slider({
+        $("#slider-da").slider({
             tooltip : 'always'
+        }).on('slideStop', function(e) {
+            Profiler.search();
+        });
+        $("#slider-ar").slider({
+            tooltip : 'always'
+        }).on('slideStop', function(e) {
+            Profiler.search();
         });
 
         $('.btn-advanced').on('click', function() {
@@ -17,11 +25,8 @@ var Profiler =
         });
     }, // end init
     
-    search: function()
+    filterWithIntersect: function()
     {
-        this.filters = [];
-        var filtered = [];
-        
         var title = $('#filter-by-title').val().toLowerCase();
         if (title) {
             this.filters.push({
@@ -31,7 +36,7 @@ var Profiler =
             for (var i = 0; i < this.sites.length; i++) { 
                 var info = this.sites[i];
                 if (info.title.indexOf(title) !== -1) {
-                    filtered.push(info);
+                    this.filtered.push(info);
                 }
             }
         }
@@ -42,10 +47,10 @@ var Profiler =
                 title: 'url: '+ url,
                 type: 'url'
             });
-            for (var i = 0; i < filtered.length; i++) { 
-                var info = filtered[i];
+            for (var i = 0; i < this.filtered.length; i++) { 
+                var info = this.filtered[i];
                 if (info.url.indexOf(url) === -1) {
-                    filtered.splice(i, 1);
+                    this.filtered.splice(i, 1);
                 }
             }
         }
@@ -56,10 +61,10 @@ var Profiler =
                 title: 'tld: '+ tld,
                 type: 'tld'
             });
-            for (var i = 0; i < filtered.length; i++) { 
-                var info = filtered[i];
+            for (var i = 0; i < this.filtered.length; i++) { 
+                var info = this.filtered[i];
                 if (info.tld.indexOf(tld) === -1) {
-                    filtered.splice(i, 1);
+                    this.filtered.splice(i, 1);
                 }
             }
         }
@@ -70,10 +75,10 @@ var Profiler =
                 title: 'Get Email',
                 type: 'has-email'
             });
-            for (var i = 0; i < filtered.length; i++) { 
-                var info = filtered[i];
+            for (var i = 0; i < this.filtered.length; i++) { 
+                var info = this.filtered[i];
                 if (!info.has_email) {
-                    filtered.splice(i, 1);
+                    this.filtered.splice(i, 1);
                 }
             }
         }
@@ -84,10 +89,10 @@ var Profiler =
                 title: 'Contact Form',
                 type: 'has-contact-form'
             });
-            for (var i = 0; i < filtered.length; i++) { 
-                var info = filtered[i];
+            for (var i = 0; i < this.filtered.length; i++) { 
+                var info = this.filtered[i];
                 if (!info.has_contacts) {
-                    filtered.splice(i, 1);
+                    this.filtered.splice(i, 1);
                 }
             }
         }
@@ -98,18 +103,141 @@ var Profiler =
                 title: 'Social Profile',
                 type: 'has-social-profile'
             });
-            for (var i = 0; i < filtered.length; i++) { 
-                var info = filtered[i];
+            for (var i = 0; i < this.filtered.length; i++) { 
+                var info = this.filtered[i];
                 if (!info.has_social_profiles) {
-                    filtered.splice(i, 1);
+                    this.filtered.splice(i, 1);
+                }
+            }
+        }
+    }, // end filterWithIntersect
+    
+    filterWithAdd: function()
+    {
+        var daSlider = $("#slider-da").slider();
+        var daSliderValues = daSlider.slider('getValue');
+        var minArSlider = daSlider.slider('getAttribute', 'min');
+        var maxArSlider = daSlider.slider('getAttribute', 'max');
+        if (daSliderValues[0] != minArSlider || daSliderValues[1] != maxArSlider) {
+            this.filters.push({
+                title: 'da: '+ daSliderValues[0] +' - '+ daSliderValues[1],
+                type: 'slider-da'
+            });
+        }
+        
+        var arSlider = $("#slider-ar").slider();
+        var arSliderValues = arSlider.slider('getValue');
+        var minArSlider = arSlider.slider('getAttribute', 'min');
+        var maxArSlider = arSlider.slider('getAttribute', 'max');
+        if (arSliderValues[0] != minArSlider || arSliderValues[1] != maxArSlider) {
+            this.filters.push({
+                title: 'ar: '+ arSliderValues[0] +' - '+ arSliderValues[1],
+                type: 'slider-ar'
+            });
+        }
+        
+        
+        var title = $('#filter-by-title').val().toLowerCase();
+        if (title) {
+            this.filters.push({
+                title: 'title: '+ title,
+                type: 'title'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.title.indexOf(title) !== -1) {
+                    this.filtered.push(info);
                 }
             }
         }
         
+        var url = $('#filter-by-url').val().toLowerCase();
+        if (url) {
+            this.filters.push({
+                title: 'url: '+ url,
+                type: 'url'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.url.indexOf(url) !== -1) {
+                    this.filtered.push(info);
+                }
+            }
+        }
         
-        if (filtered.length) {
+        var tld = $('#filter-by-tld').val().toLowerCase();
+        if (tld) {
+            this.filters.push({
+                title: 'tld: '+ tld,
+                type: 'tld'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.tld.indexOf(tld) !== -1) {
+                    this.filtered.push(info);
+                }
+            }
+        }
+        
+        var hasEmail = $('#filter-by-has-email').is(':checked');
+        if (hasEmail) {
+            this.filters.push({
+                title: 'Get Email',
+                type: 'has-email'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.has_email) {
+                    this.filtered.push(info);
+                }
+            }
+        }
+        
+        var hasContacts = $('#filter-by-has-contact-form').is(':checked');
+        if (hasContacts) {
+            this.filters.push({
+                title: 'Contact Form',
+                type: 'has-contact-form'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.has_contacts) {
+                    this.filtered.push(info);
+                }
+            }
+        }
+        
+        var hasSocialProfiles = $('#filter-by-has-social-profile').is(':checked');
+        if (hasSocialProfiles) {
+            this.filters.push({
+                title: 'Social Profile',
+                type: 'has-social-profile'
+            });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.has_social_profiles) {
+                    this.filtered.push(info);
+                }
+            }
+        }
+    }, // end filterWithAdd
+    
+    search: function()
+    {
+        this.filters = [];
+        this.filtered = [];
+        
+        var isFilterAdd = true;
+        if (isFilterAdd) {
+            this.filterWithAdd();
+        } else {
+            this.filterWithIntersect();
+        }
+        
+        
+        if (this.filtered.length) {
             $('.hashed').hide();
-            $.each(filtered, function(key, info) {
+            $.each(this.filtered, function(key, info) {
                 $('.'+info['hash']).show();
             });
         } else {
