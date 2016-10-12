@@ -2,7 +2,7 @@
     <td class="text-center">
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="">
+                <input class="hashed-row-checkbox" type="checkbox" value="1">
             </label>
         </div>
     </td>
@@ -10,14 +10,14 @@
         <strong>{{ $site['title'] }}</strong>
         <a target="_blank" href="{{ $site['url'] }}">{{ $site['url'] }}</a>
         <div class="status-icons">
-            <i class="fa fa-envelope fa-lg brand-mail active" data-title="description text"></i>
-            <i class="fa fa-list fa-lg brand-form active" data-title="description text"></i>
-            <i class="fa fa-chain-broken fa-lg brand-link active" data-title="description text"></i>
-            <i class="fa fa-facebook-official fa-lg brand-facebook active" data-title="description text"></i>
-            <i class="fa fa-twitter fa-lg brand-twitter active" data-title="description text"></i>
-            <i class="fa fa-pinterest fa-lg brand-pinterest active" data-title="description text"></i>
-            <i class="fa fa-google-plus fa-lg brand-google active" data-title="description text"></i>
-            <i class="fa fa-linkedin fa-lg brand-linkedin active" data-title="description text"></i>
+            <i class="fa fa-envelope fa-lg brand-mail {{ array_get($site, 'parsers.email.data.emails', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-list fa-lg brand-form {{ array_get($site, 'parsers.email.data.contacts', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-chain-broken fa-lg brand-link" data-title="description text"></i>
+            <i class="fa fa-facebook-official fa-lg brand-facebook {{ array_get($site, 'parsers.email.data.social.facebook', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-twitter fa-lg brand-twitter {{ array_get($site, 'parsers.email.data.social.twitter', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-pinterest fa-lg brand-pinterest {{ array_get($site, 'parsers.email.data.social.pinterest', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-google-plus fa-lg brand-google {{ array_get($site, 'parsers.email.data.social.gplus', []) ? 'active' : '' }}" data-title="description text"></i>
+            <i class="fa fa-linkedin fa-lg brand-linkedin {{ array_get($site, 'parsers.email.data.social.linkedin', []) ? 'active' : '' }}" data-title="description text"></i>
         </div>
     </td>
     <td>
@@ -56,7 +56,7 @@
             <div class="block-contacts">
                 <i class="fa fa-info-circle" data-title="description text"></i>
                 @foreach (array_get($site, 'parsers.email.data.contacts', []) as $contactUrl)
-                    <a href="{{ $contactUrl }}" target="_blank">{{ $contactUrl }}</a>
+                    <a href="{{ $contactUrl }}" target="_blank">Contacts Information</a>
                 @endforeach
             </div>
             <div class="block-socials">

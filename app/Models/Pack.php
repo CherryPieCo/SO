@@ -358,7 +358,7 @@ class Pack extends Eloquent
         
         $this->lowestAlexaRank = $rank;
         
-        return $rank;
+        return (int) $rank;
     } // end getLowestAlexaRank
     
     public function getLowestPda()
@@ -377,7 +377,7 @@ class Pack extends Eloquent
         
         $this->lowestPda = $result;
         
-        return $result;
+        return (float) $result;
     } // end getLowestPda
     
     public function getHighestPda()
@@ -396,7 +396,7 @@ class Pack extends Eloquent
         
         $this->highestPda = $result;
         
-        return $result;
+        return (float) $result;
     } // end getHighestPda
     
     public function getTlds()

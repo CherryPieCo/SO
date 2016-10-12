@@ -23,8 +23,12 @@ var Profiler =
             $('.advanced-inner').toggle();
             return false;
         });
+        
+        $('.filter-input').on('change', function() {
+            Profiler.search();
+        });
     }, // end init
-    
+    /*
     filterWithIntersect: function()
     {
         var title = $('#filter-by-title').val().toLowerCase();
@@ -111,18 +115,26 @@ var Profiler =
             }
         }
     }, // end filterWithIntersect
-    
+    */
     filterWithAdd: function()
     {
         var daSlider = $("#slider-da").slider();
         var daSliderValues = daSlider.slider('getValue');
-        var minArSlider = daSlider.slider('getAttribute', 'min');
-        var maxArSlider = daSlider.slider('getAttribute', 'max');
-        if (daSliderValues[0] != minArSlider || daSliderValues[1] != maxArSlider) {
+        var minDaSlider = daSlider.slider('getAttribute', 'min');
+        var maxDaSlider = daSlider.slider('getAttribute', 'max');
+        if (daSliderValues[0] != minDaSlider || daSliderValues[1] != maxDaSlider) {
             this.filters.push({
                 title: 'da: '+ daSliderValues[0] +' - '+ daSliderValues[1],
                 type: 'slider-da'
             });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.domain_authority >= daSliderValues[0] && info.domain_authority <= daSliderValues[1]) {
+                    this.filtered.push(info);
+                }
+            }
+        } else {
+            $('#applied-filter-slider-da').remove();
         }
         
         var arSlider = $("#slider-ar").slider();
@@ -134,6 +146,14 @@ var Profiler =
                 title: 'ar: '+ arSliderValues[0] +' - '+ arSliderValues[1],
                 type: 'slider-ar'
             });
+            for (var i = 0; i < this.sites.length; i++) { 
+                var info = this.sites[i];
+                if (info.alexa_rank >= arSliderValues[0] && info.alexa_rank <= arSliderValues[1]) {
+                    this.filtered.push(info);
+                }
+            }
+        } else {
+            $('#applied-filter-slider-ar').remove();
         }
         
         
@@ -227,15 +247,10 @@ var Profiler =
         this.filters = [];
         this.filtered = [];
         
-        var isFilterAdd = true;
-        if (isFilterAdd) {
-            this.filterWithAdd();
-        } else {
-            this.filterWithIntersect();
-        }
+        this.filterWithAdd();
+        //this.filterWithIntersect();
         
-        
-        if (this.filtered.length) {
+        if (this.filters.length) {
             $('.hashed').hide();
             $.each(this.filtered, function(key, info) {
                 $('.'+info['hash']).show();
@@ -244,7 +259,7 @@ var Profiler =
             $('.hashed').show();
         }
         
-        //console.table(this.filters);
+        console.table(this.filters);
         if (this.filters.length) {
             wo.each(this.filters).render('single-close');
         }
@@ -252,7 +267,11 @@ var Profiler =
     
     removeFilter: function(type)
     {
-        $('#filter-by-'+ type).val('').attr('checked', false);
+        if (type.match(/^slider/)) {
+            $('#'+ type).slider().slider('refresh');
+        } else {
+            $('#filter-by-'+ type).val('').attr('checked', false);
+        }
         
         this.search();
     }, // end removeFilter
@@ -261,9 +280,21 @@ var Profiler =
     {
         $('.filter-input').val('').attr('checked', false);
         $('#applied-filters').html('');
+        
+        $("#slider-da").slider().slider('refresh');
+        $("#slider-ar").slider().slider('refresh');
 
         this.search();
     }, // end removeAllFilters
+    
+    checkAll: function(ctx)
+    {
+        var isChecked = ctx.checked;
+        console.log(isChecked);
+        
+        $('.hashed:visible').not('.advanced-info').find('.hashed-row-checkbox').attr('checked', isChecked).prop('checked', isChecked);
+        $('.check-all').attr('checked', isChecked).prop('checked', isChecked);
+    }, // end checkAll
     
 };
 $(document).ready(function() {

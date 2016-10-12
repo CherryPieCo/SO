@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <!-- <div class="panel panel-default panel-custom plan-selector"> -->
-            <!-- <div class="panel-body"> -->
+            <!-- <div class="panel-body"47-> -->7
             <h3 class="page-title">
                 Link Profiler
                 <div style="float: right;">
@@ -48,7 +48,7 @@
                         <div class="col-xs-2">
                             <div class="checkbox" style="margin-top: 7px;">
                                 <label>
-                                    <input type="checkbox" value="">
+                                    <input class="check-all check-all-top" type="checkbox" value="" onclick="Profiler.checkAll(this)">
                                     Check All </label>
                             </div>
                         </div>
@@ -221,7 +221,7 @@
                         <div class="col-xs-2">
                             <div class="checkbox" style="margin-top: 7px;">
                                 <label>
-                                    <input type="checkbox" value="">
+                                    <input class="check-all check-all-bottom"  type="checkbox" value="" onclick="Profiler.checkAll(this)">
                                     Check all </label>
                             </div>
                         </div>
@@ -321,6 +321,8 @@ Profiler.sites = [
         has_email: {{ array_get($site, 'parsers.email.data.emails', []) ? 'true' : 'false' }},
         has_contacts: {{ array_get($site, 'parsers.email.data.contacts', []) ? 'true' : 'false' }},
         has_social_profiles: {{ array_get($site, 'parsers.email.data.social', []) ? 'true' : 'false' }},
+        domain_authority: {{ array_get($site, 'parsers.moz.data.pda', 0) }},
+        alexa_rank: {{ array_get($site, 'parsers.alexa.data.rank', 0) }},
     },
 @endforeach
 ];

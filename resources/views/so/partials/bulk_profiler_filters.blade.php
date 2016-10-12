@@ -112,7 +112,7 @@
                                 <div class="col-sm-7">
                                     <div id="applied-filters"></div>
                                     <script id="single-close" into="applied-filters" type="text/html">
-                                        <div class="alert alert-inline alert-warning alert-dismissible" role="alert">
+                                        <div id="applied-filter-~type~" class="alert alert-inline alert-warning alert-dismissible" role="alert">
                                             <button onclick="Profiler.removeFilter('~type~')" type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
