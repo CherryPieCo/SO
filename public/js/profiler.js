@@ -1,7 +1,19 @@
 'use strict';
 
+Object.defineProperty(Array.prototype, 'chunk', {
+    value: function(chunkSize) {
+        var array=this;
+        return [].concat.apply([],
+            array.map(function(elem,i) {
+                return i%chunkSize ? [] : [array.slice(i,i+chunkSize)];
+            })
+        );
+    }
+});
+
 var Profiler = 
 {
+    per_page: 25,
     sites: [],
     filters: [],
     filtered: [],
@@ -24,9 +36,16 @@ var Profiler =
             return false;
         });
         
-        $('.filter-input').on('change', function() {
+        $('.filter-input[type=checkbox], select.filter-input').on('change', function() {
             Profiler.search();
         });
+        
+        $('#filter-by-title, #filter-by-url').on('keyup', function (e) {
+            Profiler.search();
+        });
+        
+        var chunks = this.sites.chunk(this.per_page);
+        this.renderPagination(chunks);
     }, // end init
     /*
     filterWithIntersect: function()
@@ -249,21 +268,46 @@ var Profiler =
         
         this.filterWithAdd();
         //this.filterWithIntersect();
-        
+        this.renderFilteredChunk(0, true);return;
         if (this.filters.length) {
-            $('.hashed').hide();
-            $.each(this.filtered, function(key, info) {
-                $('.'+info['hash']).show();
-            });
+            this.renderFilteredChunk(0, true);
         } else {
             $('.hashed').show();
+            var chunks = this.sites.chunk(this.per_page);
+            this.renderPagination(chunks);
         }
+    }, // end search
+    
+    renderFilteredChunk: function(chunkIndex, isRenderNewPagination)
+    {
+        console.log(isRenderNewPagination);
+        this.filtered = this.filtered.length ? this.filtered : this.sites;
+        $('.hashed').hide();
+        var chunks = this.filtered.chunk(this.per_page);
+        console.log(chunks);
+        $.each(chunks[chunkIndex], function(key, info) {
+            $('.'+info['hash']).show();
+        });
         
-        console.table(this.filters);
         if (this.filters.length) {
             wo.each(this.filters).render('single-close');
         }
-    }, // end search
+        
+        if (isRenderNewPagination) {
+            this.renderPagination(chunks);
+        }
+    }, // end renderFilteredChunk
+    
+    renderPagination: function(chunks)
+    {
+        var woData = [];
+        $.each(chunks, function(key, info) {
+            info.index = key + 1;
+            info.class = !key ? 'active' : '';
+            woData.push(info);
+        });
+        wo.each(woData).render('pagination');
+    }, // end renderPagination
     
     removeFilter: function(type)
     {
@@ -290,11 +334,29 @@ var Profiler =
     checkAll: function(ctx)
     {
         var isChecked = ctx.checked;
-        console.log(isChecked);
         
         $('.hashed:visible').not('.advanced-info').find('.hashed-row-checkbox').attr('checked', isChecked).prop('checked', isChecked);
         $('.check-all').attr('checked', isChecked).prop('checked', isChecked);
     }, // end checkAll
+    
+    changePage: function(ctx, page)
+    {
+        $(ctx).closest('ul').find('li').removeClass('active');
+        $(ctx).closest('li').addClass('active');
+        
+        var index = page - 1;
+        Profiler.renderFilteredChunk(index, false);
+        
+        $('html, body').animate({
+            scrollTop: $('.content-table').offset().top
+        }, 400);
+    }, // end changePage
+    
+    changePerPage: function(ctx)
+    {
+        this.per_page = $(ctx).val();
+        this.search();
+    }, // end changePerPage
     
 };
 $(document).ready(function() {

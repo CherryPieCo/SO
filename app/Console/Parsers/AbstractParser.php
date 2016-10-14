@@ -104,8 +104,14 @@ class AbstractParser extends Command
     protected function getPageTitle($content)
     {
         preg_match('~<title[^>]*>\s*\n*\s*(.*)\s*\n*\s*<\/title>~i', $content, $title);
+        $title = trim($title[0]);
+        $title = preg_replace(
+            ['~^<title[^>]*>~i', '~<\/title>$~i'], 
+            ['', ''], 
+            $title
+        );
         
-        return isset($title[1]) ? $title[1] : '';
+        return $title ?: '';
     } // end getPageTitle
     
     protected function isApiRequestSuccessful()

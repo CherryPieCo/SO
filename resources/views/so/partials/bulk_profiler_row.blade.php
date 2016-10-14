@@ -1,4 +1,4 @@
-<tr class="{{ $hash }} hashed">
+<tr class="{{ $hash }} hashed" style="{{ isset($hide) ? 'display:none' : '' }}">
     <td class="text-center">
         <div class="checkbox">
             <label>
@@ -7,7 +7,7 @@
         </div>
     </td>
     <td class="sitename">
-        <strong>{{ $site['title'] }}</strong>
+        <strong>{{ !isset($site['title']) || !$site['title'] ? '[notitle]' : $site['title'] }}</strong>
         <a target="_blank" href="{{ $site['url'] }}">{{ $site['url'] }}</a>
         <div class="status-icons">
             <i class="fa fa-envelope fa-lg brand-mail {{ array_get($site, 'parsers.email.data.emails', []) ? 'active' : '' }}" data-title="description text"></i>
@@ -36,7 +36,7 @@
     <td>{{ array_get($site, 'parsers.moz.data.pda', '-') }}</td><!-- DA -->
     <td>{{ array_get($site, 'parsers.alexa.data.rank', '-') }}</td><!-- Alex -->
 </tr>
-<tr class="advanced-info {{ $hash }} hashed">
+<tr class="advanced-info {{ $hash }} hashed" style="{{ isset($hide) ? 'display:none' : '' }}">
     <td></td>
     <td colspan="6">
     <div>

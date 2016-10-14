@@ -59,7 +59,7 @@
                             <div class="advanced-filters-inner">
                                 <div class="col-sm-2">
                                     <label> <h6>Advertise opportunities</h6>
-                                        <select tabindex="1">
+                                        <select disabled>
                                             <option></option>
                                             <option>donate</option>
                                             <option>useful links</option>
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <label> <h6>Links by type</h6>
-                                        <select tabindex="1">
+                                        <select disabled>
                                             <option></option>
                                             <option>comment</option>
                                             <option>forum</option>
@@ -81,23 +81,20 @@
                                             @foreach ($pack->getTlds() as $tld)
                                                 <option value="{{ $tld }}">.{{ $tld }}</option>
                                             @endforeach
-                                        </select> </label>
+                                        </select> 
+                                    </label>
                                 </div>
                                 <div class="col-sm-3">
-                                    <form onsubmit="Profiler.search(); return false;">
-                                        <label> 
-                                            <h6>Find by URL</h6>
-                                            <input id="filter-by-url" type="text" class="filter-input">
-                                        </label>
-                                    </form>
+                                    <label> 
+                                        <h6>Find by URL</h6>
+                                        <input id="filter-by-url" type="text" class="filter-input">
+                                    </label>
                                 </div>
                                 <div class="col-sm-3">
-                                    <form onsubmit="Profiler.search(); return false;">
-                                        <label> 
-                                            <h6>Find by title</h6>
-                                            <input id="filter-by-title" type="text" class="filter-input">
-                                        </label>
-                                    </form>
+                                    <label> 
+                                        <h6>Find by title</h6>
+                                        <input id="filter-by-title" type="text" class="filter-input">
+                                    </label>
                                 </div>
                             </div>
                             <!-- /.advanced-filters-inner -->

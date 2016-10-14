@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <!-- <div class="panel panel-default panel-custom plan-selector"> -->
-            <!-- <div class="panel-body"47-> -->7
+            <!-- <div class="panel-body"47-> -->
             <h3 class="page-title">
                 Link Profiler
                 <div style="float: right;">
@@ -77,6 +77,9 @@
                                 <tbody>
                                     
                                     @foreach ($pack->getData() as $hash => $site)
+                                        @if ($loop->index >= 25)
+                                            @set('hide', true)
+                                        @endif
                                         @include('so.partials.bulk_profiler_row')
                                     @endforeach
                                     
@@ -253,11 +256,11 @@
                             <form class="form-inline">
                                 <div class="form-group form-group-sm">
                                     <label for="">Show on page: </label>
-                                    <select class="form-control">
-                                        <option>25</option>
-                                        <option>50</option>
-                                        <option>100</option>
-                                        <option>All</option>
+                                    <select class="form-control" onchange="Profiler.changePerPage(this)">
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="99999">All</option>
                                     </select>
                                 </div>
                             </form>
@@ -268,7 +271,14 @@
             <div class="row">
                 <div class="col-xs-12 text-center">
                     <nav>
-                        <ul class="pagination pagination-sm">
+                        <ul id="pagination-wrapper" class="pagination pagination-sm"></ul>
+                        
+                        <script id="pagination" into="pagination-wrapper" type="text/html">
+                            <li class="~class~">
+                                <a onclick="Profiler.changePage(this, ~index~);" href="javascript:void(0);">~index~</a>
+                            </li>
+                        </script>
+                        {{--
                             <li class="disabled">
                                 <a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a>
                             </li>
@@ -276,21 +286,12 @@
                                 <a href="#">1</a>
                             </li>
                             <li>
-                                <a href="#">2</a>
-                            </li>
-                            <li>
-                                <a href="#">3</a>
-                            </li>
-                            <li>
-                                <a href="#">4</a>
-                            </li>
-                            <li>
                                 <a href="#">5</a>
                             </li>
                             <li>
                                 <a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a>
-                            </li>
-                        </ul>
+                            </li>  
+                        --}}
                     </nav>
                 </div>
             </div>
@@ -316,7 +317,7 @@ Profiler.sites = [
     {
         hash: '{{ $hash }}',
         url: '{{ $site['url'] }}',
-        title: '{{ addslashes(mb_strtolower($site['title'])) }}',
+        title: '{{ trim(addslashes(mb_strtolower((!isset($site['title']) || !$site['title'] ? '[notitle]' : $site['title'])))) }}',
         tld: '{{ mb_strtolower($site['tld']) }}',
         has_email: {{ array_get($site, 'parsers.email.data.emails', []) ? 'true' : 'false' }},
         has_contacts: {{ array_get($site, 'parsers.email.data.contacts', []) ? 'true' : 'false' }},
