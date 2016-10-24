@@ -22,7 +22,7 @@
                                 Social Profile </label>
                         </div>
                         <div class="checkbox small">
-                            <label>
+                            <label style="text-decoration: line-through;">
                                 <input type="checkbox" value="" disabled>
                                 Bad Links </label>
                         </div>
@@ -58,20 +58,20 @@
                             <!-- .advanced-filters -->
                             <div class="advanced-filters-inner">
                                 <div class="col-sm-2">
-                                    <label> <h6>Advertise opportunities</h6>
-                                        <select disabled>
+                                    <label> 
+                                        <h6>Advertise opportunities</h6>
+                                        <select id="filter-by-advertise-type" class="filter-input">
                                             <option></option>
-                                            <option>donate</option>
-                                            <option>useful links</option>
-                                        </select> </label>
+                                            @foreach ($pack->getPageTypes() as $pageType => $pageTypeCaption)
+                                                <option value="{{ $pageType }}">{{ $pageTypeCaption }}</option>
+                                            @endforeach
+                                        </select> 
+                                    </label>
                                 </div>
                                 <div class="col-sm-2">
-                                    <label> <h6>Links by type</h6>
+                                    <label> <h6 style="text-decoration: line-through;">Links by type</h6>
                                         <select disabled>
                                             <option></option>
-                                            <option>comment</option>
-                                            <option>forum</option>
-                                            <option>profile</option>
                                         </select> </label>
                                 </div>
                                 <div class="col-sm-2">

@@ -11,7 +11,7 @@ var App =
     {
         $('#bulk-type').val('emails');
         $('#bulk-urls-limit').text(500);
-        wo.render('emails-options'); 
+        wo.render('emails-options', false); 
         $('#create-bulk-modal').modal('show');
     }, // end 
     
@@ -19,7 +19,7 @@ var App =
     {
         $('#bulk-type').val('moz');
         $('#bulk-urls-limit').text(500);
-        wo.render('moz-options');
+        wo.render('moz-options', false);
         $('#create-bulk-modal').modal('show');
     }, // end 
     

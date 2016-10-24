@@ -59,6 +59,7 @@ class AbstractParser extends Command
     
     protected function checkValidParsedInfo()
     {
+        if ($this->type == 'pages') return false;
         $data = $this->site->getValidParserInfo($this->type);
         if ($data) {
             $this->data = $data;
@@ -89,6 +90,8 @@ class AbstractParser extends Command
         $idUser = Pack::where('_id', $idPack)->pluck('id_user');
         $user = Sentinel::findById($idUser);
         if ($user && (!$user->isRequestsAvailable() && $this->isApiRequestSuccessful())) {
+            // FIXME: 
+            // HACK:
             //$data = [];
             //$status = 'api_limit'; 
         }
@@ -104,12 +107,18 @@ class AbstractParser extends Command
     protected function getPageTitle($content)
     {
         preg_match('~<title[^>]*>\s*\n*\s*(.*)\s*\n*\s*<\/title>~i', $content, $title);
+        if (!$content || !isset($title[0])) {
+            return '';
+        }
+        
         $title = trim($title[0]);
         $title = preg_replace(
             ['~^<title[^>]*>~i', '~<\/title>$~i'], 
             ['', ''], 
             $title
         );
+        
+        $title = utf8_encode($title);
         
         return $title ?: '';
     } // end getPageTitle

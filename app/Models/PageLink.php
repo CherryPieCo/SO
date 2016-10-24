@@ -17,7 +17,26 @@ class PageLink extends Model
     
     public static function getTypeID($type)
     {
-        return \DB::table('links_types')->where('type', $type)->pluck('id');
+        // HACK:
+        switch ($type) {
+            case 'contact':
+                return 1;
+            case 'advertising':
+                return 2;
+            case 'useful':
+                return 3;
+            case 'donate':
+                return 4;
+            case 'blog':
+                return 5;
+            case 'guest':
+                return 6;
+            
+            default:
+                throw new \RuntimeException(sprintf('Unknown page type: [%s]', $type));
+        }
+        
+        //return \DB::table('links_types')->where('type', $type)->pluck('id');
     } // end 
     
 }

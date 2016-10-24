@@ -32,7 +32,7 @@ class Pages extends AbstractParser
         $parse_url = parse_url($this->url);
 
         foreach ($phrases as $p) {
-            $phrase = $p['phrase'];
+            $phrase = $p['phrase']; 
 
             if ($p['anchor']) {
                 $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>{$phrase}(!|)<\/a>";
@@ -63,9 +63,11 @@ class Pages extends AbstractParser
             }
         }
 
-
-        $found = array_filter($found);
-        $this->data = $found;
+        $data = [];
+        foreach ($found as $type => $info) {
+            $data[$type] = !empty($info);
+        }
+        $this->data = $data;
         
         $parsers = $this->site->parsers;
         $found['updated_at'] = time();
@@ -76,8 +78,7 @@ class Pages extends AbstractParser
     
     private function findByPhrase($regexp, $order) 
     {
-        $result = "";
-    
+        $result = '';
         if (preg_match("/$regexp/U", $this->request->getResponseText(), $matches)) {
             $result = $matches[$order];
         }
@@ -112,8 +113,7 @@ class Pages extends AbstractParser
                 //$url = (strpos($res_by_phrase, '://') ? $res_by_phrase : ($request->getUrl() . $res_by_phrase));
                 if (strpos($res_by_phrase, '://')) {
                     $url = $res_by_phrase;
-                }
-                else {
+                } else {
                     $first = rtrim( preg_replace('#^(.*?//.*?/).*$#', "\\1", $this->request->getUrl()), "/" );
                     $second = ltrim( $res_by_phrase, "/" );
                     $url = "{$first}/{$second}";

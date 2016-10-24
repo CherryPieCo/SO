@@ -42,14 +42,20 @@ window.wo = (function() {
                 this.data = [this.data];
             }
             
-            if (!this.data.length) {
+            var length = this.data.length;
+            if (!length) {
                 this.data.push('');
             }
+            
             var html = '';
             this.data.forEach(function(item) {
-                html += self.fetch(template, item);
+                if (item) {
+                    html += self.fetch(template, item);
+                }
             });
-            
+            if (data === false && !length) {
+                html += self.fetch(template);
+            }
             
             var into = this.template.getAttribute('into');
             this.template = null;

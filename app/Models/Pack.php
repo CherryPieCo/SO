@@ -15,6 +15,7 @@ class Pack extends Eloquent
     const NOT_FOUND_TYPE = 'not_found';
     const BACKLINKS_TYPE = 'backlinks';
     const MOZ_TYPE       = 'moz';
+    const PAGES_TYPE     = 'pages';
     
     
     protected $collection = 'packs';
@@ -91,7 +92,7 @@ class Pack extends Eloquent
         if ($title) {
             $update['data.'. $hash .'.title'] = $title;
         }
-        
+
         $result = $query->where('_id', $idPack)->update($update);
         
         $this->recheckParsersStatus($query, $idPack, $hash);
@@ -166,6 +167,13 @@ class Pack extends Eloquent
                 $parsers['email'] = $defaultParser;
                 $parsers['moz'] = $defaultParser;
                 $parsers['alexa'] = $defaultParser;
+                $parsers['pages'] = array_merge($defaultParser, ['options' => [
+                    'advertising',
+                    'useful', 
+                    'donate', 
+                    'blog', 
+                    'guest',
+                ]]);
                 break;
             case self::NOT_FOUND_TYPE:
                 $parsers['email'] = $defaultParser;
@@ -416,6 +424,32 @@ class Pack extends Eloquent
         
         return array_unique($tlds);
     } // end getTlds
+    
+    public function getPageTypes()
+    {
+        $types = [
+            'advertising' => 'Advertising',
+            'useful' => 'Useful',
+            'donate' => 'Donate',
+            'blog' => 'Blog',
+            'guest' => 'Guest',
+        ];
+        
+        $result = [];
+        foreach ($this->getData() as $hash => $data) {
+            $pages = array_get($data, 'parsers.pages.data', []);
+            foreach ($pages as $type => $trash) {
+                $result[$type] = $types[$type];
+            }
+        }
+        
+        return $result;
+    } // end getPageTypes
+    
+    public function getLastProfilerBulksIds($count = 12)
+    {
+        return Pack::byUser()->select('title', '_id')->where('_id', '!=', $this->_id)->limit($count)->orderBy('created_at', 'desc')->get();
+    } // end getLastProfilerBulksIds
     
 }
 

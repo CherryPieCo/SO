@@ -42,6 +42,9 @@ Route::group([
     Route::post('/remove-bulk', 'SoController@removeBulk');
     Route::post('/set-bulks-per-page-count', 'SoController@setBulksPerPageCount');
     
+    Route::post('/bulk/{mongo}/profiler/remove-sites', 'SoController@removeSitesFromBulk');
+    
+    
     Route::get('/logout', function() {
         Sentinel::logout();
         return redirect('/');

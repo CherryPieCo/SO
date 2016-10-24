@@ -19,14 +19,11 @@
                 <div class="col-xs-6">
                     <form>
                         <label> Campaign:
-                            <select tabindex="1">
-                                <option>Heineken</option>
-                                <option>Carlsberg</option>
-                                <option>Stella Artois</option>
-                                <option>Cronenberg ronenberg</option>
-                                <option>Guiness</option>
-                                <option>Amstel</option>
-                                <option>Corona</option>
+                            <select onchange="window.location = '/me/bulk/'+this.value+'/profiler';">
+                                <option value="{{ $pack->_id }}">{{ $pack->title }}</option>
+                                @foreach ($pack->getLastProfilerBulksIds() as $latestPacks)
+                                <option value="{{ $latestPacks->_id }}">{{ $latestPacks->title }}</option>
+                                @endforeach
                             </select> 
                         </label>
                     </form>
@@ -230,7 +227,7 @@
                         </div>
                         <div class="col-xs-2">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-default">
+                                <button type="button" class="btn btn-sm btn-default" onclick="Profiler.remove();">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
                                 </button>
                                 <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -239,18 +236,21 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="#">Delete All</a>
+                                        <a onclick="Profiler.removeAll();" href="javascript:void(0);">Delete All</a>
                                     </li>
+                                    {{-- 
                                     <li>
-                                        <a href="#">Blacklist</a>
+                                        <a href="javascript:void(0);">Blacklist</a>
                                     </li>
+                                    --}}
                                 </ul>
                             </div>
                         </div>
                         <div class="col-xs-5 text-right">
-                            <p class="displayed-items">
-                                Showing <strong>1 to 25</strong> of <strong>177</strong> entries
-                            </p>
+                            <p id="displayed-items" class="displayed-items"></p>
+                            <script id="displayed-items-template" into="displayed-items" type="text/html">
+                                Showing <strong>~from~ to ~to~</strong> of <strong>~total~</strong> entries
+                            </script>
                         </div>
                         <div class="col-xs-3 text-right">
                             <form class="form-inline">
@@ -301,6 +301,8 @@
 </section>
 </div>
 
+@include('so.modals.no_checkboxes')
+
 @stop
 
 @section('styles')
@@ -312,6 +314,7 @@
 <script src="/js/profiler.js"></script>
 
 <script>
+Profiler._id = '{{ $pack->_id }}';
 Profiler.sites = [
 @foreach ($pack->getData() as $hash => $site)
     {
@@ -324,6 +327,7 @@ Profiler.sites = [
         has_social_profiles: {{ array_get($site, 'parsers.email.data.social', []) ? 'true' : 'false' }},
         domain_authority: {{ array_get($site, 'parsers.moz.data.pda', 0) }},
         alexa_rank: {{ array_get($site, 'parsers.alexa.data.rank', 0) }},
+        pages: {!! json_encode(array_keys(array_get($site, 'parsers.pages.data', []))) !!},
     },
 @endforeach
 ];

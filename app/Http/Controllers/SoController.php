@@ -223,7 +223,30 @@ class SoController extends Controller
         })->export('xls');
     } // end downloadBulkXls
     
-    
+    public function removeSitesFromBulk($idBulk, Request $request)
+    {
+        $pack = Pack::byUser()->where('_id', $idBulk)->first();
+        $hashes = $request->get('hashes');
+        
+        $data = $pack->data;
+        foreach ($data as $hash => $info) {
+            if (in_array($hash, $hashes)) {
+                unset($data[$hash]);
+            }
+        }
+        $pack->data = $data;
+        
+        $count = $pack->getAttribute('count');
+        $count['total'] = $count['total'] - count($hashes);
+        $count['complete'] = $count['complete'] - count($hashes);
+        $pack->setAttribute('count', $count);
+        
+        $pack->save();
+        
+        return response()->json([
+            'status' => true
+        ]);
+    } // end removeSitesFromBulk
     
     
     
