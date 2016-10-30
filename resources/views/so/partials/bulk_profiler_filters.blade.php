@@ -78,8 +78,8 @@
                                     <label> <h6>Top-level Domain</h6>
                                         <select id="filter-by-tld" class="filter-input">
                                             <option></option>
-                                            @foreach ($pack->getTlds() as $tld)
-                                                <option value="{{ $tld }}">.{{ $tld }}</option>
+                                            @foreach ($pack->getTlds() as $tld => $tldCount)
+                                                <option value="{{ $tld }}">.{{ $tld }} ({{ $tldCount }})</option>
                                             @endforeach
                                         </select> 
                                     </label>

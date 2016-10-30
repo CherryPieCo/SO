@@ -51,6 +51,7 @@ class Email extends AbstractParser
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_USERAGENT, AbstractParser::USER_AGENT);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
             $headers = @get_headers($c, 1) ?: [];
             $headers[0] = isset($headers[0]) ? $headers[0] : 'default';
@@ -76,8 +77,8 @@ class Email extends AbstractParser
             $response['email'] = array_merge($response['email'], $this->getEmails($output));
             $this->grabSocialProfiles($output);
         }
-
-
+        // dr($this->request->getResponseText());
+        //dr($response);
         $emails = [];
         foreach ($response['email'] as $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -173,6 +174,7 @@ class Email extends AbstractParser
         $html = $this->changeAtSymbol($html);
         $html = $this->changeDotSymbol($html);
         $html = $this->changeMiscSymbol($html);
+        //$html = $this->customReplaces($html);
         $html = html_entity_decode($html);
         
         $pattern = '/[a-z0-9_\-\+\.]+@[a-z0-9\-]+\.([a-z]{2,3})(?:\.[a-z]{2})?/i';
@@ -191,6 +193,7 @@ class Email extends AbstractParser
             '~\s*\(\(that little "at" thingie\)\)\s*~',
             '#\[~at~\]#',
             '~\[at\]~',
+            //'~\sat\s~',
             '~\{\@\}~',
             '~\s*\[whirlpool\]\s*~',
             '~\s*\[\'at\'\]\s*~',
@@ -236,6 +239,8 @@ class Email extends AbstractParser
     {
         $patterns = [
              '.com' => '~(DotCom)~',
+             '@gmail.com' => '~ at gmail dot com~',
+             '@gmail.com' => '~ at gmail\.com~',
         ];
         
         foreach ($patterns as $replacement => $pattern) {
@@ -244,9 +249,26 @@ class Email extends AbstractParser
         return $text;
     } // end changeDotSymbol
     
+    private function customReplaces($text)
+    {
+        $text = preg_replace_callback(
+            '~[^\w]{1}([a-zA-Z0-9_\.-]+) at ([a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]{2,6})[^\w]{1}~',
+            function ($matches) {
+                if (isset($matches[1]) && isset($matches[2])) {
+                    return ' '. $matches[1] .'@'. $matches[2] .' ';
+                }
+                return $matches[0];
+            },
+            $text
+        );
+        
+        return $text;
+    } // end customReplaces
+    
     private function getEmail($regexp, $order, $content = false) 
     {
         $content = $content ?: $this->request->getResponseText();
+        
         $parse_url = parse_url($this->url);
         $url = "";
         
@@ -272,7 +294,7 @@ class Email extends AbstractParser
             
             $parse_contact_url = parse_url($url);
             // possible contact page is not from this site
-            if (isset($parse_contact_url['host']) && mb_strtolower($parse_contact_url['host']) != mb_strtolower($parse_url['host'])) {
+            if (isset($parse_contact_url['host']) && strpos(mb_strtolower($parse_contact_url['host']), mb_strtolower($parse_url['host'])) === false) {
                 return '';
             }
         }
@@ -296,6 +318,9 @@ class Email extends AbstractParser
         $contacts1 = [];
         $contacts2 = [];
         $contacts3 = [];
+        $contacts4 = [];
+        $contacts5 = [];
+        $contacts6 = [];
 
         foreach ($phrases as $phrase) {
             $phrase = preg_quote($phrase);
@@ -311,11 +336,28 @@ class Email extends AbstractParser
             
             $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*><img.*?alt=\".*?{$phrase}.*?\".*><\/a>";
             $contacts3[] = $this->getEmail($regexp, 2, $content);
+            
+            
+            //
+            $regexp = "<a\s[^>]*href=('??)([^' >]*?)\\1[^>]*>( |){$phrase}(!| |)<\/a>";
+            $contactUrl = $this->getEmail($regexp, 2, $content);
+            if (!preg_match('~mailto:~', $contactUrl)) {
+                $contacts4[] = $contactUrl;
+            }
+
+            $regexp = "href='(\S*{$phrase}(\/|))'";                            
+            $contacts5[] = $this->getEmail($regexp, 1, $content);
+            
+            $regexp = "<a\s[^>]*href=('??)([^' >]*?)\\1[^>]*><img.*?alt='.*?{$phrase}.*?'.*><\/a>";
+            $contacts6[] = $this->getEmail($regexp, 2, $content);
         }
 
-        $contacts = array_merge($contacts1, $contacts2, $contacts3);
+        $contacts = array_merge($contacts1, $contacts2, $contacts3, $contacts4, $contacts5, $contacts6);
         $contacts = array_filter($contacts);
         $contacts = array_unique($contacts);
+        $contacts = array_map(function($value) {
+            return trim(trim($value, "'"), '"');
+        }, $contacts);
         
         return $contacts;
     } // end getContacts

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-//use Illuminate\Database\Eloquent\Model as Eloquent;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 use Sentinel;
 
@@ -259,7 +258,7 @@ class Pack extends Eloquent
         return $data;
     } // end getBrokenLinksForXls
     
-    public function getBacklinksForXls($type)
+    public function getBacklinksForXls($type = 'all')
     {
         $data = [
             ['Page URL', 'Backlink']
@@ -294,11 +293,13 @@ class Pack extends Eloquent
                 }
             }
             
-            foreach ($backlinks as $backlinkType) {
-                foreach ($backlinkType as $link) {
-                    $data[] = [
-                        $url, $link
-                    ];
+            if ($type == 'all') {
+                foreach ($backlinks as $backlinkType) {
+                    foreach ($backlinkType as $link) {
+                        $data[] = [
+                            $url, $link
+                        ];
+                    }
                 }
             }
         }
@@ -415,14 +416,18 @@ class Pack extends Eloquent
         foreach ($this->data as $hash => $data) {
             preg_match('~([^\.]+)$~', $this->getDomain($data['url']), $matches);
             $data['tld'] = $matches[1];
-            $tlds[] = $matches[1];
+            if (isset($tlds[$matches[1]])) {
+                $tlds[$matches[1]]++;
+            } else {
+                $tlds[$matches[1]] = 1;
+            }
             
             $newData[$hash] = $data;
         }
         
         $this->data = $newData;
-        
-        return array_unique($tlds);
+
+        return $tlds;
     } // end getTlds
     
     public function getPageTypes()

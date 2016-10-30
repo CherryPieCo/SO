@@ -36,6 +36,13 @@
 
     @include('so.partials.bulk_profiler_filters')
 
+    <div class="col-md-10 col-md-offset-1">
+        <p id="displayed-items-top" class="displayed-items"></p>
+        <script id="displayed-items-top-template" into="displayed-items-top" type="text/html">
+            Now you see only ~total~-filtered URLs of the total number of ~bulk_total~-URLs of the company.
+        </script>
+    </div>
+
     <div class="row content-table">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default panel-custom">
@@ -64,21 +71,39 @@
                                     <tr>
                                         <th></th>
                                         <th>Backlink Page URL</th>
-                                        <th>Contacts</th>
+                                        <th class="th-sorter" onclick="Profiler.addOrderBy(this, 'contacts_count');">
+                                            <i class="fa fa-fw fa-sort"></i>
+                                            Contacts
+                                        </th>
                                         <th>Status</th>
-                                        <th><img src="/images/moz.gif" alt="moz icon"> PA</th>
-                                        <th><img src="/images/moz.gif" alt="moz icon"> DA</th>
-                                        <th><img src="/images/alexa.png" alt="alexa icon"> Alexa</th>
+                                        <th class="th-sorter" onclick="Profiler.addOrderBy(this, 'page_authority');">
+                                            <i class="fa fa-fw fa-sort"></i>
+                                            <img src="/images/moz.gif" alt="moz icon"> 
+                                            PA
+                                        </th>
+                                        <th class="th-sorter" onclick="Profiler.addOrderBy(this, 'domain_authority');">
+                                            <i class="fa fa-fw fa-sort"></i>
+                                            <img src="/images/moz.gif" alt="moz icon"> 
+                                            DA
+                                        </th>
+                                        <th class="th-sorter" onclick="Profiler.addOrderBy(this, 'alexa_rank');">
+                                            <i class="fa fa-fw fa-sort"></i>
+                                            <img src="/images/alexa.png" alt="alexa icon"> 
+                                            Alexa
+                                        </th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    
+                                <tbody id="tr-container">
+                                    <?php /*
                                     @foreach ($pack->getData() as $hash => $site)
                                         @if ($loop->index >= 25)
                                             @set('hide', true)
                                         @endif
                                         @include('so.partials.bulk_profiler_row')
                                     @endforeach
+                                    */ ?>
+                                    
+                                    @include('so.partials.bulk_profiler_row_js')
                                     
                                     {{--
                                     <tr>
@@ -226,7 +251,7 @@
                             </div>
                         </div>
                         <div class="col-xs-2">
-                            <div class="btn-group">
+                            <div class="btn-group leave-on-one-line">
                                 <button type="button" class="btn btn-sm btn-default" onclick="Profiler.remove();">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
                                 </button>
@@ -254,7 +279,7 @@
                         </div>
                         <div class="col-xs-3 text-right">
                             <form class="form-inline">
-                                <div class="form-group form-group-sm">
+                                <div class="form-group form-group-sm leave-on-one-line">
                                     <label for="">Show on page: </label>
                                     <select class="form-control" onchange="Profiler.changePerPage(this)">
                                         <option value="25">25</option>
@@ -307,14 +332,40 @@
 
 @section('styles')
 <link href="/css/bootstrap/bootstrap-slider.min.css" rel="stylesheet">
+<style>
+.th-sorter {
+    cursor: pointer;
+    white-space: nowrap;
+}
+.open-advanced-info {
+    cursor: pointer;
+}
+.th-sorter i.fa {
+    float: left;
+}
+.truncate {
+    overflow: hidden;
+    width: 400px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.leave-on-one-line {
+    width: 165px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+</style>
 @stop
 
 @section('scripts')
+<script src="/js/underscore-min.js"></script>
+<script src="/js/tangular.min.js"></script>
 <script src="/js/bootstrap-slider.min.js"></script>
 <script src="/js/profiler.js"></script>
 
 <script>
 Profiler._id = '{{ $pack->_id }}';
+Profiler.total = {{ count($pack->getData()) }};
 Profiler.sites = [
 @foreach ($pack->getData() as $hash => $site)
     {
@@ -322,12 +373,38 @@ Profiler.sites = [
         url: '{{ $site['url'] }}',
         title: '{{ trim(addslashes(mb_strtolower((!isset($site['title']) || !$site['title'] ? '[notitle]' : $site['title'])))) }}',
         tld: '{{ mb_strtolower($site['tld']) }}',
+        emails: {!! json_encode(array_values(array_get($site, 'parsers.email.data.emails', []))) !!},
         has_email: {{ array_get($site, 'parsers.email.data.emails', []) ? 'true' : 'false' }},
         has_contacts: {{ array_get($site, 'parsers.email.data.contacts', []) ? 'true' : 'false' }},
         has_social_profiles: {{ array_get($site, 'parsers.email.data.social', []) ? 'true' : 'false' }},
+        has_facebook: {{ array_get($site, 'parsers.email.data.social.facebook', []) ? 'true' : 'false' }},
+        has_twitter: {{ array_get($site, 'parsers.email.data.social.twitter', []) ? 'true' : 'false' }},
+        has_pinterest: {{ array_get($site, 'parsers.email.data.social.pinterest', []) ? 'true' : 'false' }},
+        has_gplus: {{ array_get($site, 'parsers.email.data.social.gplus', []) ? 'true' : 'false' }},
+        has_linkedin: {{ array_get($site, 'parsers.email.data.social.linkedin', []) ? 'true' : 'false' }},
         domain_authority: {{ array_get($site, 'parsers.moz.data.pda', 0) }},
+        page_authority: {{ array_get($site, 'parsers.moz.data.upa', 0) }},
         alexa_rank: {{ array_get($site, 'parsers.alexa.data.rank', 0) }},
         pages: {!! json_encode(array_keys(array_get($site, 'parsers.pages.data', []))) !!},
+        contacts_count: {{ count(array_get($site, 'parsers.email.data.emails', [])) }},
+        contacts: {{ count(array_get($site, 'parsers.email.data.contacts', [])) }},
+        pages: {
+            advertising: {{ array_get($site, 'parsers.pages.data.advertising') ? 'true' : 'false' }},
+            useful: {{ array_get($site, 'parsers.pages.data.useful') ? 'true' : 'false' }},
+            donate: {{ array_get($site, 'parsers.pages.data.donate') ? 'true' : 'false' }},
+            blog: {{ array_get($site, 'parsers.pages.data.blog') ? 'true' : 'false' }},
+            guest: {{ array_get($site, 'parsers.pages.data.guest') ? 'true' : 'false' }}
+        },
+        social: [
+            @foreach (array_get($site, 'parsers.email.data.social', []) as $socialName => $socialLinks) 
+                @foreach ($socialLinks as $socialLink) 
+                    {
+                        link: '{{ $socialLink }}',
+                        title: '{{ $socialName }}',
+                    },
+                @endforeach
+            @endforeach
+        ]
     },
 @endforeach
 ];

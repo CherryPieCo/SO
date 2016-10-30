@@ -10,7 +10,7 @@ Object.defineProperty(Array.prototype, 'chunk', {
         return Array.range(Math.ceil(this.length/n)).map((x,i) => this.slice(i*n,i*n+n));
     }
 });
-*/
+
 function chunk(arr, len) {
 
   var chunks = [],
@@ -23,6 +23,8 @@ function chunk(arr, len) {
 
   return chunks;
 }
+*/
+
 Array.prototype.chunk = function ( n ) {
     if ( !this.length ) {
         return [];
@@ -35,12 +37,22 @@ var Profiler =
     _id: '',
     per_page: 25,
     sites: [],
+    total: 0,
     filters: [],
     filtered: [],
+    sortable: null,
+    template: null,
     
     init: function()
     {
-        $('[data-toggle="tooltip"]').tooltip();
+        Tangular.register('active', function(value) {
+            return value ? 'active' : '';
+        });
+        Tangular.register('display', function(value, index) {
+            return index > 6 ? 'style="display:none"' : '';
+        });
+        this.template = Tangular.compile($('#bulk-profiler-row-template').html());
+        
         
         $("#slider-da").slider({
             tooltip : 'always'
@@ -69,7 +81,20 @@ var Profiler =
         var chunks = this.sites.chunk(this.per_page);
         this.renderPagination(chunks);
         this.renderPerPageInfo(chunks, 0);
+        this.showChunk(chunks[0]);
     }, // end init
+    
+    showMore: function(ctx) 
+    {
+        $(ctx).parent().find('a').show();
+        $(ctx).remove();
+    }, // end showMore
+    
+    initTooltips: function()
+    {
+        $('[data-toggle="tooltip"]').tooltip();
+    }, // end initTooltips
+    
     /*
     filterWithIntersect: function()
     {
@@ -285,7 +310,6 @@ var Profiler =
         
         var advertisePage = $('#filter-by-advertise-type').val();
         if (advertisePage) {
-        console.log(advertisePage);
             this.filters.push({
                 title: 'Advertise opportunities: '+ advertisePage,
                 type: 'advertise-type'
@@ -293,11 +317,21 @@ var Profiler =
             for (var i = 0; i < this.sites.length; i++) { 
                 var info = this.sites[i];
                 if (~$.inArray(advertisePage, info.pages)) {
-                    console.log(info);
                     this.filtered.push(info);
                 }
             }
         }
+        
+        //
+        var flags = [], filtered = [], l = this.filtered.length, i;
+        for (i = 0; i < l; i++) {
+            if (flags[this.filtered[i].hash]) {
+                continue;
+            }
+            flags[this.filtered[i].hash] = true;
+            filtered.push(this.filtered[i]);
+        }
+        this.filtered = filtered;
     }, // end filterWithAdd
     
     search: function()
@@ -325,15 +359,20 @@ var Profiler =
         if (!this.filters.length) {
             this.filtered = this.filtered.length ? this.filtered : this.sites;
         }
-        
+        this.filtered = this.sort(this.filtered);
+        console.table(this.filtered);
         $('.hashed').hide();
         var chunks = this.filtered.chunk(this.per_page);
-        console.log(chunks);
+        //console.log(chunks);
         chunks = chunks.length ? chunks : [[]];
+        
+        console.log(chunks[chunkIndex]);
+        this.showChunk(chunks[chunkIndex]);
+        /*
         $.each(chunks[chunkIndex], function(key, info) {
             $('.'+info['hash']).show();
         });
-        
+        */
         //if (this.filters.length) {
             wo.each(this.filters).render('single-close');
         //}
@@ -343,6 +382,21 @@ var Profiler =
         }
         this.renderPerPageInfo(chunks, chunkIndex);
     }, // end renderFilteredChunk
+    
+    showChunk: function(chunk)
+    {
+        $('#tr-container').html(this.template({sites: chunk}));
+        this.initTooltips();
+        this.initAdvancedInfoOpener();
+    }, // end showChunk
+    
+    initAdvancedInfoOpener: function()
+    {
+        $('.open-advanced-info').on('click', function() {
+            var hash = $(this).closest('tr').data('hash');
+            $('.'+ hash +'.advanced-info').toggle();
+        })
+    }, // end initAdvancedInfoOpener
     
     renderPagination: function(chunks)
     {
@@ -372,16 +426,19 @@ var Profiler =
             from: from,
             to: to,
             total: this.filtered.length ? this.filtered.length : this.sites.length,
+            bulk_total: this.total
         };
         if (!data.to || !data.total) {
             data = {
                 from: ' 0 ',
                 to: ' 0 ',
                 total: ' 0 ',
+                bulk_total: this.total
             };
         }
-        
+        console.log(data);
         wo.render('displayed-items-template', data);
+        wo.render('displayed-items-top-template', data);
     }, // end renderPerPageInfo
     
     removeFilter: function(type)
@@ -500,7 +557,41 @@ var Profiler =
         });
     }, // end deleteByHashes
     
+    sort: function(filtered)
+    {
+        console.log(this.sortable);
+        if (!this.sortable) {
+            return filtered;
+        }
+        
+        var property = this.sortable.property;
+        if (this.sortable.order == 'desc') {
+            return _.sortBy(filtered, property).reverse();
+        }
+        return _.sortBy(filtered, property);
+    }, // end sort
+    
+    addOrderBy: function(ctx, property)
+    {
+        $('.th-sorter .fa').removeClass('fa-sort-asc').removeClass('fa-sort-desc').addClass('fa-sort');
+        
+        var order = 'asc';
+        if (this.sortable && this.sortable.property == property && this.sortable.order == 'asc') {
+            var order = 'desc';
+        }
+        
+        $(ctx).find('.fa').addClass('fa-sort-'+ order);
+        
+        this.sortable = {
+            property: property,
+            order: order
+        };
+        
+        this.renderFilteredChunk(0, true, false);
+    }, // end addOrderBy
+    
 };
 $(document).ready(function() {
     Profiler.init();
-}); 
+});
+
