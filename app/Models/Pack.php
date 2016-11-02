@@ -230,6 +230,67 @@ class Pack extends Eloquent
         return $data;
     } // end getEmailsForXls
     
+    public function getAdvancedEmailsForXls()
+    {
+        $data = [
+            ['Domain name', 'Url', 'Title', 'PA', 'DA', 'Alexa', 'E-mail']
+        ];
+        foreach ($this->data as $info) {
+            $url = $info['url'];
+            $urlInfo = parse_url($url);
+            $domain = $urlInfo['scheme'] .'://'. $urlInfo['host'];
+            
+            $emails = [];
+            if (isset($info['parsers']['email']['data']['emails'])) {
+                $emails = $info['parsers']['email']['data']['emails'];
+            }
+            
+            // show urls even if there is no result
+            if (!$emails) {
+                $emails[] = '';
+            }
+            
+            $pa =array_get($info, 'parsers.moz.data.upa', '-');
+            $da = array_get($info, 'parsers.moz.data.pda', '-');
+            $alexa = array_get($info, 'parsers.alexa.data.rank', '-');
+            
+            foreach ($emails as $email) {
+                $data[] = [
+                    $domain, $url, array_get($info, 'title', ''), $pa, $da, $alexa, $email
+                ];
+            }
+        }
+        
+        return $data;
+    } // end getAdvancedEmailsForXls
+    
+    public function getSocialProfilesForXls()
+    {
+        $data = [
+            ['Domain name', 'Url', 'Title', 'Social', 'Profile url']
+        ];
+        foreach ($this->data as $info) {
+            $url = $info['url'];
+            $urlInfo = parse_url($url);
+            $domain = $urlInfo['scheme'] .'://'. $urlInfo['host'];
+            
+            $profiles = [];
+            if (isset($info['parsers']['email']['data']['social'])) {
+                $profiles = $info['parsers']['email']['data']['social'];
+            }
+            
+            foreach ($profiles as $type => $profileUrls) {
+                foreach ($profileUrls as $profileUrl) {
+                    $data[] = [
+                        $domain, $url, array_get($info, 'title', ''), $type, $profileUrl
+                    ];
+                }
+            }
+        }
+        
+        return $data;
+    } // end getSocialProfilesForXls
+    
     public function getBrokenLinksForXls()
     {
         $data = [

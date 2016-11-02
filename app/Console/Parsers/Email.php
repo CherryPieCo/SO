@@ -386,12 +386,14 @@ class Email extends AbstractParser
             "feed",
             "oauth",
             "v2.2",
+            "v2.3",
             "fbconnect",
             "api_lib",
             "timeline",
             "application.php",
             "group.php",
-            "video.php"
+            "video.php",
+            'l.php',
         );
         $in_except = array(
             "share",

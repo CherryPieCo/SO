@@ -216,6 +216,20 @@ class SoController extends Controller
                         $sheet->fromArray($pack->getMozAlexaForXls(), null, 'A1', false, false);
                     });
                     break;
+                case Pack::ADVANCED_EMAILS_TYPE:
+                    $excel->sheet('Email', function($sheet) use($pack) {
+                        $sheet->cells('A1:G1', function($cells) {
+                            $cells->setFontWeight('bold');
+                        });
+                        $sheet->fromArray($pack->getAdvancedEmailsForXls(), null, 'A1', false, false);
+                    });
+                    $excel->sheet('Social profile', function($sheet) use($pack) {
+                        $sheet->cells('A1:E1', function($cells) {
+                            $cells->setFontWeight('bold');
+                        });
+                        $sheet->fromArray($pack->getSocialProfilesForXls(), null, 'A1', false, false);
+                    });
+                    break;
                 default:
                     throw new \RuntimeException('Not implemented');
             }
